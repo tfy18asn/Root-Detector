@@ -11,6 +11,19 @@
 <div>
 <div class="ui segment form" style="margin-top:0px;">
     <!--<h4 class="ui dividing header">Training options</h4>-->
+    <label class="ui labeled icon button" onmouseover="">
+        <i class="upload icon"></i>
+        Upload Training Images
+    </label>
+        <input type="file" accept="image/*" multiple> 
+        <input type="file" id="input_image" style="display:none"
+        onchange="{{ app }}.FileInput.on_inputfiles_select(event)" accept="image/*" multiple>
+    <div class="ui divider"></div>
+    <div class="ui labeled icon button">
+        <i class="upload icon"></i>
+        Upload Test Images
+    </div>
+    <div class="ui divider"></div>
     <div class="field" id="training-model-type-field">
         <div class="field">
             <label>Model Type</label>
