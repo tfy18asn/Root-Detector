@@ -35,13 +35,13 @@ class App(BaseApp):
         if flask.request.method=='GET':
             fname0 = os.path.join(self.cache_path, flask.request.args['filename0'])
             fname1 = os.path.join(self.cache_path, flask.request.args['filename1'])
-            result = root_tracking.process(fname0, fname1, self.settings)
+            result = root_tracking.process(fname0, fname1, self.get_settings())
         elif flask.request.method=='POST':
             data   = flask.request.get_json(force=True)
             fname0 = os.path.join(self.cache_path, data['filename0'])
             fname1 = os.path.join(self.cache_path, data['filename1'])
-            result = root_tracking.process(fname0, fname1, self.settings, data)
-        
+            result = root_tracking.process(fname0, fname1, self.get_settings(), data)
+        self.remove_settings()         
         return flask.jsonify({
             'points0':         result['points0'].tolist(),
             'points1':         result['points1'].tolist(),
@@ -69,6 +69,6 @@ class App(BaseApp):
         if not all([os.path.exists(fname) for fname in imagefiles]) or not all(targetfiles):
             flask.abort(404)
         
-        backend.training.start_training(imagefiles, targetfiles, options, self.settings)
+        backend.training.start_training(imagefiles, targetfiles, options, self.get_settings())
         return 'OK'
     
