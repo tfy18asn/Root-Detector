@@ -1,5 +1,5 @@
 from base.backend.app import App as BaseApp
-
+from base.backend.app import get_cache_path
 import os
 import flask
 
@@ -21,7 +21,7 @@ class App(BaseApp):
 
     def postprocess_detection(self, filename):
         #FIXME: code duplication
-        full_path = os.path.join(self.cache_path, filename)
+        full_path = os.path.join(get_cache_path(), filename)
         if not os.path.exists(full_path):
             flask.abort(404)
         
@@ -33,15 +33,15 @@ class App(BaseApp):
 
     def process_root_tracking(self):
         if flask.request.method=='GET':
-            fname0 = os.path.join(self.cache_path, flask.request.args['filename0'])
-            fname1 = os.path.join(self.cache_path, flask.request.args['filename1'])
+            fname0 = os.path.join(get_cache_path(), flask.request.args['filename0'])
+            fname1 = os.path.join(get_cache_path(), flask.request.args['filename1'])
             result = root_tracking.process(fname0, fname1, self.get_settings())
         elif flask.request.method=='POST':
             data   = flask.request.get_json(force=True)
-            fname0 = os.path.join(self.cache_path, data['filename0'])
-            fname1 = os.path.join(self.cache_path, data['filename1'])
+            fname0 = os.path.join(get_cache_path(), data['filename0'])
+            fname1 = os.path.join(get_cache_path(), data['filename1'])
             result = root_tracking.process(fname0, fname1, self.get_settings(), data)
-        self.remove_settings()         
+     
         return flask.jsonify({
             'points0':         result['points0'].tolist(),
             'points1':         result['points1'].tolist(),
@@ -64,7 +64,7 @@ class App(BaseApp):
             raise NotImplementedError()
 
         imagefiles   = requestform['filenames']
-        imagefiles   = [os.path.join(self.cache_path, fname) for fname in imagefiles]
+        imagefiles   = [os.path.join(get_cache_path(), fname) for fname in imagefiles]
         targetfiles  = backend.training.find_targetfiles(imagefiles)
         if not all([os.path.exists(fname) for fname in imagefiles]) or not all(targetfiles):
             flask.abort(404)
