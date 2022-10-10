@@ -1,4 +1,4 @@
 [submodule "base"]
 	path = base
 	url = https://github.com/tfy18asn/DigIT-Base-UI.git
-	branch = SeparateSettingsV1 
+	branch = EvaluationOfModels
