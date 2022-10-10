@@ -1,6 +1,14 @@
-﻿<!-- Macro for about tab using Fomantic UI -->
+﻿{% import   'base/js_templates.html'  as base_js_templates %}
+{% import   'base/content_menu.html'  as base_content_menu %}
+
+<!-- Macro for about tab using Fomantic UI -->
 {% macro about_tab() %}
 <div class="ui tab segment" data-tab="about" style="padding:0">
     Hello world!
+    <!--
+    <div class="ui tab segment" data-tab="about" style="padding:0">
+        Hello again!
+    </div>
+        -->
 </div>
 {% endmacro %}
