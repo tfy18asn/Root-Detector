@@ -6,18 +6,48 @@
 </div>
 {% endmacro %}
 
+{% macro upload_button_training(app) %}
+<div class="ui segment form" style="margin-top:0px;">
+    <!--<h4 class="ui dividing header">Training options</h4>-->
+    <label for="training_images" class="ui labeled icon button" onmouseover="">
+        <i class="upload icon"></i>
+        Upload Training Images
+    </label>
+    <!-- padding-top:0; padding-bottom:0-->
+    <input type="file" id="training_images" style="display:none"
+    onchange="{{ app }}.FileInput.on_inputfiles_select(event)" accept="image/*" multiple>
+</div>
+{% endmacro %}
+
+{# Upload button which uploads annotation files as before #}
+{% macro upload_button_annotation(app) %}
+<div class="ui segment form" style="margin-top:0px;">
+    <!--<h4 class="ui dividing header">Training options</h4>-->
+    <p>Upload corresponding annotated files to the training files</p>
+    <label for="training_image_annotation" class="ui labeled icon button" onmouseover="">
+        <i class="upload icon"></i>
+        Upload Annotated Training Images
+    </label>
+    <!-- padding-top:0; padding-bottom:0-->
+    <input type="file" id="training_image_annotation" style="display:none"
+    onchange="{{ app }}.FileInput.on_annotations_select(event)" accept="image/*, application/zip, application/x-zip-compressed" multiple>
+</div>
+{% endmacro %}
+
+
+
 
 {% macro training_controls(trainingmodule) %}
 <div>
 <div class="ui segment form" style="margin-top:0px;">
     <!--<h4 class="ui dividing header">Training options</h4>-->
-    <label class="ui labeled icon button" onmouseover="">
+    <label class="ui labeled icon button" id="upload_button" onmouseover="">
         <i class="upload icon"></i>
         Upload Training Images
     </label>
-        <input type="file" accept="image/*" multiple> 
-        <input type="file" id="input_image" style="display:none"
-        onchange="{{ app }}.FileInput.on_inputfiles_select(event)" accept="image/*" multiple>
+        {#<input type="file" accept="image/*" multiple>#} 
+        <input type="file" id="input_imag" style="padding-top:0; padding-bottom:0"
+        onchange="{{ trainingmodule }}.FileInput.on_inputfiles_select(event, id)" accept="image/*" multiple>
     <div class="ui divider"></div>
     <div class="ui labeled icon button">
         <i class="upload icon"></i>
@@ -70,6 +100,10 @@
 {% macro training_tab(app) %}
 <div id="training-tab">
     
+    {# add upload button for training#}
+    {{ upload_button_training(app) }}
+    <div class="ui divider"></div>
+    {{ upload_button_annotation(app) }}
     {{ training_controls(trainingmodule = app+".Training") }}
 
 </div>
