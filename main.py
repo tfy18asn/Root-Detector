@@ -7,5 +7,5 @@ if __name__ == '__main__':
     if not ok:
         #start UI
         print('Starting UI')
-        App().run(parse_args=False, host="130.239.221.24", port=80, debug=True)
+        App().run(parse_args=False, host="130.239.221.106", port=80, debug=True)
 
