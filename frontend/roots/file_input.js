@@ -21,9 +21,17 @@ RootsFileInput = class extends BaseFileInput{
     }
 
     //override
-    static async load_result(filename, resultfiles){
-        console.log(filename, resultfiles)
-        const inputfile = GLOBAL.files[filename]
+    static async load_result(filename, resultfiles,id){
+        console.log(filename)
+        console.log(resultfiles)
+        if ((id !="training_image_annotation")&& (id != "training_images")){
+            var inputfile = GLOBAL.files[filename]
+            console.log("Oh no")
+        }
+        else{
+            var inputfile = GLOBAL.trainingfiles[filename] 
+            console.log(GLOBAL.trainingfiles[filename])
+        }
         if(inputfile != undefined){
             const resultfile = new File(
                 //consistent file name
@@ -33,7 +41,7 @@ RootsFileInput = class extends BaseFileInput{
             //upload to flask & postprocess
             await upload_file_to_flask(resultfile)
             const result = await $.get(`/postprocess_detection/${resultfile.name}`)
-            await App.Detection.set_results(filename, result)
+            await App.Detection.set_results(filename, result,id)
         }
     }
 
