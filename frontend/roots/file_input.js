@@ -27,7 +27,6 @@ RootsFileInput = class extends BaseFileInput{
         }
         else{
             var inputfile = GLOBAL.trainingfiles[filename] 
-            console.log(GLOBAL.trainingfiles[filename])
         }
         if(inputfile != undefined){
             const resultfile = new File(

@@ -13,7 +13,6 @@ RootsTraining = class extends BaseTraining {
     // ta bort filtreringen
     static get_selected_files(){
         const files_with_results = Object.values(GLOBAL.trainingfiles).filter( x => !!x.results )
-        console.log(files_with_results.map( x => x.name))
         return files_with_results.map( x => x.name)
     }
 
