@@ -35,6 +35,16 @@
 {% endmacro %}
 
 
+{% macro nr_evaluation_images(app, nr_files) %}
+<div class="ui segment form" style="margin-top:0px;">
+    <!--<h4 class="ui dividing header">Training options</h4>-->
+    <p>State how many of the training images that should be used for evaluation.</p>
+    <label for="nr_evaluation_images">Number of evaluation images (between 1 and {{ nr_files }}) (hur väljer vi här vad max är måste hämta):</label>
+    <input type="number" id="nr_evaluation_images" name="nr_evaluation_images" min="0" max={{ nr_files }} value="0" onchange="">
+    {#<input type="button" onclick="{{ app }}.FileInput.get_nr_images()" value="Done with it">#}
+
+</div>
+{% endmacro %}
 
 
 {% macro training_controls(trainingmodule) %}
@@ -91,6 +101,7 @@
     {{ upload_button_training(app) }}
     <div class="ui divider"></div>
     {{ upload_button_annotation(app) }}
+    {{ nr_evaluation_images(app, 8) }}
     {{ training_controls(trainingmodule = app+".Training") }}
 
 </div>
