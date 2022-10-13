@@ -22,11 +22,8 @@ RootsFileInput = class extends BaseFileInput{
 
     //override
     static async load_result(filename, resultfiles,id){
-        console.log(filename)
-        console.log(resultfiles)
         if ((id !="training_image_annotation")&& (id != "training_images")){
             var inputfile = GLOBAL.files[filename]
-            console.log("Oh no")
         }
         else{
             var inputfile = GLOBAL.trainingfiles[filename] 
