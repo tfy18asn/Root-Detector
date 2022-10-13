@@ -15,6 +15,51 @@ RootsTraining = class extends BaseTraining {
         const files_with_results = Object.values(GLOBAL.trainingfiles).filter( x => !!x.results )
         return files_with_results.map( x => x.name)
     }
+    // testa hämta antalet evaluation bilder
+    static get_nr_images(){
+        console.log($('#nr_evaluation_images'))
+        var $nr_ev_files = $('#nr_evaluation_images')
+        console.log($nr_ev_files.get(0).value)
+        return $nr_ev_files.get(0).value
+    }
+
+    // override
+    static async on_start_training(){
+        //Move evaluation images from trainingfiles
+        var NumbEvalFiles = this.get_nr_images();
+        for (let i = 0; i<NumbEvalFiles; i++){
+            var filenames = Object.keys(GLOBAL.trainingfiles);
+            var RandNum = Math.floor(Math.random() *filenames.length);
+            GLOBAL.evaluationfiles[filenames[RandNum]] = GLOBAL.trainingfiles[filenames[RandNum]];
+            delete GLOBAL.trainingfiles[filenames[RandNum]];
+        }   
+        console.log(GLOBAL.trainingfiles)
+        console.log(GLOBAL.evaluationfiles)
+
+        var filenames = this.get_selected_files()
+        console.log('Training on ', filenames)
+        
+        const progress_cb = (m => this.on_training_progress(m))
+        try {
+            this.show_modal()
+            await this.upload_training_data(filenames)
+
+            $(GLOBAL.event_source).on('training', progress_cb)
+            //FIXME: success/fail should not be determined by this request
+            await $.post('/training', JSON.stringify({filenames:filenames, options:this.get_training_options()}))
+            if(!$('#training-modal .ui.progress').progress('is complete'))
+                this.interrupted_modal()
+            
+            GLOBAL.App.Settings.load_settings()
+        } catch (e) {
+            console.error(e)
+            this.fail_modal()
+        } finally {
+            $(GLOBAL.event_source).off('training', progress_cb)
+        }
+    }   
+
+        
 
     //override
     static get_training_options(){
