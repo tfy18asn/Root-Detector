@@ -6,6 +6,7 @@
 </div>
 {% endmacro %}
 
+{# Upload button which uploads training images to the training page #}
 {% macro upload_button_training(app) %}
 <div class="ui segment form" style="margin-top:0px;">
     <!--<h4 class="ui dividing header">Training options</h4>-->
@@ -34,15 +35,15 @@
 </div>
 {% endmacro %}
 
-
-{% macro nr_evaluation_images(app, nr_files) %}
+{# Makes box where user can choose how many images that should be used for evaluation #}
+{% macro nr_evaluation_images(app) %}
 <div class="ui segment form" style="margin-top:0px;">
     <!--<h4 class="ui dividing header">Training options</h4>-->
-    <p>State how many of the training images that should be used for evaluation.</p>
-    <label for="nr_evaluation_images">Number of evaluation images (between 1 and {{ nr_files }}) (hur väljer vi här vad max är måste hämta):</label>
-    <input type="number" id="nr_evaluation_images" name="nr_evaluation_images" min="0" max={{ nr_files }} value="0" onchange="">
-    {#<input type="button" onclick="{{ app }}.FileInput.get_nr_images()" value="Done with it">#}
-
+    <p>State how many of the training images that should be used for evaluation. Usually 20-30% of
+        the training data is used for evaluation. The default number shows around 25% of the training data. 
+    </p>
+    <label for="nr_evaluation_images">Number of evaluation images (between 0 and <p id="nr_training_images">xxx</p>):</label>
+    <input type="number" id="nr_evaluation_images" name="nr_evaluation_images" min="0" max="0" value="0">
 </div>
 {% endmacro %}
 
@@ -101,7 +102,7 @@
     {{ upload_button_training(app) }}
     <div class="ui divider"></div>
     {{ upload_button_annotation(app) }}
-    {{ nr_evaluation_images(app, 8) }}
+    {{ nr_evaluation_images(app) }}
     {{ training_controls(trainingmodule = app+".Training") }}
 
 </div>

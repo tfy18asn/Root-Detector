@@ -20,8 +20,13 @@ RootsTraining = class extends BaseTraining {
         console.log($('#nr_evaluation_images'))
         var $nr_ev_files = $('#nr_evaluation_images')
         console.log($nr_ev_files.get(0).value)
+        console.log(GLOBAL.trainingfiles)
         return $nr_ev_files.get(0).value
     }
+
+    //static get_nr_training_images()
+
+
 
     // override
     static async on_start_training(){
@@ -84,6 +89,15 @@ RootsTraining = class extends BaseTraining {
         const n = this.get_selected_files().length;
         $('#training-number-of-files-info-label').text(n)
         $('#training-number-of-files-info-message').removeClass('hidden')
+        // Set the top limit of evaluation images that can be chosen in the text
+        $('#nr_training_images').text(n)
+        // Pick out the object where we choose how many evaluation pictures we want
+        var $nr_ev_images = $('#nr_evaluation_images').get(0)
+        // Set maximum number of evaluation pictures that can be chosen
+        $nr_ev_images.max = n
+        // 25% of training data or a bit less is the default-value for evaluation
+        $nr_ev_images.value = Math.floor(n*0.25)
+
     }
 }
 
