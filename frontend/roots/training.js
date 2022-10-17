@@ -146,8 +146,41 @@ RootsTraining = class extends BaseTraining {
     static update_evaluation_results_info() {
         $('#evaluation-results-message').removeClass('hidden')
 
-        const n = 0.06;
-        $('#evaluation-results-accuracy-label').text(n)
+        const n1 = 0.06
+        const n2 = 0.08
+        const n3 = Math.floor((n2 - n1) * 100) / 100
+
+
+        $('#evaluation-results-accuracy-label-old').text(n1)
+        $('#evaluation-results-accuracy-label-new').text(n2)
+
+        if (n3 > 0.0) {
+            $('#evaluation-results-accuracy-label-comp').text("(+" + n3 + ")")
+            document.getElementById("evaluation-results-accuracy-label-comp").style.color = "green"
+        }
+
+        else {
+            $('#evaluation-results-accuracy-label-comp').text("(" + n3 + ")")
+            document.getElementById("evaluation-results-accuracy-label-comp").style.color = "red"
+        }
+            
+
+        const m1 = 0.64
+        const m2 = 0.56
+        const m3 = Math.floor((m2 - m1)*100) / 100
+
+        $('#evaluation-results-f2-label-old').text(m1)
+        $('#evaluation-results-f2-label-new').text(m2)
+
+        if (m3 > 0.0) {
+            $('#evaluation-results-f2-label-comp').text("(+" + m3 + ")")
+            document.getElementById("evaluation-results-f2-label-comp").style.color = "green"
+        }
+        else {
+            $('#evaluation-results-f2-label-comp').text("(" + m3 + ")")
+            document.getElementById("evaluation-results-f2-label-comp").style.color = "red"
+        }
+            
         
     }
 }

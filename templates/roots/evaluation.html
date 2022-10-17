@@ -1,0 +1,55 @@
+{% import 'base/training_tab.html' as base_training_tab %}
+{% import 'base/detection_tab.html'  as base_detection_tab %}
+
+<!-- Macro for displaying evaluation of model -->
+{% macro evaluation_save_infobox(trainingmodule, evaluationmodule, label=None ) %}
+<div class="ui hidden message" id="evaluation-results-message">
+
+    <!-- Evaluation header text -->
+    <div class="ui segment form" style="margin-top:0px;">
+        {% if label != None -%}
+        <label><p style="text-align:center"><b>{{label}}</b></p></label>
+        {%- endif %}
+    </div>
+
+    <!-- Error map display -->
+    {{ base_detection_tab.detection_tab(evaluationmodule) }}
+
+    <!-- Evaluation statistics -->
+    <div class="ui segment form" style="margin-top:0px;">
+        <div class="field" id="evaluation-results-field">
+
+            <!-- Statistics header -->
+            <div class="ui input" id="evaluation-results-statistics">
+                <label style="padding:10px; width:40%;"><b>Statistic</b></label>
+                <label style="padding:10px; width:20%;"><b>Old model</b></label>
+                <label style="padding:10px; width:20%;"><b>New model</b></label>
+                <label style="padding:10px; width:20%;"><b>Comparison</b></label>
+            </div>
+            <div class="ui divider"></div>
+
+            <!-- Accuracy -->
+            <div class="ui input" id="evaluation-results-accuracy">
+                <label style="padding:10px; width:40%;">Accuracy:</label>
+                <label style="padding:10px; width:20%;"><b id="evaluation-results-accuracy-label-old">xxx</b></label>
+                <label style="padding:10px; width:20%;"><b id="evaluation-results-accuracy-label-new">xxx</b></label>
+                <label style="padding:10px; width:20%;"><p id="evaluation-results-accuracy-label-comp">xxx</p></label>
+            </div>
+
+            <!-- F2 score -->
+            <div class="ui input" id="evaluation-results-f2">
+                <label style="padding:10px; width:40%;">F2 score:</label>
+                <label style="padding:10px; width:20%;"><b id="evaluation-results-f2-label-old">xxx</b></label>
+                <label style="padding:10px; width:20%;"><b id="evaluation-results-f2-label-new">xxx</b></label>
+                <label style="padding:10px; width:20%;"><p id="evaluation-results-f2-label-comp">xxx</p></label>
+            </div>
+        </div>
+    </div>
+
+    <!-- Save model field -->
+    {{ base_training_tab.save_model_field(trainingmodule) | indent }}
+
+
+</div>
+
+{% endmacro %}
