@@ -9,6 +9,8 @@ RootsTraining = class extends BaseTraining {
     }
     
     //dummy override: all files selected  //TODO: move upstream
+    // filtrerar bort de filer som är uppladdade men inte är processed? byt till GLOBAL.trainingfiles
+    // ta bort filtreringen
     static get_selected_files(){
         const files_with_results = Object.values(GLOBAL.files).filter( x => !!x.results )
         return files_with_results.map( x => x.name)
