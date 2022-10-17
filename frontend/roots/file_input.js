@@ -37,7 +37,12 @@ RootsFileInput = class extends BaseFileInput{
             //upload to flask & postprocess
             await upload_file_to_flask(resultfile)
             const result = await $.get(`/postprocess_detection/${resultfile.name}`)
-            await App.Detection.set_results(filename, result,id)
+            if ((id !="training_image_annotation")&& (id != "training_images")){
+                await App.Detection.set_results(filename, result)
+            }
+            else{
+                await App.Training.set_results(filename, result) 
+            }
         }
     }
 

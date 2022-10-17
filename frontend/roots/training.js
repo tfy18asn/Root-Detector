@@ -24,6 +24,19 @@ RootsTraining = class extends BaseTraining {
         return $nr_ev_files.get(0).value
     }
 
+    // Moves files from training to evaluation
+    static add_evaluation_files(NrEvalFiles){
+        // Perform as many times as the number of files we want to put aside for evaluation
+       for (let i = 0; i<NrEvalFiles; i++){
+            // Pick a random training file
+            var filenames = Object.keys(GLOBAL.trainingfiles);
+            var RandNum = Math.floor(Math.random() *filenames.length);
+            // Move this file from training to evaluation
+            GLOBAL.evaluationfiles[filenames[RandNum]] = GLOBAL.trainingfiles[filenames[RandNum]];
+            delete GLOBAL.trainingfiles[filenames[RandNum]];
+        }   
+    }
+
     //static get_nr_training_images()
 
 
@@ -31,13 +44,8 @@ RootsTraining = class extends BaseTraining {
     // override
     static async on_start_training(){
         //Move evaluation images from trainingfiles
-        var NumbEvalFiles = this.get_nr_images();
-        for (let i = 0; i<NumbEvalFiles; i++){
-            var filenames = Object.keys(GLOBAL.trainingfiles);
-            var RandNum = Math.floor(Math.random() *filenames.length);
-            GLOBAL.evaluationfiles[filenames[RandNum]] = GLOBAL.trainingfiles[filenames[RandNum]];
-            delete GLOBAL.trainingfiles[filenames[RandNum]];
-        }   
+        var NrEvalFiles = this.get_nr_images();
+        this.add_evaluation_files(NrEvalFiles);
         console.log(GLOBAL.trainingfiles)
         console.log(GLOBAL.evaluationfiles)
 
@@ -47,7 +55,6 @@ RootsTraining = class extends BaseTraining {
         const progress_cb = (m => this.on_training_progress(m))
         try {
             this.show_modal()
-            await this.upload_training_data(filenames)
 
             $(GLOBAL.event_source).on('training', progress_cb)
             //FIXME: success/fail should not be determined by this request
@@ -99,5 +106,32 @@ RootsTraining = class extends BaseTraining {
         $nr_ev_images.value = Math.floor(n*0.25)
 
     }
+    
+    // Set annotated files as result for an original file
+    static async set_results(filename, results){
+        var clear = (results == undefined)
+    
+        if(results && is_string(results.segmentation))
+            results.segmentation = await fetch_as_file(url_for_image(results.segmentation))
+        var segmentation = clear? undefined : results.segmentation;
+    
+        GLOBAL.trainingfiles[filename].set_results(results)       
+    }
+    static get_selected_evaluation_files(){
+        const files_with_results = Object.values(GLOBAL.evaluationfiles).filter( x => !!x.results )
+        return files_with_results.map( x => x.name)
+    }
+    static upload_evaluation_data(filenames){
+        //TODO: show progress
+        var promises      = filenames.map( f => upload_file_to_flask(GLOBAL.trainingfiles[f]) )
+        //TODO: refactor
+        //TODO: standardize file name
+        var segmentations = filenames.map(    f => GLOBAL.evaluationfiles[f].results.segmentation )
+                                     .filter( s => s instanceof Blob )
+        promises          = promises.concat( segmentations.map( f => upload_file_to_flask(f) ) )
+        return Promise.all(promises).catch( this.fail_modal )  //FIXME: dont catch, handle in calling function
+    }
 }
+
+
 
