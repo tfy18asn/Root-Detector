@@ -46,9 +46,8 @@ RootsTraining = class extends BaseTraining {
         //Move evaluation images from trainingfiles
         var NrEvalFiles = this.get_nr_images();
         this.add_evaluation_files(NrEvalFiles);
-        console.log(GLOBAL.trainingfiles)
-        console.log(GLOBAL.evaluationfiles)
-
+        var options = this.get_training_options();
+        var startingpoint = GLOBAL.settings.active_models[options.training_type]
         var filenames = this.get_selected_files()
         console.log('Training on ', filenames)
         
@@ -68,6 +67,9 @@ RootsTraining = class extends BaseTraining {
             this.fail_modal()
         } finally {
             $(GLOBAL.event_source).off('training', progress_cb)
+            var evalfiles = this.get_selected_evaluation_files()
+            var results = await $.post('/evaluation', JSON.stringify({filenames:evalfiles, startingpoint:startingpoint}))
+            console.log(results)
         }
     }   
 
@@ -118,7 +120,7 @@ RootsTraining = class extends BaseTraining {
         GLOBAL.trainingfiles[filename].set_results(results)       
     }
     static get_selected_evaluation_files(){
-        const files_with_results = Object.values(GLOBAL.evaluationfiles).filter( x => !!x.results )
+        const files_with_results = Object.values(GLOBAL.evaluationfiles) //.filter( x => !!x.results )
         return files_with_results.map( x => x.name)
     }
     static upload_evaluation_data(filenames){
