@@ -9,107 +9,125 @@
 </div>
 {% endmacro %}
 
-{% macro upload_button_training(app) %}
-<div class="ui segment form" style="margin-top:0px;">
-    <!--<h4 class="ui dividing header">Training options</h4>-->
-    <label for="training_images" class="ui labeled icon button" onmouseover="">
-        <i class="upload icon"></i>
-        Upload Training Images
-    </label>
-    <!-- padding-top:0; padding-bottom:0-->
-    <input type="file" id="training_images" style="display:none"
-    onchange="{{ app }}.FileInput.on_inputfiles_select(event)" accept="image/*" multiple>
-</div>
-{% endmacro %}
+<!-- Macro for displaying accuracy -->
+{% macro accuracy_infobox(label=None) %}
+<div class="ui hidden message" id="evaluation-results-message">
+    <div class="ui segment form" style="margin-top:0px;">
+        <div class="field" id="evaluation-results-accuracy-field">
+            {% if label != None -%}
+            <label>{{label}}</label>
+            {%- endif %}
 
-{# Upload button which uploads annotation files as before #}
-{% macro upload_button_annotation(app) %}
-<div class="ui segment form" style="margin-top:0px;">
-    <!--<h4 class="ui dividing header">Training options</h4>-->
-    <p>Upload corresponding annotated files to the training files</p>
-    <label for="training_image_annotation" class="ui labeled icon button" onmouseover="">
-        <i class="upload icon"></i>
-        Upload Annotated Training Images
-    </label>
-    <!-- padding-top:0; padding-bottom:0-->
-    <input type="file" id="training_image_annotation" style="display:none"
-    onchange="{{ app }}.FileInput.on_annotations_select(event)" accept="image/*, application/zip, application/x-zip-compressed" multiple>
-</div>
-{% endmacro %}
-
-
-
-
-{% macro training_controls(trainingmodule) %}
-<div>
-<div class="ui segment form" style="margin-top:0px;">
-    <!--<h4 class="ui dividing header">Training options</h4>-->
-    <label class="ui labeled icon button" id="upload_button" onmouseover="">
-        <i class="upload icon"></i>
-        Upload Training Images
-    </label>
-        {#<input type="file" accept="image/*" multiple>#} 
-        <input type="file" id="input_imag" style="padding-top:0; padding-bottom:0"
-        onchange="{{ trainingmodule }}.FileInput.on_inputfiles_select(event, id)" accept="image/*" multiple>
-    <div class="ui divider"></div>
-    <div class="ui labeled icon button">
-        <i class="upload icon"></i>
-        Upload Test Images
-    </div>
-    <div class="ui divider"></div>
-    <div class="field" id="training-model-type-field">
-        <div class="field">
-            <label>Model Type</label>
-            <div class="ui dropdown selection" id="training-model-type">
-                <input type="hidden" name="active-model">
-                <i class="dropdown icon"></i>
-                <div class="default text"></div>
-                <div class="menu">
-                  <div class="item" data-value="detection">Root Detection</div>
-                  <div class="item" data-value="exclusion_mask">Exclusion Mask</div>
-                  <!--<div class="item" data-value="tracking">Root Tracking</div>-->
-                </div>
+            <div class="ui input" id="evaluation-results-input">
+                <label style="padding:10px; width:50%;">Accuracy:</label>
+                <label style="padding:10px; width:50%;"><b id="evaluation-results-accuracy-label">xxx</b></label>
             </div>
         </div>
     </div>
+</div>
+{% endmacro %}
 
-        <div class="ui divider"></div>
-
-        {{ base_training_tab.lr_epochs_fields(label="Hyperparameters") }}
-
-        <div class="ui divider"></div>
-
-        {{ base_training_tab.starting_point_model_infobox() }}
-
-        {{ number_of_files_infobox() }}
-
-        <div class="ui divider"></div>
-
-        {{ base_training_tab.start_training_button(trainingmodule) }}
+    {% macro upload_button_training(app) %}
+    <div class="ui segment form" style="margin-top:0px;">
+        <!--<h4 class="ui dividing header">Training options</h4>-->
+        <label for="training_images" class="ui labeled icon button" onmouseover="">
+            <i class="upload icon"></i>
+            Upload Training Images
+        </label>
+        <!-- padding-top:0; padding-bottom:0-->
+        <input type="file" id="training_images" style="display:none"
+               onchange="{{ app }}.FileInput.on_inputfiles_select(event)" accept="image/*" multiple>
     </div>
-    <script>
+    {% endmacro %}
+
+    {# Upload button which uploads annotation files as before #}
+    {% macro upload_button_annotation(app) %}
+    <div class="ui segment form" style="margin-top:0px;">
+        <!--<h4 class="ui dividing header">Training options</h4>-->
+        <p>Upload corresponding annotated files to the training files</p>
+        <label for="training_image_annotation" class="ui labeled icon button" onmouseover="">
+            <i class="upload icon"></i>
+            Upload Annotated Training Images
+        </label>
+        <!-- padding-top:0; padding-bottom:0-->
+        <input type="file" id="training_image_annotation" style="display:none"
+               onchange="{{ app }}.FileInput.on_annotations_select(event)" accept="image/*, application/zip, application/x-zip-compressed" multiple>
+    </div>
+    {% endmacro %}
+
+
+
+
+    {% macro training_controls(trainingmodule) %}
+    <div>
+        <div class="ui segment form" style="margin-top:0px;">
+            <!--<h4 class="ui dividing header">Training options</h4>-->
+            <label class="ui labeled icon button" id="upload_button" onmouseover="">
+                <i class="upload icon"></i>
+                Upload Training Images
+            </label>
+            {#<input type="file" accept="image/*" multiple>#}
+            <input type="file" id="input_imag" style="padding-top:0; padding-bottom:0"
+                   onchange="{{ trainingmodule }}.FileInput.on_inputfiles_select(event, id)" accept="image/*" multiple>
+            <div class="ui divider"></div>
+            <div class="ui labeled icon button">
+                <i class="upload icon"></i>
+                Upload Test Images
+            </div>
+            <div class="ui divider"></div>
+            <div class="field" id="training-model-type-field">
+                <div class="field">
+                    <label>Model Type</label>
+                    <div class="ui dropdown selection" id="training-model-type">
+                        <input type="hidden" name="active-model">
+                        <i class="dropdown icon"></i>
+                        <div class="default text"></div>
+                        <div class="menu">
+                            <div class="item" data-value="detection">Root Detection</div>
+                            <div class="item" data-value="exclusion_mask">Exclusion Mask</div>
+                            <!--<div class="item" data-value="tracking">Root Tracking</div>-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ui divider"></div>
+
+            {{ base_training_tab.lr_epochs_fields(label="Hyperparameters") }}
+
+            <div class="ui divider"></div>
+
+            {{ base_training_tab.starting_point_model_infobox() }}
+
+            {{ number_of_files_infobox() }}
+
+            <div class="ui divider"></div>
+
+            {{ base_training_tab.start_training_button(trainingmodule) }}
+        </div>
+        <script>
     $('#training-model-type')
         .dropdown({onChange: _ => {{ trainingmodule }}, refresh_tab() } )
         .dropdown('set selected', 'detection')
     $('#training-model-type-field .checkbox')
         .checkbox({onChange: _ => {{trainingmodule}}, refresh_tab() } )
         .checkbox('set checked')
-    </script>
-    {{ base_training_tab.save_model_field(trainingmodule) | indent }}
-</div>
-{% endmacro %}
+        </script>
+        {{ base_training_tab.save_model_field(trainingmodule) | indent }}
+    </div>
+    {% endmacro %}
 
 
-{% macro skeleton_checkbox() %}
-<div class="ui item disabled checkbox skeletonized-checkbox">
-    <input type="checkbox">
-    <label>Skeletonized</label>
-</div>
-{% endmacro %}
+    {% macro skeleton_checkbox() %}
+    <div class="ui item disabled checkbox skeletonized-checkbox">
+        <input type="checkbox">
+        <label>Skeletonized</label>
+    </div>
+    {% endmacro %}
 
-{% macro evaluation_filetable_content(app)%}
-<div class="filetable-content" style="display:none">
-    {{
+    {% macro evaluation_filetable_content(app)%}
+    <div class="filetable-content" style="display:none">
+        {{
  base_content_menu.content_menu(
             callback_on_process        = app+".Detection.on_process_image",
             callback_apply_corrections = None,
@@ -121,28 +139,32 @@
                 'extras': skeleton_checkbox()
             }
     ) | indent
-    }}
+        }}
 
-    <div class="image-container">
-        {{
+        <div class="image-container">
+            {{
  base_js_templates.content_image(
             name           = "input",
             overlay        = base_js_templates.image_overlay("input"),
             viewcontrols   = app+".ViewControls"
           ) | indent(8)
-        }}
-        {{ base_js_templates.progress_dimmer() }}
+            }}
+            {{ base_js_templates.progress_dimmer() }}
+        </div>
     </div>
-</div>
-{% endmacro %}
+    {% endmacro %}
 
-{% macro training_tab(app) %}
-<div id="training-tab">
-    
-    {# add upload button for training#}
-    {{ upload_button_training(app) }}
-    <div class="ui divider"></div>
-    {{ upload_button_annotation(app) }}
-    {{ training_controls(trainingmodule = app+".Training") }}
+    {% macro training_tab(app) %}
+    <div id="training-tab">
+        <div>
+            {# add upload button for training#}
+            {{ upload_button_training(app) }}
+            {{ upload_button_annotation(app) }}
+            {{ training_controls(trainingmodule = app+".Training") }}
+        </div>
+        <div>
+            {{ accuracy_infobox(label="Evaluation Results") }}
+        </div>
+    </div>
 
-{% endmacro %}
+    {% endmacro %}

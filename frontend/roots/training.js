@@ -40,5 +40,24 @@ RootsTraining = class extends BaseTraining {
         $('#training-number-of-files-info-label').text(n)
         $('#training-number-of-files-info-message').removeClass('hidden')
     }
+
+    //override
+    static success_modal() {
+        $('#training-modal .progress').progress('set success', 'Training finished');
+        $('#training-modal #ok-training-button').show()
+        $('#training-modal #cancel-training-button').hide()
+
+        // Update evaluation.
+        this.update_evaluation_results_info()
+    }
+
+    // Displays and updates evaluation results.
+    static update_evaluation_results_info() {
+        $('#evaluation-results-message').removeClass('hidden')
+
+        const n = 0.06;
+        $('#evaluation-results-accuracy-label').text(n)
+        
+    }
 }
 
