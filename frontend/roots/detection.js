@@ -3,11 +3,11 @@
 
 RootDetection = class extends BaseDetection{
     //override
-    static async set_results(filename, results){
+    static async set_results(filename, results,id){
         if(results!=undefined && is_string(results.skeleton))
             results.skeleton = await fetch_as_file(url_for_image(results.skeleton))
         
-        await super.set_results(filename, results);
+        await super.set_results(filename, results,id);
 
         var clear = (results==undefined)
         $(`[filename="${filename}"] .skeletonized-checkbox`)

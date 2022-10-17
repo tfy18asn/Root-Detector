@@ -41,7 +41,7 @@ class App(BaseApp):
             fname0 = os.path.join(get_cache_path(), data['filename0'])
             fname1 = os.path.join(get_cache_path(), data['filename1'])
             result = root_tracking.process(fname0, fname1, self.get_settings(), data)
-     
+        
         return flask.jsonify({
             'points0':         result['points0'].tolist(),
             'points1':         result['points1'].tolist(),
