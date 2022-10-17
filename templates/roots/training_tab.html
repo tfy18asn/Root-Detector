@@ -158,6 +158,7 @@
             {{ upload_button_training(app) }}
             {{ upload_button_annotation(app) }}
             {{ training_controls(trainingmodule = app+".Training") }}
+            {{ nr_evaluation_images(app) }}
         </div>
         <div>
             {{ accuracy_infobox(label="Evaluation Results") }}
