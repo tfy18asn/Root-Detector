@@ -10,7 +10,7 @@
 {% macro upload_button_training(app) %}
 <div class="ui segment form" style="margin-top:0px;">
     <!--<h4 class="ui dividing header">Training options</h4>-->
-    <label for="training_images" class="ui labeled icon button" onmouseover="">
+    <label for="training_images" class="ui teal labeled icon button" onmouseover="">
         <i class="upload icon"></i>
         Upload Training Images
     </label>
@@ -25,13 +25,19 @@
 <div class="ui segment form" style="margin-top:0px;">
     <!--<h4 class="ui dividing header">Training options</h4>-->
     <p>Upload corresponding annotated files to the training files</p>
-    <label for="training_image_annotation" class="ui labeled icon button" onmouseover="">
+    <label for="training_image_annotation" class="ui yellow labeled icon button" onmouseover="">
         <i class="upload icon"></i>
         Upload Annotated Training Images
     </label>
     <!-- padding-top:0; padding-bottom:0-->
     <input type="file" id="training_image_annotation" style="display:none"
     onchange="{{ app }}.FileInput.on_annotations_select(event)" accept="image/*, application/zip, application/x-zip-compressed" multiple>
+
+    <div class="ui buttons">
+        <button class="ui button">Cancel</button>
+        <div class="or"></div>
+        <button class="ui positive button">Save</button>
+      </div>
 </div>
 {% endmacro %}
 
