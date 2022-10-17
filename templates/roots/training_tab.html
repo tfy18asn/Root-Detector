@@ -9,8 +9,8 @@
 </div>
 {% endmacro %}
 
-<!-- Macro for displaying accuracy -->
-{% macro accuracy_infobox(label=None) %}
+<!-- Macro for displaying evaluation of model -->
+{% macro evaluation_save_infobox(label=None) %}
 <div class="ui hidden message" id="evaluation-results-message">
     <div class="ui segment form" style="margin-top:0px;">
         <div class="field" id="evaluation-results-accuracy-field">
@@ -24,43 +24,47 @@
             </div>
         </div>
     </div>
+
+    {{ base_training_tab.save_model_field(trainingmodule) | indent }}
 </div>
+
 {% endmacro %}
 
     {% macro upload_button_training(app) %}
-    <div class="ui segment form" style="margin-top:0px;">
-        <!--<h4 class="ui dividing header">Training options</h4>-->
-        <label for="training_images" class="ui labeled icon button" onmouseover="">
-            <i class="upload icon"></i>
-            Upload Training Images
-        </label>
-        <!-- padding-top:0; padding-bottom:0-->
-        <input type="file" id="training_images" style="display:none"
-               onchange="{{ app }}.FileInput.on_inputfiles_select(event)" accept="image/*" multiple>
-    </div>
+<div class="ui segment form" style="margin-top:0px;">
+    <!--<h4 class="ui dividing header">Training options</h4>-->
+    <label for="training_images" class="ui labeled icon button" onmouseover="">
+        <i class="upload icon"></i>
+        Upload Training Images
+    </label>
+    <!-- padding-top:0; padding-bottom:0-->
+    <input type="file" id="training_images" style="display:none"
+           onchange="{{ app }}.FileInput.on_inputfiles_select(event)" accept="image/*" multiple>
+</div>
     {% endmacro %}
 
     {# Upload button which uploads annotation files as before #}
     {% macro upload_button_annotation(app) %}
-    <div class="ui segment form" style="margin-top:0px;">
-        <!--<h4 class="ui dividing header">Training options</h4>-->
-        <p>Upload corresponding annotated files to the training files</p>
-        <label for="training_image_annotation" class="ui labeled icon button" onmouseover="">
-            <i class="upload icon"></i>
-            Upload Annotated Training Images
-        </label>
-        <!-- padding-top:0; padding-bottom:0-->
-        <input type="file" id="training_image_annotation" style="display:none"
-               onchange="{{ app }}.FileInput.on_annotations_select(event)" accept="image/*, application/zip, application/x-zip-compressed" multiple>
-    </div>
+<div class="ui segment form" style="margin-top:0px;">
+    <!--<h4 class="ui dividing header">Training options</h4>-->
+    <p>Upload corresponding annotated files to the training files</p>
+    <label for="training_image_annotation" class="ui labeled icon button" onmouseover="">
+        <i class="upload icon"></i>
+        Upload Annotated Training Images
+    </label>
+    <!-- padding-top:0; padding-bottom:0-->
+    <input type="file" id="training_image_annotation" style="display:none"
+           onchange="{{ app }}.FileInput.on_annotations_select(event)" accept="image/*, application/zip, application/x-zip-compressed" multiple>
+</div>
     {% endmacro %}
 
 {# Makes box where user can choose how many images that should be used for evaluation #}
 {% macro nr_evaluation_images(app) %}
 <div class="ui segment form" style="margin-top:0px;">
     <!--<h4 class="ui dividing header">Training options</h4>-->
-    <p>State how many of the training images that should be used for evaluation. Usually 20-30% of
-        the training data is used for evaluation. The default number shows around 25% of the training data. 
+    <p>
+        State how many of the training images that should be used for evaluation. Usually 20-30% of
+        the training data is used for evaluation. The default number shows around 25% of the training data.
     </p>
     <label for="nr_evaluation_images">Number of evaluation images (between 0 and <p id="nr_training_images">xxx</p>):</label>
     <input type="number" id="nr_evaluation_images" name="nr_evaluation_images" min="0" max="0" value="0">
@@ -70,61 +74,61 @@
 
 {% macro training_controls(trainingmodule) %}
 <div>
-<div class="ui segment form" style="margin-top:0px;">
-    <!--<h4 class="ui dividing header">Training options</h4>-->
-    <div class="field" id="training-model-type-field">
-        <div class="field">
-            <label>Model Type</label>
-            <div class="ui dropdown selection" id="training-model-type">
-                <input type="hidden" name="active-model">
-                <i class="dropdown icon"></i>
-                <div class="default text"></div>
-                <div class="menu">
-                  <div class="item" data-value="detection">Root Detection</div>
-                  <div class="item" data-value="exclusion_mask">Exclusion Mask</div>
-                  <!--<div class="item" data-value="tracking">Root Tracking</div>-->
+    <div class="ui segment form" style="margin-top:0px;">
+        <!--<h4 class="ui dividing header">Training options</h4>-->
+        <div class="field" id="training-model-type-field">
+            <div class="field">
+                <label>Model Type</label>
+                <div class="ui dropdown selection" id="training-model-type">
+                    <input type="hidden" name="active-model">
+                    <i class="dropdown icon"></i>
+                    <div class="default text"></div>
+                    <div class="menu">
+                        <div class="item" data-value="detection">Root Detection</div>
+                        <div class="item" data-value="exclusion_mask">Exclusion Mask</div>
+                        <!--<div class="item" data-value="tracking">Root Tracking</div>-->
+                    </div>
                 </div>
             </div>
         </div>
+
+        <div class="ui divider"></div>
+
+        {{ base_training_tab.lr_epochs_fields(label="Hyperparameters") }}
+
+        <div class="ui divider"></div>
+
+        {{ base_training_tab.starting_point_model_infobox() }}
+
+        {{ number_of_files_infobox() }}
+
+        <div class="ui divider"></div>
+
+        {{ base_training_tab.start_training_button(trainingmodule) }}
     </div>
-
-            <div class="ui divider"></div>
-
-            {{ base_training_tab.lr_epochs_fields(label="Hyperparameters") }}
-
-            <div class="ui divider"></div>
-
-            {{ base_training_tab.starting_point_model_infobox() }}
-
-            {{ number_of_files_infobox() }}
-
-            <div class="ui divider"></div>
-
-            {{ base_training_tab.start_training_button(trainingmodule) }}
-        </div>
-        <script>
+    <script>
     $('#training-model-type')
         .dropdown({onChange: _ => {{ trainingmodule }}, refresh_tab() } )
         .dropdown('set selected', 'detection')
     $('#training-model-type-field .checkbox')
         .checkbox({onChange: _ => {{trainingmodule}}, refresh_tab() } )
         .checkbox('set checked')
-        </script>
-        {{ base_training_tab.save_model_field(trainingmodule) | indent }}
-    </div>
+    </script>
+
+</div>
     {% endmacro %}
 
 
     {% macro skeleton_checkbox() %}
-    <div class="ui item disabled checkbox skeletonized-checkbox">
-        <input type="checkbox">
-        <label>Skeletonized</label>
-    </div>
+<div class="ui item disabled checkbox skeletonized-checkbox">
+    <input type="checkbox">
+    <label>Skeletonized</label>
+</div>
     {% endmacro %}
 
     {% macro evaluation_filetable_content(app)%}
-    <div class="filetable-content" style="display:none">
-        {{
+<div class="filetable-content" style="display:none">
+    {{
  base_content_menu.content_menu(
             callback_on_process        = app+".Detection.on_process_image",
             callback_apply_corrections = None,
@@ -136,33 +140,33 @@
                 'extras': skeleton_checkbox()
             }
     ) | indent
-        }}
+    }}
 
-        <div class="image-container">
-            {{
+    <div class="image-container">
+        {{
  base_js_templates.content_image(
             name           = "input",
             overlay        = base_js_templates.image_overlay("input"),
             viewcontrols   = app+".ViewControls"
           ) | indent(8)
-            }}
-            {{ base_js_templates.progress_dimmer() }}
-        </div>
+        }}
+        {{ base_js_templates.progress_dimmer() }}
     </div>
+</div>
     {% endmacro %}
 
     {% macro training_tab(app) %}
-    <div id="training-tab">
-        <div>
-            {# add upload button for training#}
-            {{ upload_button_training(app) }}
-            {{ upload_button_annotation(app) }}
-            {{ training_controls(trainingmodule = app+".Training") }}
-            {{ nr_evaluation_images(app) }}
-        </div>
-        <div>
-            {{ accuracy_infobox(label="Evaluation Results") }}
-        </div>
+<div id="training-tab">
+    <div>
+        {# add upload button for training#}
+        {{ upload_button_training(app) }}
+        {{ upload_button_annotation(app) }}
+        {{ training_controls(trainingmodule = app+".Training") }}
+        {{ nr_evaluation_images(app) }}
     </div>
+    <div>
+        {{ evaluation_save_infobox(label="Evaluation Results") }}
+    </div>
+</div>
 
     {% endmacro %}
