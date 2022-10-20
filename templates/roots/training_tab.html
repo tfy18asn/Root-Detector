@@ -8,53 +8,49 @@
 
 {# Upload button which uploads training images to the training page #}
 {% macro upload_button_training(app) %}
-<div class="ui segment form" style="margin-top:0px;">
-    <!--<h4 class="ui dividing header">Training options</h4>-->
-    <label for="training_images" class="ui teal labeled icon button" onmouseover="">
-        <i class="upload icon"></i>
-        Upload Training Images
-    </label>
-    <!-- padding-top:0; padding-bottom:0-->
-    <input type="file" id="training_images" style="display:none"
-    onchange="{{ app }}.FileInput.on_inputfiles_select(event)" accept="image/*" multiple>
-</div>
+<!--<h4 class="ui dividing header">Training options</h4>-->
+<label for="training_images" id="upload_training_button" class="ui teal labeled icon button">
+    <i class="upload icon"></i>
+    Upload Training Images
+</label>
+<!-- padding-top:0; padding-bottom:0-->
+<input type="file" id="training_images" style="display:none"
+onchange="{{ app }}.FileInput.on_inputfiles_select(event)" accept="image/*" multiple>
 {% endmacro %}
 
-{# Upload button which uploads annotation files as before #}
+{# Upload button which uploads annotation as before, (or exclusion masks if that is chosen) #}
 {% macro upload_button_annotation(app) %}
-<div class="ui segment form" style="margin-top:0px;">
-    <!--<h4 class="ui dividing header">Training options</h4>-->
-    <p>Upload corresponding annotated files to the training files</p>
-    <label for="training_image_annotation" class="ui yellow labeled icon button" onmouseover="">
-        <i class="upload icon"></i>
-        Upload Annotated Training Images
-    </label>
-    <!-- padding-top:0; padding-bottom:0-->
-    <input type="file" id="training_image_annotation" style="display:none"
-    onchange="{{ app }}.FileInput.on_annotations_select(event)" accept="image/*, application/zip, application/x-zip-compressed" multiple>
-
-    <div class="ui buttons">
-        <button class="ui button">Cancel</button>
-        <div class="or"></div>
-        <button class="ui positive button">Save</button>
-      </div>
-</div>
+<!--<h4 class="ui dividing header">Training options</h4>-->
+<p id="text_annotation_files">xxx</p>
+<label for="training_image_annotation" id="upload_anno_button" class="ui yellow labeled icon button">
+    <i class="upload icon"></i>
+    <p id="ground_truth_button_text">xxx</p>
+</label>
+<!-- padding-top:0; padding-bottom:0-->
+<input type="file" id="training_image_annotation" style="display:none"
+onchange="{{ app }}.FileInput.on_annotations_select(event); {{ app }}.Training.show_nr_ev_images_section()" accept="image/*, application/zip, application/x-zip-compressed" multiple>
+{# does not work, only example to have for the save alternative later #}
+<div class="ui buttons">
+    <button class="ui button">Cancel</button>
+    <div class="or"></div>
+    <button class="ui positive button">Save</button>
+    </div>
 {% endmacro %}
 
 {# Makes box where user can choose how many images that should be used for evaluation #}
 {% macro nr_evaluation_images(app) %}
-<div class="ui segment form" style="margin-top:0px;">
+<div class="ui hidden message" id="nr_ev_image_box" style="display:none">
     <!--<h4 class="ui dividing header">Training options</h4>-->
     <p>State how many of the training images that should be used for evaluation. Usually 20-30% of
         the training data is used for evaluation. The default number shows around 25% of the training data. 
     </p>
-    <label for="nr_evaluation_images">Number of evaluation images (between 0 and <p id="nr_training_images">xxx</p>:D</label>
+    <label for="nr_evaluation_images">Number of evaluation images (between 0 and <span id="nr_training_images">xxx</span>):</label>
     <input type="number" id="nr_evaluation_images" name="nr_evaluation_images" min="0" max="0" value="0">
 </div>
 {% endmacro %}
 
 
-{% macro training_controls(trainingmodule) %}
+{% macro training_controls(trainingmodule, upload_training ="", upload_ground_truth="", nr_ev_images="") %}
 <div>
 <div class="ui segment form" style="margin-top:0px;">
     <!--<h4 class="ui dividing header">Training options</h4>-->
@@ -62,10 +58,10 @@
         <div class="field">
             <label>Model Type</label>
             <div class="ui dropdown selection" id="training-model-type">
-                <input type="hidden" name="active-model">
+                <input type="hidden" name="active-model" id="model_choice" onchange="{{ trainingmodule }}.which_upload_button_to_show(event)">
                 <i class="dropdown icon"></i>
                 <div class="default text"></div>
-                <div class="menu">
+                <div class="menu"> 
                   <div class="item" data-value="detection">Root Detection</div>
                   <div class="item" data-value="exclusion_mask">Exclusion Mask</div>
                   <!--<div class="item" data-value="tracking">Root Tracking</div>-->
@@ -73,6 +69,14 @@
             </div>
         </div>
     </div>
+
+    {{ upload_training }}
+
+    {{ upload_ground_truth }}
+
+    <div class="ui divider"></div>
+
+    {{ nr_ev_images }}
 
     <div class="ui divider"></div>
 
@@ -105,11 +109,7 @@
 <div id="training-tab">   
 
     {# add upload button for training#}
-    {{ upload_button_training(app) }}
-    <div class="ui divider"></div>
-    {{ upload_button_annotation(app) }}
-    {{ nr_evaluation_images(app) }}
-    {{ training_controls(trainingmodule = app+".Training") }}
+    {{ training_controls(trainingmodule = app+".Training", upload_training=upload_button_training(app), upload_ground_truth=upload_button_annotation(app), nr_ev_images=nr_evaluation_images(app)) }}
 
 </div>
 {% endmacro %}

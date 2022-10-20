@@ -37,7 +37,33 @@ RootsTraining = class extends BaseTraining {
         }   
     }
 
-    //static get_nr_training_images()
+    // Show different text on upload button depending on which model type
+    static which_upload_button_to_show(event){
+        var model_type = event.target.value
+        //var $upload_anno_button = $('#upload_anno_button')
+        var $text_ground_truth = $('#ground_truth_button_text')
+        var $infotext_anno = $('#text_annotation_files')
+
+        // If detection model is chosen
+        if (model_type == 'detection'){
+           // $upload_anno_button.toggle(true)
+            $text_ground_truth.text('Upload Annotated Training Images')
+            $infotext_anno.text('Upload corresponding annotated images to the training images')
+        }
+        // If exclusion mask model is chosen
+        else if (model_type == 'exclusion_mask'){
+           // $upload_anno_button.toggle(true)
+            $text_ground_truth.text('Upload Exclusion Mask Images')
+            $infotext_anno.text('Upload corresponding exclusion mask images to the training images')
+        }
+    }
+
+    // Show how many evaluation images after you have added ground truth images
+    static show_nr_ev_images_section(){
+        $('#nr_ev_image_box').toggle(true)
+    }
+
+
 
 
 
