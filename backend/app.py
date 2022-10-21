@@ -18,6 +18,7 @@ class App(BaseApp):
 
         self.route('/process_root_tracking', methods=['GET', 'POST'])(self.process_root_tracking)
         self.route('/postprocess_detection/<filename>')(self.postprocess_detection)
+        self.route('/evaluation', methods=['GET', 'POST'])(self.evaluation)
 
     def postprocess_detection(self, filename):
         #FIXME: code duplication
@@ -71,4 +72,13 @@ class App(BaseApp):
         
         backend.training.start_training(imagefiles, targetfiles, options, self.get_settings())
         return 'OK'
-    
+
+    def evaluation(self):
+        if flask.request.method=='GET':
+            return 'använder vi ej???'
+        elif flask.request.method=='POST':
+            requestform  = flask.request.get_json(force=True)
+            print('yayayayayayayayayayayayayaya')
+            print(requestform)
+            print('yayayayayayayayayayayayayaya')
+            return flask.jsonify('ok')

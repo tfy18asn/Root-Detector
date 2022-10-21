@@ -37,7 +37,33 @@ RootsTraining = class extends BaseTraining {
         }   
     }
 
-    //static get_nr_training_images()
+    // Show different text on upload button depending on which model type
+    static which_upload_button_to_show(event){
+        var model_type = event.target.value
+        //var $upload_anno_button = $('#upload_anno_button')
+        var $text_ground_truth = $('#ground_truth_button_text')
+        var $infotext_anno = $('#text_annotation_files')
+
+        // If detection model is chosen
+        if (model_type == 'detection'){
+           // $upload_anno_button.toggle(true)
+            $text_ground_truth.text('Upload Annotated Training Images')
+            $infotext_anno.text('Upload corresponding annotated images to the training images')
+        }
+        // If exclusion mask model is chosen
+        else if (model_type == 'exclusion_mask'){
+           // $upload_anno_button.toggle(true)
+            $text_ground_truth.text('Upload Exclusion Mask Images')
+            $infotext_anno.text('Upload corresponding exclusion mask images to the training images')
+        }
+    }
+
+    // Show how many evaluation images after you have added ground truth images
+    static show_nr_ev_images_section(){
+        $('#nr_ev_image_box').toggle(true)
+    }
+
+
 
 
 
@@ -46,9 +72,8 @@ RootsTraining = class extends BaseTraining {
         //Move evaluation images from trainingfiles
         var NrEvalFiles = this.get_nr_images();
         this.add_evaluation_files(NrEvalFiles);
-        console.log(GLOBAL.trainingfiles)
-        console.log(GLOBAL.evaluationfiles)
-
+        var options = this.get_training_options();
+        var startingpoint = GLOBAL.settings.active_models[options.training_type]
         var filenames = this.get_selected_files()
         console.log('Training on ', filenames)
         
@@ -68,6 +93,9 @@ RootsTraining = class extends BaseTraining {
             this.fail_modal()
         } finally {
             $(GLOBAL.event_source).off('training', progress_cb)
+            var evalfiles = this.get_selected_evaluation_files()
+            var results = await $.post('/evaluation', JSON.stringify({filenames:evalfiles, startingpoint:startingpoint}))
+            console.log(results)
         }
     }   
 
@@ -118,7 +146,7 @@ RootsTraining = class extends BaseTraining {
         GLOBAL.trainingfiles[filename].set_results(results)       
     }
     static get_selected_evaluation_files(){
-        const files_with_results = Object.values(GLOBAL.evaluationfiles).filter( x => !!x.results )
+        const files_with_results = Object.values(GLOBAL.evaluationfiles) //.filter( x => !!x.results )
         return files_with_results.map( x => x.name)
     }
     static upload_evaluation_data(filenames){
