@@ -96,10 +96,10 @@ onchange="{{ app }}.FileInput.on_annotations_select(event); {{ app }}.Training.s
     </div>
     <script>
     $('#training-model-type')
-        .dropdown({onChange: _ => {{ trainingmodule }}, refresh_tab() } )
+        .dropdown({onChange: _ => {{ trainingmodule }}.refresh_tab() } )
         .dropdown('set selected', 'detection')
     $('#training-model-type-field .checkbox')
-        .checkbox({onChange: _ => {{trainingmodule}}, refresh_tab() } )
+        .checkbox({onChange: _ => {{trainingmodule}}.refresh_tab() } )
         .checkbox('set checked')
     </script>
 
