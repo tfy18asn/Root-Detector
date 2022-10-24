@@ -104,13 +104,35 @@ onchange="{{ app }}.FileInput.on_annotations_select(event); {{ app }}.Training.s
 </div>
 {% endmacro %}
 
+{% macro evaluation_box() %}
+<div>
+    <div class ="ui segment form" style="margin-top:0px;" id = "evaluation-box" hidden>
+        <p> Evaluation Box: Here we have maybe an error map, precission of both models and maybe side by side comparision of the starting point and final model?
+        </p>
+        <div class="ui two column grid">
+            <div class="column">
+              <div class="ui segment" style="text-align:center">
+                    <p> Original image </p>
+                <img class="ui image" id = 'evaluated-image' draggable="false">
+              </div>
+            </div>
+            <div class="column">
+              <div class="ui segment" style="text-align:center">
+                <p > Error map </p>
+                <img class="ui image" id = 'errormap-image' draggable="false">
+              </div>
+            </div>
+          </div>
+    </div>        
+</div>
+{% endmacro %}
 
 {% macro training_tab(app) %}
 <div id="training-tab">   
 
     {# add upload button for training#}
     {{ training_controls(trainingmodule = app+".Training", upload_training=upload_button_training(app), upload_ground_truth=upload_button_annotation(app), nr_ev_images=nr_evaluation_images(app)) }}
-
+    {{ evaluation_box()}}
 </div>
 {% endmacro %}
 

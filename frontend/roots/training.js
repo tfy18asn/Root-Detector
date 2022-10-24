@@ -73,6 +73,7 @@ RootsTraining = class extends BaseTraining {
         var NrEvalFiles = this.get_nr_images();
         this.add_evaluation_files(NrEvalFiles);
         var options = this.get_training_options();
+        // Store starting point model
         var startingpoint = GLOBAL.settings.active_models[options.training_type]
         var filenames = this.get_selected_files()
         console.log('Training on ', filenames)
@@ -93,13 +94,21 @@ RootsTraining = class extends BaseTraining {
             this.fail_modal()
         } finally {
             $(GLOBAL.event_source).off('training', progress_cb)
-            var evalfiles = this.get_selected_evaluation_files()
-            var results = await $.post('/evaluation', JSON.stringify({filenames:evalfiles, startingpoint:startingpoint}))
-            console.log(results)
+            if (NrEvalFiles>0) { 
+                // Evaluate training
+                var evalfiles = this.get_selected_evaluation_files()
+                var results = await $.post('/evaluation', JSON.stringify({filenames:evalfiles, startingpoint:startingpoint}))
+                var error_map = await fetch_as_file(url_for_image(results['error_map_path']))
+                var original_img = await fetch_as_file(url_for_image(results['original_image_path']))
+                // Show evaluation box and place image 
+                var $errormap_img = $('#errormap-image')
+                GLOBAL.App.ImageLoading.set_image_src($errormap_img ,error_map)
+                var $evaluated_img = $('#evaluated-image')
+                GLOBAL.App.ImageLoading.set_image_src($evaluated_img ,original_img)
+                $('#evaluation-box').show()
+            }
         }
     }   
-
-        
 
     //override
     static get_training_options(){
@@ -158,6 +167,19 @@ RootsTraining = class extends BaseTraining {
                                      .filter( s => s instanceof Blob )
         promises          = promises.concat( segmentations.map( f => upload_file_to_flask(f) ) )
         return Promise.all(promises).catch( this.fail_modal )  //FIXME: dont catch, handle in calling function
+    }
+
+    // override
+    static on_save_model(){
+        const new_modelname = $('#training-new-modelname')[0].value
+        console.log('Saving new model as:', new_modelname)
+        $.get('/save_model', {newname: new_modelname, options:this.get_training_options()})
+            .done( _ => $('#training-new-modelname-field').hide() )
+            .done( _ => $('#errormap-image').id = "" ) // remove error map image 
+            .done( _ => $('#evaluation-image').id = "" ) // remove error map image 
+            .done( _ => $('#evaluation-box').hide() ) // hide evaluation box
+            .fail( _ => $('body').toast({message:'Saving failed.', class:'error', displayTime: 0, closeIcon: true}) )
+        $('#training-new-modelname')[0].value = ''
     }
 }
 
