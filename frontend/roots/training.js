@@ -148,11 +148,11 @@ RootsTraining = class extends BaseTraining {
         $('#training-number-of-files-info-label').text(n)
         $('#training-number-of-files-info-message').removeClass('hidden')
         // Set the top limit of evaluation images that can be chosen in the text
-        $('#nr_training_images').text(n)
+        $('#nr_training_images').text(n/2)
         // Pick out the object where we choose how many evaluation pictures we want
         var $nr_ev_images = $('#nr_evaluation_images').get(0)
         // Set maximum number of evaluation pictures that can be chosen
-        $nr_ev_images.max = n
+        $nr_ev_images.max = Math.floor(n/2)
         // 25% of training data or a bit less is the default-value for evaluation
         $nr_ev_images.value = Math.floor(n*0.25)
 
