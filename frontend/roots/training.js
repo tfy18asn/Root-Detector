@@ -34,7 +34,7 @@ RootsTraining = class extends BaseTraining {
             // Move this file from training to evaluation
             GLOBAL.evaluationfiles[filenames[RandNum]] = GLOBAL.trainingfiles[filenames[RandNum]];
             delete GLOBAL.trainingfiles[filenames[RandNum]];
-        }   
+        }
     }
 
     // Show different text on upload button depending on which model type
@@ -131,7 +131,7 @@ RootsTraining = class extends BaseTraining {
         // Set maximum number of evaluation pictures that can be chosen
         $nr_ev_images.max = n
         // 25% of training data or a bit less is the default-value for evaluation
-        $nr_ev_images.value = Math.floor(n*0.25)
+        $nr_ev_images.value = Math.floor(n * 0.25)
 
     }
     
@@ -160,6 +160,10 @@ RootsTraining = class extends BaseTraining {
         return Promise.all(promises).catch( this.fail_modal )  //FIXME: dont catch, handle in calling function
     }
 
+    
+
+
+
     //override
     static success_modal() {
         $('#training-modal .progress').progress('set success', 'Training finished');
@@ -167,51 +171,56 @@ RootsTraining = class extends BaseTraining {
         $('#training-modal #cancel-training-button').hide()
 
         // Update evaluation.
-        this.update_evaluation_results_info()
+        var NrEvalFiles = this.get_nr_images();
+        this.update_evaluation_results_info(NrEvalFiles)
     }
 
     // Displays and updates evaluation results.
-    static update_evaluation_results_info() {
+    static update_evaluation_results_info(NrEvalFiles) {
         $('#evaluation-results-message').removeClass('hidden')
-
-        const n1 = 0.06
-        const n2 = 0.08
-        const n3 = Math.floor((n2 - n1) * 100) / 100
-
-
-        $('#evaluation-results-accuracy-label-old').text(n1)
-        $('#evaluation-results-accuracy-label-new').text(n2)
-
-        if (n3 > 0.0) {
-            $('#evaluation-results-accuracy-label-comp').text("(+" + n3 + ")")
-            document.getElementById("evaluation-results-accuracy-label-comp").style.color = "green"
-        }
-
-        else {
-            $('#evaluation-results-accuracy-label-comp').text("(" + n3 + ")")
-            document.getElementById("evaluation-results-accuracy-label-comp").style.color = "red"
-        }
-            
-
-        const m1 = 0.64
-        const m2 = 0.56
-        const m3 = Math.floor((m2 - m1)*100) / 100
-
-        $('#evaluation-results-f2-label-old').text(m1)
-        $('#evaluation-results-f2-label-new').text(m2)
-
-        if (m3 > 0.0) {
-            $('#evaluation-results-f2-label-comp').text("(+" + m3 + ")")
-            document.getElementById("evaluation-results-f2-label-comp").style.color = "green"
-        }
-        else {
-            $('#evaluation-results-f2-label-comp').text("(" + m3 + ")")
-            document.getElementById("evaluation-results-f2-label-comp").style.color = "red"
-        }
-            
         
+        // Update evaluation data only if there are any evaluation files.
+        if (NrEvalFiles > 0) {
+            $('#evaluation-results-box').removeClass('hidden')
+            $('#evaluation-savefile-box').removeClass('hidden')
+            $('thead th#evaluation_errormap_files').text(`${NrEvalFiles} Evaluation Image${(NrEvalFiles == 1) ? '' : 's'} Used`)
+
+            // Placeholder values
+            const n1 = 0.06
+            const n2 = 0.08
+            const n3 = Math.floor((n2 - n1) * 100) / 100
+
+            // Update the html labels.
+            $('#evaluation-results-accuracy-label-old').text(n1)
+            $('#evaluation-results-accuracy-label-new').text(n2)
+
+            if (n3 > 0.0) {
+                $('#evaluation-results-accuracy-label-comp').text("(+" + n3 + ")")
+                document.getElementById("evaluation-results-accuracy-label-comp").style.color = "green"
+            }
+
+            else {
+                $('#evaluation-results-accuracy-label-comp').text("(" + n3 + ")")
+                document.getElementById("evaluation-results-accuracy-label-comp").style.color = "red"
+            }
+
+            // Placeholder values
+            const m1 = 0.64
+            const m2 = 0.56
+            const m3 = Math.floor((m2 - m1) * 100) / 100
+
+            // Update the html labels.
+            $('#evaluation-results-f2-label-old').text(m1)
+            $('#evaluation-results-f2-label-new').text(m2)
+
+            if (m3 > 0.0) {
+                $('#evaluation-results-f2-label-comp').text("(+" + m3 + ")")
+                document.getElementById("evaluation-results-f2-label-comp").style.color = "green"
+            }
+            else {
+                $('#evaluation-results-f2-label-comp').text("(" + m3 + ")")
+                document.getElementById("evaluation-results-f2-label-comp").style.color = "red"
+            }
+        }
     }
 }
-
-
-

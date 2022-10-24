@@ -26,7 +26,7 @@ RootsFileInput = class extends BaseFileInput{
             var inputfile = GLOBAL.files[filename]
         }
         else{
-            var inputfile = GLOBAL.trainingfiles[filename] 
+            var inputfile = GLOBAL.trainingfiles[filename]
         }
         if(inputfile != undefined){
             const resultfile = new File(
@@ -41,7 +41,7 @@ RootsFileInput = class extends BaseFileInput{
                 await App.Detection.set_results(filename, result)
             }
             else{
-                await App.Training.set_results(filename, result) 
+                await App.Training.set_results(filename, result)
             }
         }
     }

@@ -1,8 +1,34 @@
 {% import 'base/training_tab.html' as base_training_tab %}
-{% import 'base/detection_tab.html'  as base_detection_tab %}
+{% import   'base/js_templates.html'  as base_js_templates %}
+{% import   'base/content_menu.html'  as base_content_menu %}
+
+
+
+{% macro main_table_head(app, sortable=False) %}
+{% set sort_callback = app+'.Sorting.on_table_header(event)' if sortable else ''  %}
+<thead>
+    <tr>
+        <th class="sixteen wide" onclick="{{ sort_callback }}" id="evaluation_errormap_files">
+            No Evaluation Images Used.
+        </th>
+    </tr>
+</thead>
+{% endmacro %}
+
+
+{% macro base_main_table(app, sortable=False, table_head=main_table_head(app, sortable)) %}
+{% set sort_class    = 'sortable'                            if sortable else ''  %}
+<table class="ui fixed celled {{ sort_class }} unstackable table accordion" id="evaluation_errormap_table" style="border:0px; margin-top:0px;">
+    {{ table_head }}
+    <tbody>
+        {# #filetable-row-template inserted here from javascript #}
+    </tbody>
+</table>
+{% endmacro %}
+
 
 <!-- Macro for displaying evaluation of model -->
-{% macro evaluation_save_infobox(trainingmodule, evaluationmodule, label=None ) %}
+{% macro evaluation_save_infobox(trainingmodule, evaluationmodule, label=None) %}
 <div class="ui hidden message" id="evaluation-results-message">
 
     <!-- Evaluation header text -->
@@ -13,43 +39,46 @@
     </div>
 
     <!-- Error map display -->
-    {{ base_detection_tab.detection_tab(evaluationmodule) }}
+    {{ base_main_table(evaluationmodule) }}
 
-    <!-- Evaluation statistics -->
-    <div class="ui segment form" style="margin-top:0px;">
-        <div class="field" id="evaluation-results-field">
+    <!-- Only show evaluation data box if there are evaluation files. -->
+    <div class="ui hidden message" id="evaluation-results-box" , style="padding:0 0">
 
-            <!-- Statistics header -->
-            <div class="ui input" id="evaluation-results-statistics">
-                <label style="padding:10px; width:40%;"><b>Statistic</b></label>
-                <label style="padding:10px; width:20%;"><b>Old model</b></label>
-                <label style="padding:10px; width:20%;"><b>New model</b></label>
-                <label style="padding:10px; width:20%;"><b>Comparison</b></label>
-            </div>
-            <div class="ui divider"></div>
+        <!-- Evaluation statistics -->
+        <div class="ui segment form" style="margin-top:0px;">
+            <div class="field" id="evaluation-results-field">
 
-            <!-- Accuracy -->
-            <div class="ui input" id="evaluation-results-accuracy">
-                <label style="padding:10px; width:40%;">Accuracy:</label>
-                <label style="padding:10px; width:20%;"><b id="evaluation-results-accuracy-label-old">xxx</b></label>
-                <label style="padding:10px; width:20%;"><b id="evaluation-results-accuracy-label-new">xxx</b></label>
-                <label style="padding:10px; width:20%;"><p id="evaluation-results-accuracy-label-comp">xxx</p></label>
-            </div>
+                <!-- Statistics header -->
+                <div class="ui input" id="evaluation-results-statistics">
+                    <label style="padding:10px; width:40%;"><b>Statistic</b></label>
+                    <label style="padding:10px; width:20%;"><b>Old model</b></label>
+                    <label style="padding:10px; width:20%;"><b>New model</b></label>
+                    <label style="padding:10px; width:20%;"><b>Comparison</b></label>
+                </div>
+                <div class="ui divider"></div>
 
-            <!-- F2 score -->
-            <div class="ui input" id="evaluation-results-f2">
-                <label style="padding:10px; width:40%;">F2 score:</label>
-                <label style="padding:10px; width:20%;"><b id="evaluation-results-f2-label-old">xxx</b></label>
-                <label style="padding:10px; width:20%;"><b id="evaluation-results-f2-label-new">xxx</b></label>
-                <label style="padding:10px; width:20%;"><p id="evaluation-results-f2-label-comp">xxx</p></label>
+                <!-- Accuracy -->
+                <div class="ui input" id="evaluation-results-accuracy">
+                    <label style="padding:10px; width:40%;">Accuracy:</label>
+                    <label style="padding:10px; width:20%;"><b id="evaluation-results-accuracy-label-old">xxx</b></label>
+                    <label style="padding:10px; width:20%;"><b id="evaluation-results-accuracy-label-new">xxx</b></label>
+                    <label style="padding:10px; width:20%;"><p id="evaluation-results-accuracy-label-comp">xxx</p></label>
+                </div>
+
+                <!-- F2 score -->
+                <div class="ui input" id="evaluation-results-f2">
+                    <label style="padding:10px; width:40%;">F2 score:</label>
+                    <label style="padding:10px; width:20%;"><b id="evaluation-results-f2-label-old">xxx</b></label>
+                    <label style="padding:10px; width:20%;"><b id="evaluation-results-f2-label-new">xxx</b></label>
+                    <label style="padding:10px; width:20%;"><p id="evaluation-results-f2-label-comp">xxx</p></label>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Save model field -->
-    {{ base_training_tab.save_model_field(trainingmodule) | indent }}
-
-
+    <div class="ui hidden message" id="evaluation-savefile-box" , style="padding:0 0">
+        {{ base_training_tab.save_model_field(trainingmodule) | indent }}
+    </div>
 </div>
-
 {% endmacro %}

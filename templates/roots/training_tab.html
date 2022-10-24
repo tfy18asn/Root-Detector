@@ -1,11 +1,16 @@
 {% import 'base/training_tab.html' as base_training_tab %}
 {% import 'roots/evaluation.html' as evaluation %}
 
+
+
 {% macro number_of_files_infobox() %}
 <div class="ui hidden message" id="training-number-of-files-info-message">
     <p>Number of training files: <b id="training-number-of-files-info-label">xxx</b></p>
 </div>
 {% endmacro %}
+
+
+
 
 {# Upload button which uploads training images to the training page #}
 {% macro upload_button_training(app) %}
@@ -18,6 +23,8 @@
 <input type="file" id="training_images" style="display:none"
 onchange="{{ app }}.FileInput.on_inputfiles_select(event)" accept="image/*" multiple>
 {% endmacro %}
+
+
 
 {# Upload button which uploads annotation as before, (or exclusion masks if that is chosen) #}
 {% macro upload_button_annotation(app) %}
@@ -82,17 +89,18 @@ onchange="{{ app }}.FileInput.on_annotations_select(event); {{ app }}.Training.s
 
     <div class="ui divider"></div>
 
-        {{ base_training_tab.lr_epochs_fields(label="Hyperparameters") }}
+    {{ base_training_tab.lr_epochs_fields(label="Hyperparameters") }}
 
-        <div class="ui divider"></div>
+    <div class="ui divider"></div>
 
-        {{ base_training_tab.starting_point_model_infobox() }}
+    {{ base_training_tab.starting_point_model_infobox() }}
 
-        {{ number_of_files_infobox() }}
+    {{ number_of_files_infobox() }}
 
-        <div class="ui divider"></div>
+    <div class="ui divider"></div>
 
-        {{ base_training_tab.start_training_button(trainingmodule) }}
+    {{ base_training_tab.start_training_button(trainingmodule) }}
+
     </div>
     <script>
     $('#training-model-type')
@@ -113,7 +121,7 @@ onchange="{{ app }}.FileInput.on_annotations_select(event); {{ app }}.Training.s
         {{ training_controls(trainingmodule = app+".Training", upload_training=upload_button_training(app), upload_ground_truth=upload_button_annotation(app), nr_ev_images=nr_evaluation_images(app)) }}
     </div>
     <div>
-        {{ evaluation.evaluation_save_infobox(trainingmodule = app+".Training", evaluationmodule = app, label="Evaluation Results" ) }}
+        {{ evaluation.evaluation_save_infobox(trainingmodule = app+".Training", evaluationmodule = app, label = "Evaluation Results" ) }}
     </div>
 </div>
 {% endmacro %}
