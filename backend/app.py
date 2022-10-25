@@ -84,6 +84,7 @@ class App(BaseApp):
             
             ## Temporary code below just for test of evaluation ##
             ## Save one random file that represents error_map.png
+
             import PIL.Image
             files = requestform['filenames']
             file = files[0]

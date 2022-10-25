@@ -120,6 +120,10 @@ RootsTraining = class extends BaseTraining {
                 var $evaluated_img = $('#evaluated-image')
                 GLOBAL.App.ImageLoading.set_image_src($evaluated_img ,original_img)
                 $('#evaluation-box').show()
+
+                // Refresh errormap filetable
+                $('.tabs .item[data-tab="training"]').click()
+                GLOBAL.App.FileInput.refresh_errormap_filetable(Object.values(GLOBAL.evaluationfiles))
             }
         }
     }   
@@ -148,11 +152,11 @@ RootsTraining = class extends BaseTraining {
         $('#training-number-of-files-info-label').text(n)
         $('#training-number-of-files-info-message').removeClass('hidden')
         // Set the top limit of evaluation images that can be chosen in the text
-        $('#nr_training_images').text(n/2)
+        $('#nr_training_images').text(Math.floor(n / 2))
         // Pick out the object where we choose how many evaluation pictures we want
         var $nr_ev_images = $('#nr_evaluation_images').get(0)
         // Set maximum number of evaluation pictures that can be chosen
-        $nr_ev_images.max = Math.floor(n/2)
+        $nr_ev_images.max = Math.floor(n - 1)
         // 25% of training data or a bit less is the default-value for evaluation
         $nr_ev_images.value = Math.floor(n * 0.25)
 
@@ -172,6 +176,7 @@ RootsTraining = class extends BaseTraining {
         const files_with_results = Object.values(GLOBAL.evaluationfiles) //.filter( x => !!x.results )
         return files_with_results.map( x => x.name)
     }
+
     static upload_evaluation_data(filenames){
         //TODO: show progress
         var promises      = filenames.map( f => upload_file_to_flask(GLOBAL.trainingfiles[f]) )
@@ -210,7 +215,6 @@ RootsTraining = class extends BaseTraining {
             .fail( _ => $('body').toast({message:'Saving failed.', class:'error', displayTime: 0, closeIcon: true}) )
         //$('#training-new-modelname')[0].value = ''
     }
-}
 
     // Displays and updates evaluation results.
     static update_evaluation_results_info(NrEvalFiles) {

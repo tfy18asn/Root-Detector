@@ -10,8 +10,6 @@
 {% endmacro %}
 
 
-
-
 {# Upload button which uploads training images to the training page #}
 {% macro upload_button_training(app) %}
 <!--<h4 class="ui dividing header">Training options</h4>-->
@@ -21,7 +19,7 @@
 </label>
 <!-- padding-top:0; padding-bottom:0-->
 <input type="file" id="training_images" style="display:none"
-onchange="{{ app }}.FileInput.on_inputfiles_select(event)" accept="image/*" multiple>
+       onchange="{{ app }}.FileInput.on_inputfiles_select(event)" accept="image/*" multiple>
 {% endmacro %}
 
 
@@ -36,13 +34,13 @@ onchange="{{ app }}.FileInput.on_inputfiles_select(event)" accept="image/*" mult
 </label>
 <!-- padding-top:0; padding-bottom:0-->
 <input type="file" id="training_image_annotation" style="display:none"
-onchange="{{ app }}.FileInput.on_annotations_select(event); {{ app }}.Training.show_nr_ev_images_section()" accept="image/*, application/zip, application/x-zip-compressed" multiple>
+       onchange="{{ app }}.FileInput.on_annotations_select(event); {{ app }}.Training.show_nr_ev_images_section()" accept="image/*, application/zip, application/x-zip-compressed" multiple>
 {# does not work, only example to have for the save alternative later #}
 <div class="ui buttons">
     <button class="ui button">Cancel</button>
     <div class="or"></div>
     <button class="ui positive button">Save</button>
-    </div>
+</div>
 {% endmacro %}
 
 {# Makes box where user can choose how many images that should be used for evaluation #}
@@ -61,45 +59,45 @@ onchange="{{ app }}.FileInput.on_annotations_select(event); {{ app }}.Training.s
 
 {% macro training_controls(trainingmodule, upload_training ="", upload_ground_truth="", nr_ev_images="") %}
 <div>
-<div class="ui segment form" style="margin-top:0px;">
-    <!--<h4 class="ui dividing header">Training options</h4>-->
-    <div class="field" id="training-model-type-field">
-        <div class="field">
-            <label>Model Type</label>
-            <div class="ui dropdown selection" id="training-model-type">
-                <input type="hidden" name="active-model" id="model_choice" onchange="{{ trainingmodule }}.which_upload_button_to_show(event)">
-                <i class="dropdown icon"></i>
-                <div class="default text"></div>
-                <div class="menu"> 
-                  <div class="item" data-value="detection">Root Detection</div>
-                  <div class="item" data-value="exclusion_mask">Exclusion Mask</div>
-                  <!--<div class="item" data-value="tracking">Root Tracking</div>-->
+    <div class="ui segment form" style="margin-top:0px;">
+        <!--<h4 class="ui dividing header">Training options</h4>-->
+        <div class="field" id="training-model-type-field">
+            <div class="field">
+                <label>Model Type</label>
+                <div class="ui dropdown selection" id="training-model-type">
+                    <input type="hidden" name="active-model" id="model_choice" onchange="{{ trainingmodule }}.which_upload_button_to_show(event)">
+                    <i class="dropdown icon"></i>
+                    <div class="default text"></div>
+                    <div class="menu">
+                        <div class="item" data-value="detection">Root Detection</div>
+                        <div class="item" data-value="exclusion_mask">Exclusion Mask</div>
+                        <!--<div class="item" data-value="tracking">Root Tracking</div>-->
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    {{ upload_training }}
+        {{ upload_training }}
 
-    {{ upload_ground_truth }}
+        {{ upload_ground_truth }}
 
-    <div class="ui divider"></div>
+        <div class="ui divider"></div>
 
-    {{ nr_ev_images }}
+        {{ nr_ev_images }}
 
-    <div class="ui divider"></div>
+        <div class="ui divider"></div>
 
-    {{ base_training_tab.lr_epochs_fields(label="Hyperparameters") }}
+        {{ base_training_tab.lr_epochs_fields(label="Hyperparameters") }}
 
-    <div class="ui divider"></div>
+        <div class="ui divider"></div>
 
-    {{ base_training_tab.starting_point_model_infobox() }}
+        {{ base_training_tab.starting_point_model_infobox() }}
 
-    {{ number_of_files_infobox() }}
+        {{ number_of_files_infobox() }}
 
-    <div class="ui divider"></div>
+        <div class="ui divider"></div>
 
-    {{ base_training_tab.start_training_button(trainingmodule) }}
+        {{ base_training_tab.start_training_button(trainingmodule) }}
 
     </div>
     <script>

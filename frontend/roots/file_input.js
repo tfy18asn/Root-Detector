@@ -9,6 +9,13 @@ RootsFileInput = class extends BaseFileInput{
     }
 
     //override
+    static async refresh_errormap_filetable(files) {
+        const promise = BaseFileInput.refresh_errormap_filetable(files)
+        const promise2 = RootTracking.set_input_files(files)
+        return Promise.all([promise, promise2])
+    }
+
+    //override
     static match_resultfile_to_inputfile(inputfilename, resultfilename){
         var basename          = file_basename(resultfilename)
         const no_ext_filename = remove_file_extension(inputfilename)
