@@ -26,17 +26,29 @@ RootsTraining = class extends BaseTraining {
 
     // Moves files from training to evaluation
     static add_evaluation_files(NrEvalFiles){
+        GLOBAL.evaluationfiles = []
+        var filenames = this.get_selected_files()
         // Perform as many times as the number of files we want to put aside for evaluation
        for (let i = 0; i<NrEvalFiles; i++){
             // Pick a random training file
-            var filenames = Object.keys(GLOBAL.trainingfiles);
             var RandNum = Math.floor(Math.random() *filenames.length);
             // Move this file from training to evaluation
             GLOBAL.evaluationfiles[filenames[RandNum]] = GLOBAL.trainingfiles[filenames[RandNum]];
             delete GLOBAL.trainingfiles[filenames[RandNum]];
-        }
+            delete filenames[i];
+        }   
     }
 
+    // Put evaluation files back into training files
+    static move_evaluation_to_training_files(){
+        // Filenames
+        var filenames = Object.keys(GLOBAL.evaluationfiles);
+       for (var i = 0; i < filenames.length;i++){
+            var f = filenames[i]
+            // Move to training
+            GLOBAL.trainingfiles[f] = GLOBAL.evaluationfiles[f]
+        }   
+    }
     // Show different text on upload button depending on which model type
     static which_upload_button_to_show(event){
         var model_type = event.target.value
@@ -73,6 +85,7 @@ RootsTraining = class extends BaseTraining {
         var NrEvalFiles = this.get_nr_images();
         this.add_evaluation_files(NrEvalFiles);
         var options = this.get_training_options();
+        // Store starting point model
         var startingpoint = GLOBAL.settings.active_models[options.training_type]
         var filenames = this.get_selected_files()
         console.log('Training on ', filenames)
@@ -93,13 +106,23 @@ RootsTraining = class extends BaseTraining {
             this.fail_modal()
         } finally {
             $(GLOBAL.event_source).off('training', progress_cb)
-            var evalfiles = this.get_selected_evaluation_files()
-            var results = await $.post('/evaluation', JSON.stringify({filenames:evalfiles, startingpoint:startingpoint}))
-            console.log(results)
+            // Remove evaluation files so they can be used again for training
+            this.move_evaluation_to_training_files()
+            if (NrEvalFiles>0) { 
+                // Evaluate training
+                var evalfiles = this.get_selected_evaluation_files()
+                var results = await $.post('/evaluation', JSON.stringify({filenames:evalfiles, startingpoint:startingpoint}))
+                var error_map = await fetch_as_file(url_for_image(results['error_map_path']))
+                var original_img = await fetch_as_file(url_for_image(results['original_image_path']))
+                // Show evaluation box and place image 
+                var $errormap_img = $('#errormap-image')
+                GLOBAL.App.ImageLoading.set_image_src($errormap_img ,error_map)
+                var $evaluated_img = $('#evaluated-image')
+                GLOBAL.App.ImageLoading.set_image_src($evaluated_img ,original_img)
+                $('#evaluation-box').show()
+            }
         }
     }   
-
-        
 
     //override
     static get_training_options(){
@@ -125,11 +148,11 @@ RootsTraining = class extends BaseTraining {
         $('#training-number-of-files-info-label').text(n)
         $('#training-number-of-files-info-message').removeClass('hidden')
         // Set the top limit of evaluation images that can be chosen in the text
-        $('#nr_training_images').text(n)
+        $('#nr_training_images').text(n/2)
         // Pick out the object where we choose how many evaluation pictures we want
         var $nr_ev_images = $('#nr_evaluation_images').get(0)
         // Set maximum number of evaluation pictures that can be chosen
-        $nr_ev_images.max = n
+        $nr_ev_images.max = Math.floor(n/2)
         // 25% of training data or a bit less is the default-value for evaluation
         $nr_ev_images.value = Math.floor(n * 0.25)
 
@@ -174,6 +197,20 @@ RootsTraining = class extends BaseTraining {
         var NrEvalFiles = this.get_nr_images();
         this.update_evaluation_results_info(NrEvalFiles)
     }
+
+    // override
+    static on_save_model(){
+        const new_modelname = $('#training-new-modelname')[0].value
+        console.log('Saving new model as:', new_modelname)
+        $.get('/save_model', {newname: new_modelname, options:this.get_training_options()})
+            .done( _ => $('#training-new-modelname-field').hide() )
+            .done( _ => $('#errormap-image').id = "" ) // remove error map image 
+            .done( _ => $('#evaluation-image').id = "" ) // remove error map image 
+            .done( _ => $('#evaluation-box').hide() ) // hide evaluation box
+            .fail( _ => $('body').toast({message:'Saving failed.', class:'error', displayTime: 0, closeIcon: true}) )
+        //$('#training-new-modelname')[0].value = ''
+    }
+}
 
     // Displays and updates evaluation results.
     static update_evaluation_results_info(NrEvalFiles) {

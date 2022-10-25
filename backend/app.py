@@ -81,4 +81,16 @@ class App(BaseApp):
             print('yayayayayayayayayayayayayaya')
             print(requestform)
             print('yayayayayayayayayayayayayaya')
-            return flask.jsonify('ok')
+            
+            ## Temporary code below just for test of evaluation ##
+            ## Save one random file that represents error_map.png
+            import PIL.Image
+            files = requestform['filenames']
+            file = files[0]
+            basename           = file
+            segmentation_fname = f'{basename}.segmentation.png'
+            error_map_basename = f'{basename}.error_map.png'
+            image = PIL.Image.open(get_cache_path(segmentation_fname))
+            image.save(get_cache_path(error_map_basename))
+
+            return flask.jsonify({'results':'ok', 'error_map_path':error_map_basename,'original_image_path': basename })
