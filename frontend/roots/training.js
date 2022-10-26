@@ -196,7 +196,7 @@ RootsTraining = class extends BaseTraining {
 
         // Update evaluation.
         var NrEvalFiles = this.get_nr_images();
-        this.update_evaluation_results_info(NrEvalFiles)
+        RootsEvaluation.update_evaluation_results_info(NrEvalFiles)
     }
 
     // override
@@ -210,54 +210,5 @@ RootsTraining = class extends BaseTraining {
             .done( _ => $('#evaluation-box').hide() ) // hide evaluation box
             .fail( _ => $('body').toast({message:'Saving failed.', class:'error', displayTime: 0, closeIcon: true}) )
         //$('#training-new-modelname')[0].value = ''
-    }
-
-    // Displays and updates evaluation results.
-    static update_evaluation_results_info(NrEvalFiles) {
-        $('#evaluation-results-message').removeClass('hidden')
-        
-        // Update evaluation data only if there are any evaluation files.
-        if (NrEvalFiles > 0) {
-            $('#evaluation-results-box').removeClass('hidden')
-            $('#evaluation-savefile-box').removeClass('hidden')
-            $('thead th#evaluation_errormap_files').text(`${NrEvalFiles} Evaluation Image${(NrEvalFiles == 1) ? '' : 's'} Used`)
-
-            // Placeholder values
-            const n1 = 0.06
-            const n2 = 0.08
-            const n3 = Math.floor((n2 - n1) * 100) / 100
-
-            // Update the html labels.
-            $('#evaluation-results-accuracy-label-old').text(n1)
-            $('#evaluation-results-accuracy-label-new').text(n2)
-
-            if (n3 > 0.0) {
-                $('#evaluation-results-accuracy-label-comp').text("(+" + n3 + ")")
-                document.getElementById("evaluation-results-accuracy-label-comp").style.color = "green"
-            }
-
-            else {
-                $('#evaluation-results-accuracy-label-comp').text("(" + n3 + ")")
-                document.getElementById("evaluation-results-accuracy-label-comp").style.color = "red"
-            }
-
-            // Placeholder values
-            const m1 = 0.64
-            const m2 = 0.56
-            const m3 = Math.floor((m2 - m1) * 100) / 100
-
-            // Update the html labels.
-            $('#evaluation-results-f2-label-old').text(m1)
-            $('#evaluation-results-f2-label-new').text(m2)
-
-            if (m3 > 0.0) {
-                $('#evaluation-results-f2-label-comp').text("(+" + m3 + ")")
-                document.getElementById("evaluation-results-f2-label-comp").style.color = "green"
-            }
-            else {
-                $('#evaluation-results-f2-label-comp').text("(" + m3 + ")")
-                document.getElementById("evaluation-results-f2-label-comp").style.color = "red"
-            }
-        }
     }
 }

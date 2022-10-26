@@ -2,28 +2,22 @@
 {% import   'base/js_templates.html'    as base_js_templates %}
 {% import   'base/content_menu.html'    as base_content_menu %}
 {% import   'base/boxes.html'           as base_boxes   %}
+{% import   'roots/tracking_tab.html'   as tracking_tab %}
 
 <!-- Errormap filetable content -->
-{% macro errormap_filetable_content(app, view_menu_kwargs={'show_results_checkbox':True}) %}
+{% macro errormap_filetable_content(app) %}
 <div class="errormap-filetable-content" style="display:none">
-    {{
- base_content_menu.content_menu(
+    {{ base_content_menu.content_menu(
             callback_on_process        = app+".Detection.on_process_image",
             callback_apply_corrections = None,
-            callback_new_box           = app+".Boxes.on_draw_new_box_button",
+            callback_new_box           = None,
             callback_download          = app+".Download.on_single_item_download_click",
-            view_menu_kwargs           = view_menu_kwargs
-    ) | indent
-    }}
+            edit_segmentation_item     = None,
+            view_menu_kwargs           = {'show_results_checkbox': True}
+    ) | indent }}
 
     <div class="image-container">
-        {{
- base_js_templates.content_image(
-          name           = "input",
-          overlay        = base_js_templates.image_and_boxes_overlay("input"),
-          viewcontrols   = app+".ViewControls"
-        ) | indent(8)
-        }}
+        {{ base_js_templates.content_image( name="input", overlay=base_js_templates.image_overlay("input"), viewcontrols=app+".ViewControls" ) | indent(8) }}
         {{ base_js_templates.progress_dimmer() }}
     </div>
 </div>
@@ -31,30 +25,44 @@
 
 <!-- Errormap filetable row template -->
 {% macro errormap_filetable_row_template(app) %}
-    {{ base_js_templates.filetable_row_template(app, content=errormap_filetable_content) }}
+<template id="errormap-filetable-row-template">
+    <tr class="ui title table-row" filename="${filename}">
+        <!-- table row -->
+        <td>
+            <i class="dropdown icon"></i>
+            {{ base_js_templates.status_icons()    | indent(8) }}
+            <label>${filename}</label>
+        </td>
+    </tr>
+    <tr style="display:none" filename="${filename}">
+        <!-- content -->
+        <td class="ui content" style="padding:0px;" colspan="10000">
+            {{ base_js_templates.loading_spinner() | indent(8) }}
+            {{ errormap_filetable_content(app)     | indent(8) }}
+        </td>
+    </tr>
+</template>
 {% endmacro %}
 
-<!-- Errormap filetable header -->
-{% macro main_table_head(app, sortable=False) %}
-{% set sort_callback = app+'.Sorting.on_table_header(event)' if sortable else ''  %}
-<thead>
-    <tr>
-        <th class="sixteen wide" onclick="{{ sort_callback }}" id="evaluation_errormap_files">
-            No Evaluation Images Used.
-        </th>
-    </tr>
-</thead>
-{% endmacro %}
 
 <!-- Errormap filetable body -->
-{% macro base_main_table(app, sortable=False, table_head=main_table_head(app, sortable)) %}
-{% set sort_class    = 'sortable'                            if sortable else ''  %}
-<table class="ui fixed celled {{ sort_class }} unstackable table accordion" id="evaluation_errormap_table" style="border:0px; margin-top:0px;">
-    {{ table_head }}
+{% macro base_main_table(app) %}
+<table class="ui fixed celled unstackable table accordion" id="evaluation_errormap_table" style="border:0px; margin-top:0px;">
+    <thead>
+        <tr>
+            <th class="sixteen wide" onclick="{{ sort_callback }}" id="evaluation_errormap_files">
+                No Evaluation Images Used.
+            </th>
+        </tr>
+    </thead>
+
     <tbody>
+        {#   #errormap-filetable-row-template inserted from javascript here   #}
     </tbody>
 </table>
 <script>$('#evaluation_errormap_table.accordion').accordion({ duration: 0, onOpening: RootsEvaluation.on_errormap_accordion_open })</script>
+
+{{ errormap_filetable_row_template(app) }}
 {% endmacro %}
 
 <!-- Placeholder image box -->
@@ -96,8 +104,6 @@
 
     <!-- Error map display -->
     {{ base_main_table(evaluationmodule) }}
-
-
 
     <!-- Only show evaluation data box if there are evaluation files. -->
     <div class="ui hidden message" id="evaluation-results-box" , style="padding:0 0">

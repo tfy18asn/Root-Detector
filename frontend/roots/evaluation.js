@@ -4,38 +4,23 @@ var RootsEvaluation = new function () {
 
     // Update errormap table
     this.refresh_errormap_filetable = async function (files) {
-        var $filetable = $('#evaluation_errormap_table');
-        if (!$filetable.is(':visible'))
-            console.error('Error map file table is not visible')
-        $filetable.find('tbody').html('');
 
-        const insert_single_table_row = async function (i, resolve) {
+        // Fetch and clear the filetable
+        var $filetable = $('#evaluation_errormap_table tbody');
+        $filetable.find('tr').remove()
+
+        //construct the file table
+        const table_rows = []
+        for (let i = 0; i < files.length; i++) {
             const f = files[i]
-            if (!f) {
-                const $after_inserts = $('after-insert-script')
-                const scripts = [...(new Set($after_inserts.get().map(x => x.innerHTML.trim())))]
-                scripts.map(eval)
-
-                resolve()
-                return;
-            }
-
-            const $trow = $("template#filetable-row-template").tmpl([{ filename: f.name }])
-            $trow.appendTo($filetable.find('tbody'));
-            $trow.first().attr('top', $trow.offset().top)
-
-            //using timeouts to avoid frozen UI
-            setTimeout(() => {
-                insert_single_table_row(i + 1, resolve);
-            }, 0);
+            table_rows.push(
+                $("template#errormap-filetable-row-template").tmpl({ filename: f.name })
+            )
         }
-
-        return new Promise((resolve, _reject) => {
-            insert_single_table_row(0, resolve)
-        });
+        setTimeout(() => $filetable.append(table_rows), 0)
     }
 
-
+    // Errormap accordion open.
     this.on_errormap_accordion_open = function () {
         var $root = $(this)
         var filename = $root.attr('filename')
@@ -64,5 +49,56 @@ var RootsEvaluation = new function () {
         var $result_img = $root.find('img.result-image')
         if ($result_img.length && !GLOBAL.App.ImageLoading.is_image_loaded($result_img))
             GLOBAL.App.ImageLoading.set_image_src($result_img, file);  //TODO: generate new dummy image with same aspect ratio
+    }
+
+
+
+    // Displays and updates evaluation results.
+    this.update_evaluation_results_info = function(NrEvalFiles) {
+        $('#evaluation-results-message').removeClass('hidden')
+
+        // Update evaluation data only if there are any evaluation files.
+        if (NrEvalFiles > 0) {
+            $('#evaluation-results-box').removeClass('hidden')
+            $('#evaluation-savefile-box').removeClass('hidden')
+            $('thead th#evaluation_errormap_files').text(`${NrEvalFiles} Evaluation Image${(NrEvalFiles == 1) ? '' : 's'} Used`)
+
+            // Placeholder values
+            const n1 = 0.06
+            const n2 = 0.08
+            const n3 = Math.floor((n2 - n1) * 100) / 100
+
+            // Update the html labels.
+            $('#evaluation-results-accuracy-label-old').text(n1)
+            $('#evaluation-results-accuracy-label-new').text(n2)
+
+            if (n3 > 0.0) {
+                $('#evaluation-results-accuracy-label-comp').text("(+" + n3 + ")")
+                document.getElementById("evaluation-results-accuracy-label-comp").style.color = "green"
+            }
+
+            else {
+                $('#evaluation-results-accuracy-label-comp').text("(" + n3 + ")")
+                document.getElementById("evaluation-results-accuracy-label-comp").style.color = "red"
+            }
+
+            // Placeholder values
+            const m1 = 0.64
+            const m2 = 0.56
+            const m3 = Math.floor((m2 - m1) * 100) / 100
+
+            // Update the html labels.
+            $('#evaluation-results-f2-label-old').text(m1)
+            $('#evaluation-results-f2-label-new').text(m2)
+
+            if (m3 > 0.0) {
+                $('#evaluation-results-f2-label-comp').text("(+" + m3 + ")")
+                document.getElementById("evaluation-results-f2-label-comp").style.color = "green"
+            }
+            else {
+                $('#evaluation-results-f2-label-comp').text("(" + m3 + ")")
+                document.getElementById("evaluation-results-f2-label-comp").style.color = "red"
+            }
+        }
     }
 };
