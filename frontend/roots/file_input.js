@@ -8,39 +8,6 @@ RootsFileInput = class extends BaseFileInput{
         return Promise.all([promise, promise2])
     }
 
-    // Update errormap table
-    static async refresh_errormap_filetable(files) {
-        var $filetable = $('#evaluation_errormap_table');
-        if (!$filetable.is(':visible'))
-            console.error('Error map file table is not visible')
-        $filetable.find('tbody').html('');
-
-        const insert_single_table_row = async function (i, resolve) {
-            const f = files[i]
-            if (!f) {
-                const $after_inserts = $('after-insert-script')
-                const scripts = [...(new Set($after_inserts.get().map(x => x.innerHTML.trim())))]
-                scripts.map(eval)
-
-                resolve()
-                return;
-            }
-
-            const $trow = $("template#filetable-row-template").tmpl([{ filename: f.name }])
-            $trow.appendTo($filetable.find('tbody'));
-            $trow.first().attr('top', $trow.offset().top)
-
-            //using timeouts to avoid frozen UI
-            setTimeout(() => {
-                insert_single_table_row(i + 1, resolve);
-            }, 0);
-        }
-
-        return new Promise((resolve, _reject) => {
-            insert_single_table_row(0, resolve)
-        });
-    }
-
     //override
     static match_resultfile_to_inputfile(inputfilename, resultfilename){
         var basename          = file_basename(resultfilename)

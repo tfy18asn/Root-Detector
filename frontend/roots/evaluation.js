@@ -2,11 +2,6 @@
 // Evaluation specific operations.
 var RootsEvaluation = new function () {
 
-    this.refresh = async function (files) {
-        const promise = this.refresh_errormap_filetable(files)
-        return Promise.all([promise])
-    }
-
     // Update errormap table
     this.refresh_errormap_filetable = async function (files) {
         var $filetable = $('#evaluation_errormap_table');
@@ -69,27 +64,5 @@ var RootsEvaluation = new function () {
         var $result_img = $root.find('img.result-image')
         if ($result_img.length && !GLOBAL.App.ImageLoading.is_image_loaded($result_img))
             GLOBAL.App.ImageLoading.set_image_src($result_img, file);  //TODO: generate new dummy image with same aspect ratio
-    }
-
-    this.set_image_src = function ($img, file) {
-        if ((file instanceof File)
-            && (file.type == "image/tiff" || file.name.endsWith('.tif') || file.name.endsWith('.tiff'))) {
-            GLOBAL.App.ImageLoading.load_tiff_file(file).then(blob => GLOBAL.App.ImageLoading.set_image_src($img, blob))
-        } else if (file instanceof Blob) {
-            var url = URL.createObjectURL(file)
-            $img.attr('src', url).css('visibility', '')
-            $img.one('load', _ => URL.revokeObjectURL(url))
-            console.log('Setting image src of', $img, 'to blob', file)
-        } else if (is_string(file)) {
-            var url = url_for_image(file)
-            $img.attr('src', url).css('visibility', '')
-            console.log('Setting image src of', $img, 'to string', file)
-        } else if (file == undefined) {
-            //hidden to prevent the browser showing a placeholder
-            $img.css('visibility', 'hidden')
-            $img[0].removeAttribute('src')
-        } else {
-            throw TypeError(`Cannot set image src to ${file}`)
-        }
     }
 };

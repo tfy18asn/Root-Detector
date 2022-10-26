@@ -123,7 +123,7 @@ RootsTraining = class extends BaseTraining {
 
                 // Refresh errormap filetable
                 $('.tabs .item[data-tab="training"]').click()
-                GLOBAL.App.FileInput.refresh_errormap_filetable(Object.values(GLOBAL.evaluationfiles))
+                RootsEvaluation.refresh_errormap_filetable(Object.values(GLOBAL.evaluationfiles))
             }
         }
     }   
@@ -187,38 +187,6 @@ RootsTraining = class extends BaseTraining {
         promises          = promises.concat( segmentations.map( f => upload_file_to_flask(f) ) )
         return Promise.all(promises).catch( this.fail_modal )  //FIXME: dont catch, handle in calling function
     }
-
-    // Errormap filetable open
-    static on_errormap_accordion_open(table_row) {
-        var $root = $(table_row).closest('[filename]')
-        var filename = $root.attr('filename')
-        var file = GLOBAL.evaluationfiles[filename];
-        var $img = $root.find('img.input-image')
-
-        if (GLOBAL.App.ImageLoading.is_image_loaded($img)) {
-            GLOBAL.App.ImageLoading.scroll_to_filename(filename)  //won't work the first time
-            return;
-        }
-        $img.on('load', _ => GLOBAL.App.ImageLoading.rescale_image_if_too_large($img[0])) //TODO: also rescale result images
-        $img.one('load', () => {
-            var $par = $root.find('.set-aspect-ratio-manually')
-            var img = $img[0]
-            $par.css('--imagewidth', img.naturalWidth)
-            $par.css('--imageheight', img.naturalHeight)
-
-            $root.find('.loading-message').remove()
-            $root.find('.filetable-content').show()
-            GLOBAL.App.ImageLoading.scroll_to_filename(filename)  //works on the first time
-        })
-        GLOBAL.App.ImageLoading.set_image_src($img, file);
-
-        //setting the result image as well, only to get the same dimensions
-        //if not already loaded from results
-        var $result_img = $root.find('img.result-image')
-        if ($result_img.length && !GLOBAL.App.ImageLoading.is_image_loaded($result_img))
-            GLOBAL.App.ImageLoading.set_image_src($result_img, file);  //TODO: generate new dummy image with same aspect ratio
-    }
-
 
     //override
     static success_modal() {

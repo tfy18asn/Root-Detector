@@ -1,8 +1,40 @@
-{% import 'base/training_tab.html' as base_training_tab %}
-{% import   'base/js_templates.html'  as base_js_templates %}
-{% import   'base/content_menu.html'  as base_content_menu %}
+{% import   'base/training_tab.html'    as base_training_tab %}
+{% import   'base/js_templates.html'    as base_js_templates %}
+{% import   'base/content_menu.html'    as base_content_menu %}
+{% import   'base/boxes.html'           as base_boxes   %}
 
+<!-- Errormap filetable content -->
+{% macro errormap_filetable_content(app, view_menu_kwargs={'show_results_checkbox':True}) %}
+<div class="errormap-filetable-content" style="display:none">
+    {{
+ base_content_menu.content_menu(
+            callback_on_process        = app+".Detection.on_process_image",
+            callback_apply_corrections = None,
+            callback_new_box           = app+".Boxes.on_draw_new_box_button",
+            callback_download          = app+".Download.on_single_item_download_click",
+            view_menu_kwargs           = view_menu_kwargs
+    ) | indent
+    }}
 
+    <div class="image-container">
+        {{
+ base_js_templates.content_image(
+          name           = "input",
+          overlay        = base_js_templates.image_and_boxes_overlay("input"),
+          viewcontrols   = app+".ViewControls"
+        ) | indent(8)
+        }}
+        {{ base_js_templates.progress_dimmer() }}
+    </div>
+</div>
+{% endmacro %}
+
+<!-- Errormap filetable row template -->
+{% macro errormap_filetable_row_template(app) %}
+    {{ base_js_templates.filetable_row_template(app, content=errormap_filetable_content) }}
+{% endmacro %}
+
+<!-- Errormap filetable header -->
 {% macro main_table_head(app, sortable=False) %}
 {% set sort_callback = app+'.Sorting.on_table_header(event)' if sortable else ''  %}
 <thead>
@@ -14,7 +46,7 @@
 </thead>
 {% endmacro %}
 
-
+<!-- Errormap filetable body -->
 {% macro base_main_table(app, sortable=False, table_head=main_table_head(app, sortable)) %}
 {% set sort_class    = 'sortable'                            if sortable else ''  %}
 <table class="ui fixed celled {{ sort_class }} unstackable table accordion" id="evaluation_errormap_table" style="border:0px; margin-top:0px;">
@@ -22,10 +54,10 @@
     <tbody>
     </tbody>
 </table>
-<script>$('#evaluation_errormap_table.accordion').accordion({ duration: 0, onOpening: function () { GLOBAL.App.Training.on_errormap_accordion_open(this) } })</script>
+<script>$('#evaluation_errormap_table.accordion').accordion({ duration: 0, onOpening: RootsEvaluation.on_errormap_accordion_open })</script>
 {% endmacro %}
 
-
+<!-- Placeholder image box -->
 {% macro evaluation_box() %}
 <div>
     <div class="ui segment form" style="margin-top:0px;" id="evaluation-box" hidden>
@@ -106,7 +138,8 @@
         {{ base_training_tab.save_model_field(trainingmodule) | indent }}
     </div>
 
-    {{ evaluation_box() }}
+    <!-- Placeholder image box -->
+    {# {{ evaluation_box() }} #}
 
 </div>
 {% endmacro %}
