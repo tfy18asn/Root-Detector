@@ -49,6 +49,28 @@ onchange="{{ app }}.FileInput.on_annotations_select(event); {{ app }}.Training.s
 </div>
 {% endmacro %}
 
+{% macro save_model_field(trainingmodule) %}
+<div class="ui segment form" id="training-new-modelname-field" style="display:none">
+  <div class="ui field">
+    <!--<div class="ui divider"></div>-->
+    <label>Save trained model</label>
+    <div class="ui action input">
+      <input type="text" placeholder="New model name" id="training-new-modelname">
+      <div class = "ui buttons">
+        <button class="ui green right labeled icon button" onclick="{{trainingmodule}}.on_save_model()">
+            <i class="save icon"></i>
+            Save Model
+        </button>
+        <button class="ui red right labeled icon button" onclick="{{trainingmodule}}.on_discard_model()">
+            <i class="delete icon"></i>
+            Discard
+        </button>
+        </div>
+    </div>
+    
+  </div>
+</div>
+{% endmacro %} {# save_model_field #}
 
 {% macro training_controls(trainingmodule, upload_training ="", upload_ground_truth="", nr_ev_images="") %}
 <div>
@@ -100,7 +122,7 @@ onchange="{{ app }}.FileInput.on_annotations_select(event); {{ app }}.Training.s
         .checkbox({onChange: _ => {{trainingmodule}}.refresh_tab() } )
         .checkbox('set checked')
 </script>
-{{ base_training_tab.save_model_field(trainingmodule) | indent }}
+{{ save_model_field(trainingmodule) | indent }}
 </div>
 {% endmacro %}
 
