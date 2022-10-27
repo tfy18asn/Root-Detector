@@ -2,19 +2,29 @@
 {% import   'base/js_templates.html'    as base_js_templates %}
 {% import   'base/content_menu.html'    as base_content_menu %}
 {% import   'base/boxes.html'           as base_boxes   %}
-{% import   'roots/tracking_tab.html'   as tracking_tab %}
+
+
+<!-- Errormap content menu -->
+{% macro errormap_content_menu() %}
+<div class="ui bottom attached secondary icon menu" style="border-top-width:0px; margin-bottom:0px;">
+
+    <div class="ui simple dropdown icon item view-menu-button">
+        <i class="eye icon"></i>
+        {{ base_content_menu.view_menu() | indent(8)}}
+    </div>
+
+    <a class="item help-menu-button"><i class="help icon"></i></a>
+    {{ base_content_menu.base_help() }}
+
+</div>
+{% endmacro %}
+
 
 <!-- Errormap filetable content -->
 {% macro errormap_filetable_content(app) %}
 <div class="errormap-filetable-content" style="display:none">
-    {{ base_content_menu.content_menu(
-            callback_on_process        = app+".Detection.on_process_image",
-            callback_apply_corrections = None,
-            callback_new_box           = None,
-            callback_download          = app+".Download.on_single_item_download_click",
-            edit_segmentation_item     = None,
-            view_menu_kwargs           = {'show_results_checkbox': True}
-    ) | indent }}
+
+    {{ errormap_content_menu() }}
 
     <div class="image-container">
         {{ base_js_templates.content_image( name="input", overlay=base_js_templates.image_overlay("input"), viewcontrols=app+".ViewControls" ) | indent(8) }}
@@ -48,6 +58,7 @@
 <!-- Errormap filetable body -->
 {% macro base_main_table(app) %}
 <table class="ui fixed celled unstackable table accordion" id="evaluation_errormap_table" style="border:0px; margin-top:0px;">
+    <!-- Header text -->
     <thead>
         <tr>
             <th class="sixteen wide" onclick="{{ sort_callback }}" id="evaluation_errormap_files">
@@ -55,7 +66,7 @@
             </th>
         </tr>
     </thead>
-
+    <!-- Filetable rows -->
     <tbody>
         {#   #errormap-filetable-row-template inserted from javascript here   #}
     </tbody>

@@ -5,19 +5,37 @@ var RootsEvaluation = new function () {
     // Update errormap table
     this.refresh_errormap_filetable = async function (files) {
 
-        // Fetch and clear the filetable
+        // Fetch errormap filetable and clear it.
         var $filetable = $('#evaluation_errormap_table tbody');
         $filetable.find('tr').remove()
 
-        //construct the file table
-        const table_rows = []
-        for (let i = 0; i < files.length; i++) {
+        // Function for inserting a single file row.
+        const insert_single_table_row = async function (i, resolve) {
             const f = files[i]
-            table_rows.push(
-                $("template#errormap-filetable-row-template").tmpl({ filename: f.name })
-            )
+
+            // Needed for row menu functionality like brightness etc.
+            if (!f) {
+                const $after_inserts = $('after-insert-script')
+                const scripts = [...(new Set($after_inserts.get().map(x => x.innerHTML.trim())))]
+                scripts.map(eval)
+
+                resolve()
+                return;
+            }
+
+            // Fetch row template and append to file table.
+            const $trow = $("template#errormap-filetable-row-template").tmpl([{ filename: f.name }])
+            $trow.appendTo($filetable);
+            $trow.first().attr('top', $trow.offset().top)
+
+            // Recursive call
+            setTimeout(() => {
+                insert_single_table_row(i + 1, resolve);
+            }, 0);
         }
-        setTimeout(() => $filetable.append(table_rows), 0)
+        return new Promise((resolve, _reject) => {
+            insert_single_table_row(0, resolve)
+        });
     }
 
     // Errormap accordion open.
@@ -39,7 +57,7 @@ var RootsEvaluation = new function () {
             $par.css('--imageheight', img.naturalHeight)
 
             $root.find('.loading-message').remove()
-            $root.find('.filetable-content').show()
+            $root.find('.errormap-filetable-content').show()
             GLOBAL.App.ImageLoading.scroll_to_filename(filename)  //works on the first time
         })
         GLOBAL.App.ImageLoading.set_image_src($img, file);
