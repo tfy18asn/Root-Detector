@@ -26,17 +26,29 @@ RootsTraining = class extends BaseTraining {
 
     // Moves files from training to evaluation
     static add_evaluation_files(NrEvalFiles){
+        GLOBAL.evaluationfiles = []
+        var filenames = this.get_selected_files()
         // Perform as many times as the number of files we want to put aside for evaluation
        for (let i = 0; i<NrEvalFiles; i++){
             // Pick a random training file
-            var filenames = Object.keys(GLOBAL.trainingfiles);
             var RandNum = Math.floor(Math.random() *filenames.length);
             // Move this file from training to evaluation
             GLOBAL.evaluationfiles[filenames[RandNum]] = GLOBAL.trainingfiles[filenames[RandNum]];
             delete GLOBAL.trainingfiles[filenames[RandNum]];
+            delete filenames[i];
         }   
     }
 
+    // Put evaluation files back into training files
+    static move_evaluation_to_training_files(){
+        // Filenames
+        var filenames = Object.keys(GLOBAL.evaluationfiles);
+       for (var i = 0; i < filenames.length;i++){
+            var f = filenames[i]
+            // Move to training
+            GLOBAL.trainingfiles[f] = GLOBAL.evaluationfiles[f]
+        }   
+    }
     // Show different text on upload button depending on which model type
     static which_upload_button_to_show(event){
         var model_type = event.target.value
@@ -94,6 +106,8 @@ RootsTraining = class extends BaseTraining {
             this.fail_modal()
         } finally {
             $(GLOBAL.event_source).off('training', progress_cb)
+            // Remove evaluation files so they can be used again for training
+            this.move_evaluation_to_training_files()
             if (NrEvalFiles>0) { 
                 // Evaluate training
                 var evalfiles = this.get_selected_evaluation_files()
@@ -196,9 +210,27 @@ RootsTraining = class extends BaseTraining {
             .done( _ => $('#errormap-image').id = "" ) // remove error map image 
             .done( _ => $('#evaluation-image').id = "" ) // remove error map image 
             .done( _ => $('#evaluation-box').hide() ) // hide evaluation box
+            .done(_ =>  GLOBAL.App.Settings.load_settings()) // Reload settings
             .fail( _ => $('body').toast({message:'Saving failed.', class:'error', displayTime: 0, closeIcon: true}) )
         $('#training-new-modelname')[0].value = ''
+        // Refresh tab to show changes.
+        this.refresh_tab()
     }
+
+    // Discards trained model, removes it and sets a new active model 
+    static async on_discard_model(){
+        console.log('Discarding model')
+        $.get('/discard_model',{options:this.get_training_options()})
+            .done( _ => $('#training-new-modelname-field').hide() )
+            .done( _ => $('#errormap-image').id = "" ) // remove error map image 
+            .done( _ => $('#evaluation-image').id = "" ) // remove error map image 
+            .done( _ => $('#evaluation-box').hide() ) // hide evaluation box
+            .done(_ =>  GLOBAL.App.Settings.load_settings())
+            .fail( _ => $('body').toast({message:'Discarding model failed.', class:'error', displayTime: 0, closeIcon: true}) )
+        $('#training-new-modelname')[0].value = ''
+        // Refresh tab to show changes.
+        this.refresh_tab()
+    }    
 }
 
 
