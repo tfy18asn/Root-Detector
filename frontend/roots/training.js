@@ -107,8 +107,26 @@ RootsTraining = class extends BaseTraining {
                 GLOBAL.App.ImageLoading.set_image_src($evaluated_img ,original_img)
                 $('#evaluation-box').show()
             }
+            //Show results modal
+            this.settings_save_modal()
+
         }
     }   
+
+    // Set actions for discard and save model buttons and show save model modal
+    static settings_save_modal(){
+        // Set action for save and discard button and show modal
+        var $save_button = $('#onclick-save-model').get(0)
+        console.log("Before onclick is set")
+        $save_button.onclick = this.on_save_model //this.on_save_model
+        console.log("After onclick is set")
+        var $discard_button = $('#discard-model-button')
+        // Add here the delete function for the newly trained model
+        // !!!!!!!!!!!!
+        var $save_modal = $('#save-modal').modal({closable: false, inverted:true, duration : 0,})
+        $discard_button.click(function(){$save_modal.modal('hide')})
+        $save_modal.modal('show')            
+    }
 
     //override
     static get_training_options(){
@@ -134,7 +152,7 @@ RootsTraining = class extends BaseTraining {
         $('#training-number-of-files-info-label').text(n)
         $('#training-number-of-files-info-message').removeClass('hidden')
         // Set the top limit of evaluation images that can be chosen in the text
-        $('#nr_training_images').text(n/2)
+        $('#nr_training_images').text(Math.floor(n/2))
         // Pick out the object where we choose how many evaluation pictures we want
         var $nr_ev_images = $('#nr_evaluation_images').get(0)
         // Set maximum number of evaluation pictures that can be chosen
@@ -173,7 +191,7 @@ RootsTraining = class extends BaseTraining {
     static on_save_model(){
         const new_modelname = $('#training-new-modelname')[0].value
         console.log('Saving new model as:', new_modelname)
-        $.get('/save_model', {newname: new_modelname, options:this.get_training_options()})
+        $.get('/save_model', {newname: new_modelname, options:RootsTraining.get_training_options()})    // this.get_training_options
             .done( _ => $('#training-new-modelname-field').hide() )
             .done( _ => $('#errormap-image').id = "" ) // remove error map image 
             .done( _ => $('#evaluation-image').id = "" ) // remove error map image 

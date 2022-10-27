@@ -22,19 +22,13 @@ onchange="{{ app }}.FileInput.on_inputfiles_select(event)" accept="image/*" mult
 {% macro upload_button_annotation(app) %}
 <!--<h4 class="ui dividing header">Training options</h4>-->
 <p id="text_annotation_files">xxx</p>
-<label for="training_image_annotation" id="upload_anno_button" class="ui yellow labeled icon button">
+<label for="training_image_annotation" id="upload_anno_button" class="ui yellow labeled icon button" data-content="hej">
     <i class="upload icon"></i>
     <p id="ground_truth_button_text">xxx</p>
 </label>
 <!-- padding-top:0; padding-bottom:0-->
 <input type="file" id="training_image_annotation" style="display:none"
 onchange="{{ app }}.FileInput.on_annotations_select(event); {{ app }}.Training.show_nr_ev_images_section()" accept="image/*, application/zip, application/x-zip-compressed" multiple>
-{# does not work, only example to have for the save alternative later #}
-<div class="ui buttons">
-    <button class="ui button">Cancel</button>
-    <div class="or"></div>
-    <button class="ui positive button">Save</button>
-    </div>
 {% endmacro %}
 
 {# Makes box where user can choose how many images that should be used for evaluation #}
@@ -100,30 +94,7 @@ onchange="{{ app }}.FileInput.on_annotations_select(event); {{ app }}.Training.s
         .checkbox({onChange: _ => {{trainingmodule}}.refresh_tab() } )
         .checkbox('set checked')
 </script>
-{{ base_training_tab.save_model_field(trainingmodule) | indent }}
-</div>
-{% endmacro %}
-
-{% macro evaluation_box() %}
-<div>
-    <div class ="ui segment form" style="margin-top:0px;" id = "evaluation-box" hidden>
-        <p> Evaluation Box: Here we have maybe an error map, precission of both models and maybe side by side comparision of the starting point and final model?
-        </p>
-        <div class="ui two column grid">
-            <div class="column">
-              <div class="ui segment" style="text-align:center">
-                    <p> Original image </p>
-                <img class="ui image" id = 'evaluated-image' draggable="false">
-              </div>
-            </div>
-            <div class="column">
-              <div class="ui segment" style="text-align:center">
-                <p > Error map </p>
-                <img class="ui image" id = 'errormap-image' draggable="false">
-              </div>
-            </div>
-          </div>
-    </div>        
+{#{{ base_training_tab.save_model_field(trainingmodule) | indent }}#}
 </div>
 {% endmacro %}
 
@@ -132,7 +103,7 @@ onchange="{{ app }}.FileInput.on_annotations_select(event); {{ app }}.Training.s
 
     {# add upload button for training#}
     {{ training_controls(trainingmodule = app+".Training", upload_training=upload_button_training(app), upload_ground_truth=upload_button_annotation(app), nr_ev_images=nr_evaluation_images(app)) }}
-    {{ evaluation_box()}}
+    {#{{ evaluation_box()}}#}
 </div>
 {% endmacro %}
 
