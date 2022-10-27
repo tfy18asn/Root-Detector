@@ -24,7 +24,7 @@ var RootsEvaluation = new function () {
             }
 
             // Fetch row template and append to file table.
-            const $trow = $("template#errormap-filetable-row-template").tmpl([{ filename: f.name }])
+            const $trow = $("template#errormap-filetable-row-template").tmpl([{ filename0: f.name, filename1: f.name }])
             $trow.appendTo($filetable);
             $trow.first().attr('top', $trow.offset().top)
 
@@ -41,32 +41,31 @@ var RootsEvaluation = new function () {
     // Errormap accordion open.
     this.on_errormap_accordion_open = function () {
         var $root = $(this)
-        var filename = $root.attr('filename')
-        var file = GLOBAL.evaluationfiles[filename];
-        var $img = $root.find('img.input-image')
+        var $img0 = $root.find('img.left.input-image')
+        var $img1 = $root.find('img.right.input-image')
 
-        if (GLOBAL.App.ImageLoading.is_image_loaded($img)) {
-            GLOBAL.App.ImageLoading.scroll_to_filename(filename)  //won't work the first time
-            return;
+
+        var content_already_loaded = !!$img0.attr('src') && !!$img1.attr('src')
+        if (!content_already_loaded) {
+            var filename0 = $root.attr('filename0');
+            var filename1 = $root.attr('filename1');
+            var file0 = GLOBAL.evaluationfiles[filename0];
+            var file1 = GLOBAL.evaluationfiles[filename1];
+
+            var promise = $img0.one('load', function () {
+                $img0.siblings('svg').attr('viewBox', `0 0 ${$img0[0].naturalWidth} ${$img0[0].naturalHeight / 2}`);
+
+            });
+            $img1.one('load', async function () {
+                $img1.siblings('svg').attr('viewBox', `0 0 ${$img1[0].naturalWidth} ${$img1[0].naturalHeight / 2}`);
+
+                await promise;
+                $root.find('.loading-message').remove()
+                $root.find('.errormap-filetable-content').show()
+            });
+            GLOBAL.App.ImageLoading.set_image_src($img0, file0);
+            GLOBAL.App.ImageLoading.set_image_src($img1, file1);
         }
-        $img.on('load', _ => GLOBAL.App.ImageLoading.rescale_image_if_too_large($img[0])) //TODO: also rescale result images
-        $img.one('load', () => {
-            var $par = $root.find('.set-aspect-ratio-manually')
-            var img = $img[0]
-            $par.css('--imagewidth', img.naturalWidth)
-            $par.css('--imageheight', img.naturalHeight)
-
-            $root.find('.loading-message').remove()
-            $root.find('.errormap-filetable-content').show()
-            GLOBAL.App.ImageLoading.scroll_to_filename(filename)  //works on the first time
-        })
-        GLOBAL.App.ImageLoading.set_image_src($img, file);
-
-        //setting the result image as well, only to get the same dimensions
-        //if not already loaded from results
-        var $result_img = $root.find('img.result-image')
-        if ($result_img.length && !GLOBAL.App.ImageLoading.is_image_loaded($result_img))
-            GLOBAL.App.ImageLoading.set_image_src($result_img, file);  //TODO: generate new dummy image with same aspect ratio
     }
 
 
