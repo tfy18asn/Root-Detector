@@ -1,23 +1,34 @@
 {% import 'base/main_container.html' as base_main_container %}
 {% from   'roots/tracking_tab.html'  import tracking_tab %}
 {% from   'roots/training_tab.html'  import training_tab as roots_training_tab %}
+{% from   'roots/about_tab.html'  import about_tab %}
+{% from   'roots/gallery_tab.html'  import gallery_tab %}
 
 {% macro tabs() %}
 <div class="ui pointing secondary tabs menu">
     <a class="active item" data-tab="detection"> Detection</a>
     <a class="item"        data-tab="tracking">  Tracking </a>
     <a class="item"        data-tab="training">  Training </a>
+    <a class="item"        data-tab="gallery">  Gallery </a>
+    <a class="item"        data-tab="about">  About </a>
 </div>
 {% endmacro %}
 
 
+// Places extra tabs in one macro, imported from other html files in same folder
+{% macro all_extra_tabs() %}
+    {{ tracking_tab() }}
+    {{ about_tab() }}
+    {{ gallery_tab() }}
+{% endmacro %}
 
 
+// Macros for extra tabs added into menu function
 {% macro main_container(app) %}
-    {{ base_main_container.main_container( 
-        app, 
-        tabs          = tabs(), 
+    {{ base_main_container.main_container(
+        app,
+        tabs          = tabs(),
         training_tab  = roots_training_tab(app),
-        extra         = tracking_tab() 
+        extra         = all_extra_tabs()
     ) }}
 {% endmacro %}
