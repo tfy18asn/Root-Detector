@@ -90,3 +90,57 @@
 </div>
 {% endmacro %}
 
+{% macro save_modal() %}
+<!--Test modalllllllll-->
+<div class="ui modal" id="save-modal">
+  <div class="header">Model results</div>
+  <div class="ui form content">
+    <div>
+      <div class ="ui segment form" style="margin-top:0px;" id = "evaluation-box" hidden>
+          <p> Evaluation Box: Here we have maybe an error map, precission of both models and maybe side by side comparision of the starting point and final model?
+          </p>
+          <div class="ui two column grid">
+              <div class="column">
+                <div class="ui segment" style="text-align:center">
+                      <p> Original image </p>
+                  <img class="ui image" id = 'evaluated-image' draggable="false">
+                </div>
+              </div>
+              <div class="column">
+                <div class="ui segment" style="text-align:center">
+                  <p > Error map </p>
+                  <img class="ui image" id = 'errormap-image' draggable="false">
+                </div>
+              </div>
+            </div>
+      </div>        
+  </div>
+
+
+
+  <div class="ui segment form" id="training-new-modelname-field"> <!--style="display:none"--> 
+    <div class="ui field">
+      <!--<div class="ui divider"></div>-->
+      <label>Save trained model</label>
+      <div class="ui action input">
+        <input type="text" placeholder="New model name" id="training-new-modelname">
+        <div class="ui buttons">
+          <button class="ui button" id="discard-model-button" onclick="">
+            Discard Model
+          </button>
+          <div class="or"></div>
+          <!--<button class="ui violet right labeled icon button" id="onclick-save-model" onclick="">-->
+            <button class="ui positive button" id="onclick-save-model" onclick="">
+            <i class="save icon"></i>
+            Save Model
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+{% endmacro %}
+
+
