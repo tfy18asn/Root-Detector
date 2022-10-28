@@ -21,7 +21,7 @@ class App(BaseApp):
         self.route('/postprocess_detection/<filename>')(self.postprocess_detection)
         self.route('/evaluation', methods=['GET', 'POST'])(self.evaluation)
         self.route('/discard_model')(self.discard_model)
-
+        
     def postprocess_detection(self, filename):
         #FIXME: code duplication
         full_path = os.path.join(get_cache_path(), filename)
@@ -103,8 +103,10 @@ class App(BaseApp):
         # Retrieve and apply default settings for active models for this modeltype
         defaults = backend.settings.Settings.get_defaults()
         settings = self.get_settings()
+        # Current user settings
         s = session['settings']
         s = s['settings']
+        # Update settings active models and load model into settings
         s['active_models'][modeltype] = defaults['active_models'][modeltype]
         settings.set_settings(s)
         update_user_settings(settings)
