@@ -9,7 +9,7 @@ import backend.training
 from . import root_detection
 from . import root_tracking
 
-
+from flask import session
 
 class App(BaseApp):
     def __init__(self, *args, **kw):
@@ -103,6 +103,9 @@ class App(BaseApp):
         # Retrieve and apply default settings for active models for this modeltype
         defaults = backend.settings.Settings.get_defaults()
         settings = self.get_settings()
-        settings.active_models[modeltype] = defaults['active_models'][modeltype]
+        s = session['settings']
+        s = s['settings']
+        s['active_models'][modeltype] = defaults['active_models'][modeltype]
+        settings.set_settings(s)
         update_user_settings(settings)
         return 'OK'
