@@ -98,8 +98,11 @@
 
     <!-- Popup title -->
     <div class="header">Model Results</div>
+
     <!-- Evaluation results -->
-    {{ evaluation.evaluation_save_infobox(trainingmodule = app+".Training", evaluationmodule = app) }}
+    <div class="scrolling content">
+        {{ evaluation.evaluation_save_infobox(trainingmodule = app+".Training", evaluationmodule = app) }}
+    </div>
 
     <!-- Save model field -->
     <div class="ui segment form" id="training-new-modelname-field">
