@@ -1,5 +1,6 @@
 from base.backend.app import App as BaseApp
 from base.backend.app import get_cache_path
+from base.backend.app import update_user_settings
 import os
 import flask
 
@@ -8,7 +9,7 @@ import backend.training
 from . import root_detection
 from . import root_tracking
 
-
+from flask import session
 
 class App(BaseApp):
     def __init__(self, *args, **kw):
@@ -19,7 +20,8 @@ class App(BaseApp):
         self.route('/process_root_tracking', methods=['GET', 'POST'])(self.process_root_tracking)
         self.route('/postprocess_detection/<filename>')(self.postprocess_detection)
         self.route('/evaluation', methods=['GET', 'POST'])(self.evaluation)
-
+        self.route('/discard_model')(self.discard_model)
+        
     def postprocess_detection(self, filename):
         #FIXME: code duplication
         full_path = os.path.join(get_cache_path(), filename)
@@ -95,3 +97,18 @@ class App(BaseApp):
             image.save(get_cache_path(error_map_basename))
 
             return flask.jsonify({'results':'ok', 'error_map_path':error_map_basename,'original_image_path': basename })
+
+    def discard_model(self):
+        # Retrieve what model type to discard
+        modeltype = flask.request.args.get('options[training_type]', 'detection')
+        # Retrieve and apply default settings for active models for this modeltype
+        defaults = backend.settings.Settings.get_defaults()
+        settings = self.get_settings()
+        # Current user settings
+        s = session['settings']
+        s = s['settings']
+        # Update settings active models and load model into settings
+        s['active_models'][modeltype] = defaults['active_models'][modeltype]
+        settings.set_settings(s)
+        update_user_settings(settings)
+        return 'OK'

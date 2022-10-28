@@ -11,8 +11,8 @@
         <li><b>SHIFT + Mouse wheel</b> to zoom</li>
         <li><b>SHIFT + Double-click</b> to reset</li>
         <li><b><span class="ui green text">GREEN</span></b> denotes true positives</li>
-        <li><b><span class="ui blue text">BLUE</span></b> denotes false positives</li>
-        <li><b><span class="ui red text">RED</span></b> denotes false negatives</li>
+        <li><b><span class="ui blue text">BLUE</span></b> denotes false negatives</li>
+        <li><b><span class="ui red text">RED</span></b> denotes false positives</li>
     </ul>
 </div>
 <script>$('.help-menu-button').last().popup({ hoverable: false });</script>
@@ -120,15 +120,7 @@
 
 
 <!-- Macro for displaying evaluation of model -->
-{% macro evaluation_save_infobox(trainingmodule, evaluationmodule, label=None) %}
-<div class="ui hidden message" id="evaluation-results-message">
-
-    <!-- Evaluation header text -->
-    <div class="ui segment form" style="margin-top:0px;">
-        {% if label != None -%}
-        <label><p style="text-align:center"><b>{{label}}</b></p></label>
-        {%- endif %}
-    </div>
+{% macro evaluation_save_infobox(trainingmodule, evaluationmodule) %}
 
     <!-- Error map display -->
     {{ base_main_table(evaluationmodule) }}
@@ -167,13 +159,5 @@
         </div>
     </div>
 
-    <!-- Save model field -->
-    <div class="ui hidden message" id="evaluation-savefile-box" , style="padding:0 0">
-        {{ base_training_tab.save_model_field(trainingmodule) | indent }}
-    </div>
 
-    <!-- Placeholder image box -->
-    {# {{ evaluation_box() }} #}
-
-</div>
 {% endmacro %}

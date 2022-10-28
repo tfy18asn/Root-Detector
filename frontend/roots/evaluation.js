@@ -50,7 +50,7 @@ var RootsEvaluation = new function () {
             var filename0 = $root.attr('filename0');
             var filename1 = $root.attr('filename1');
             var file0 = GLOBAL.evaluationfiles[filename0];
-            var file1 = GLOBAL.evaluationfiles[filename1];
+            var file1 = GLOBAL.evaluationfiles[filename1].results.segmentation;
 
             var promise = $img0.one('load', function () {
                 $img0.siblings('svg').attr('viewBox', `0 0 ${$img0[0].naturalWidth} ${$img0[0].naturalHeight / 2}`);
@@ -77,7 +77,6 @@ var RootsEvaluation = new function () {
         // Update evaluation data only if there are any evaluation files.
         if (NrEvalFiles > 0) {
             $('#evaluation-results-box').removeClass('hidden')
-            $('#evaluation-savefile-box').removeClass('hidden')
             $('thead th#evaluation_errormap_files').text(`${NrEvalFiles} Evaluation Image${(NrEvalFiles == 1) ? '' : 's'} Used`)
 
             // Placeholder values

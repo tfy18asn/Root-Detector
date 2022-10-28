@@ -28,19 +28,13 @@
 {% macro upload_button_annotation(app) %}
 <!--<h4 class="ui dividing header">Training options</h4>-->
 <p id="text_annotation_files">xxx</p>
-<label for="training_image_annotation" id="upload_anno_button" class="ui yellow labeled icon button">
+<label for="training_image_annotation" id="upload_anno_button" class="ui yellow labeled icon button" data-content="hej">
     <i class="upload icon"></i>
     <p id="ground_truth_button_text">xxx</p>
 </label>
 <!-- padding-top:0; padding-bottom:0-->
 <input type="file" id="training_image_annotation" style="display:none"
-       onchange="{{ app }}.FileInput.on_annotations_select(event); {{ app }}.Training.show_nr_ev_images_section()" accept="image/*, application/zip, application/x-zip-compressed" multiple>
-{# does not work, only example to have for the save alternative later #}
-<div class="ui buttons">
-    <button class="ui button">Cancel</button>
-    <div class="or"></div>
-    <button class="ui positive button">Save</button>
-</div>
+onchange="{{ app }}.FileInput.on_annotations_select(event); {{ app }}.Training.show_nr_ev_images_section()" accept="image/*, application/zip, application/x-zip-compressed" multiple>
 {% endmacro %}
 
 {# Makes box where user can choose how many images that should be used for evaluation #}
@@ -56,6 +50,28 @@
 </div>
 {% endmacro %}
 
+{% macro save_model_field(trainingmodule) %}
+<div class="ui segment form" id="training-new-modelname-field" style="display:none">
+  <div class="ui field">
+    <!--<div class="ui divider"></div>-->
+    <label>Save trained model</label>
+    <div class="ui action input">
+      <input type="text" placeholder="New model name" id="training-new-modelname">
+      <div class = "ui buttons">
+        <button class="ui green right labeled icon button" onclick="{{trainingmodule}}.on_save_model()">
+            <i class="save icon"></i>
+            Save Model
+        </button>
+        <button class="ui red right labeled icon button" onclick="{{trainingmodule}}.on_discard_model()">
+            <i class="delete icon"></i>
+            Discard
+        </button>
+        </div>
+    </div>
+    
+  </div>
+</div>
+{% endmacro %} {# save_model_field #}
 
 {% macro training_controls(trainingmodule, upload_training ="", upload_ground_truth="", nr_ev_images="") %}
 <div>
@@ -108,7 +124,7 @@
         .checkbox({onChange: _ => {{trainingmodule}}.refresh_tab() } )
         .checkbox('set checked')
     </script>
-
+    {#{{ base_training_tab.save_model_field(trainingmodule) | indent }}#}
 </div>
     {% endmacro %}
 
@@ -119,7 +135,7 @@
         {{ training_controls(trainingmodule = app+".Training", upload_training=upload_button_training(app), upload_ground_truth=upload_button_annotation(app), nr_ev_images=nr_evaluation_images(app)) }}
     </div>
     <div>
-        {{ evaluation.evaluation_save_infobox(trainingmodule = app+".Training", evaluationmodule = app, label = "Evaluation Results" ) }}
+
     </div>
 </div>
 {% endmacro %}
