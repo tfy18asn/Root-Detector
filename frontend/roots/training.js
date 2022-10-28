@@ -130,15 +130,15 @@ RootsTraining = class extends BaseTraining {
     // Set actions for discard and save model buttons and show save model modal
     static settings_save_modal(){
         // Set action for save and discard button and show modal
-        var $save_button = $('#onclick-save-model').get(0)
+        var $save_button = $('#onclick-save-model')
         console.log("Before onclick is set")
-        $save_button.onclick = this.on_save_model //this.on_save_model
+        $save_button.click(this.on_save_model) //this.on_save_model
         console.log("After onclick is set")
         var $discard_button = $('#discard-model-button')
         // Add here the delete function for the newly trained model
         // !!!!!!!!!!!!
         var $save_modal = $('#save-modal').modal({closable: false, inverted:true, duration : 0,})
-        $discard_button.click(function(){$save_modal.modal('hide')})
+        $discard_button.click(this.on_discard_model)
         $save_modal.modal('show')            
     }
 
@@ -210,26 +210,28 @@ RootsTraining = class extends BaseTraining {
             .done( _ => $('#errormap-image').id = "" ) // remove error map image 
             .done( _ => $('#evaluation-image').id = "" ) // remove error map image 
             .done( _ => $('#evaluation-box').hide() ) // hide evaluation box
-            .done(_ =>  GLOBAL.App.Settings.load_settings()) // Reload settings
+            .done( _ =>  GLOBAL.App.Settings.load_settings()) // Reload settings
+            .done( _ => $('#save-modal').modal('hide'))
             .fail( _ => $('body').toast({message:'Saving failed.', class:'error', displayTime: 0, closeIcon: true}) )
         $('#training-new-modelname')[0].value = ''
         // Refresh tab to show changes.
-        this.refresh_tab()
+        //this.refresh_tab()
     }
 
     // Discards trained model, removes it and sets a new active model 
     static async on_discard_model(){
         console.log('Discarding model')
-        $.get('/discard_model',{options:this.get_training_options()})
+        $.get('/discard_model',{options:RootsTraining.get_training_options()})
             .done( _ => $('#training-new-modelname-field').hide() )
             .done( _ => $('#errormap-image').id = "" ) // remove error map image 
             .done( _ => $('#evaluation-image').id = "" ) // remove error map image 
             .done( _ => $('#evaluation-box').hide() ) // hide evaluation box
-            .done(_ =>  GLOBAL.App.Settings.load_settings())
+            .done( _ =>  GLOBAL.App.Settings.load_settings())
+            .done (_ => $('#save-modal').modal('hide'))
             .fail( _ => $('body').toast({message:'Discarding model failed.', class:'error', displayTime: 0, closeIcon: true}) )
         $('#training-new-modelname')[0].value = ''
         // Refresh tab to show changes.
-        this.refresh_tab()
+        RootsTraining.refresh_tab()
     }    
 }
 
