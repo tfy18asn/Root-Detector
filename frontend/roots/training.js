@@ -108,6 +108,8 @@ RootsTraining = class extends BaseTraining {
             $(GLOBAL.event_source).off('training', progress_cb)
             if (NrEvalFiles>0) { 
                 await this.setup_evaluation(startingpoint)
+
+                
             }
             //Show results modal
             this.settings_save_modal()
@@ -115,34 +117,33 @@ RootsTraining = class extends BaseTraining {
         }
     }   
 
-    static async setup_evaluation(startingpoint){
+    static async setup_evaluation(startingpoint) {
+
+        console.log(startingpoint)
         // Remove evaluation files so they can be used again for training
         this.move_evaluation_to_training_files()
         // Evaluate training
         var evalfiles = this.get_selected_evaluation_files()
         var results = await $.post('/evaluation', JSON.stringify({filenames:evalfiles, startingpoint:startingpoint, options:this.get_training_options()}))
         console.log(results)
-        this.set_eval_images()
+        this.set_eval_images(results)
         $('#evaluation-box').show()
 
-        // Refresh errormap filetable
-        $('.tabs .item[data-tab="training"]').click()
-        RootsEvaluation.refresh_errormap_filetable(Object.values(GLOBAL.evaluationfiles))
-
         // Update evaluation.
-        RootsEvaluation.update_evaluation_results_info(this.get_nr_images())
+        RootsEvaluation.update_evaluation_results_info(startingpoint)
     }
 
-    static async set_eval_images(){
+    static async set_eval_images(results){
         var evalfiles = RootsTraining.get_selected_evaluation_files()
         var RandNum = Math.floor(Math.random() *evalfiles.length);
         var error_map = await fetch_as_file(url_for_image(evalfiles[RandNum]+'.error_map.png'))
         var original_img = await fetch_as_file(url_for_image(evalfiles[RandNum]))
+
         // Show evaluation box and place image 
         var $errormap_img = $('#errormap-image')
         GLOBAL.App.ImageLoading.set_image_src($errormap_img ,error_map)
         var $evaluated_img = $('#evaluated-image')
-        GLOBAL.App.ImageLoading.set_image_src($evaluated_img ,original_img)
+        GLOBAL.App.ImageLoading.set_image_src($evaluated_img, original_img)
     }
     // Set actions for discard and save model buttons and show save model modal
     static settings_save_modal() {

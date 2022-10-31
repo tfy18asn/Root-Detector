@@ -39,7 +39,7 @@ var RootsEvaluation = new function () {
     }
 
     // Errormap accordion open.
-    this.on_errormap_accordion_open = function () {
+    this.on_errormap_accordion_open = async function () {
         var $root = $(this)
         var $img0 = $root.find('img.left.input-image')
         var $img1 = $root.find('img.right.input-image')
@@ -49,8 +49,13 @@ var RootsEvaluation = new function () {
         if (!content_already_loaded) {
             var filename0 = $root.attr('filename0');
             var filename1 = $root.attr('filename1');
-            var file0 = GLOBAL.evaluationfiles[filename0];
-            var file1 = GLOBAL.evaluationfiles[filename1].results.segmentation;
+
+            var evalfiles = RootsTraining.get_selected_evaluation_files()
+            var file0 = await fetch_as_file(url_for_image(filename0))
+            var file1 = await fetch_as_file(url_for_image(filename1 + '.error_map.png'))
+
+            //var file0 = GLOBAL.evaluationfiles[filename0];
+            //var file1 = GLOBAL.evaluationfiles[filename1].results.segmentation;
 
             var promise = $img0.one('load', function () {
                 $img0.siblings('svg').attr('viewBox', `0 0 ${$img0[0].naturalWidth} ${$img0[0].naturalHeight / 2}`);
@@ -71,24 +76,50 @@ var RootsEvaluation = new function () {
 
 
     // Displays and updates evaluation results.
-    this.update_evaluation_results_info = function(NrEvalFiles) {
+    this.update_evaluation_results_info = async function(startingpoint) {
         $('#evaluation-results-message').removeClass('hidden')
+
+        var NrEvalFiles = RootsTraining.get_nr_images()
 
         // Update evaluation data only if there are any evaluation files.
         if (NrEvalFiles > 0) {
             $('#evaluation-results-box').removeClass('hidden')
             $('thead th#evaluation_errormap_files').text(`${NrEvalFiles} Evaluation Image${(NrEvalFiles == 1) ? '' : 's'} Used`)
 
-            // Placeholder values
-            const n1 = 0.06
-            const n2 = 0.08
-            const n3 = Math.floor((n2 - n1) * 100) / 100
+            // Refresh errormap filetable
+            $('.tabs .item[data-tab="training"]').click()
+            RootsEvaluation.refresh_errormap_filetable(Object.values(GLOBAL.evaluationfiles))
+
+            console.log(startingpoint)
+
+            // Fetch evaluation result data.
+            /*
+            var evalfiles = RootsTraining.get_selected_evaluation_files()
+            var results = await $.post('/evaluation',
+                JSON.stringify({
+                    filenames: evalfiles,
+                    startingpoint: startingpoint, options: RootsTraining.get_training_options()
+                }))
+            */
+            var results = 3
+            console.log(results)
+
+            /*
+            var old_model = results['results_startingpoint']
+            var new_model = results['results_current']
+            console.log(old_model)
+            */
+
+            // Values
+            var n1 = 1.0 //old_model['Precision']
+            var n2 = 0.5 //new_model['Precision']
+            var n3 = Math.floor((n2 - n1) * 100) / 100
 
             // Update the html labels.
             $('#evaluation-results-accuracy-label-old').text(n1)
             $('#evaluation-results-accuracy-label-new').text(n2)
 
-            if (n3 > 0.0) {
+            if (n3 >= 0.0) {
                 $('#evaluation-results-accuracy-label-comp').text("(+" + n3 + ")")
                 document.getElementById("evaluation-results-accuracy-label-comp").style.color = "green"
             }
@@ -98,22 +129,22 @@ var RootsEvaluation = new function () {
                 document.getElementById("evaluation-results-accuracy-label-comp").style.color = "red"
             }
 
-            // Placeholder values
-            const m1 = 0.64
-            const m2 = 0.56
-            const m3 = Math.floor((m2 - m1) * 100) / 100
+            // Values
+            n1 = 1.0 //old_model['F1']
+            n2 = 0.5 //new_model['F1']
+            n3 = Math.floor((n2 - n1) * 100) / 100
 
             // Update the html labels.
-            $('#evaluation-results-f2-label-old').text(m1)
-            $('#evaluation-results-f2-label-new').text(m2)
+            $('#evaluation-results-f1-label-old').text(n1)
+            $('#evaluation-results-f1-label-new').text(n2)
 
-            if (m3 > 0.0) {
-                $('#evaluation-results-f2-label-comp').text("(+" + m3 + ")")
-                document.getElementById("evaluation-results-f2-label-comp").style.color = "green"
+            if (n3 >= 0.0) {
+                $('#evaluation-results-f1-label-comp').text("(+" + n3 + ")")
+                document.getElementById("evaluation-results-f1-label-comp").style.color = "green"
             }
             else {
-                $('#evaluation-results-f2-label-comp').text("(" + m3 + ")")
-                document.getElementById("evaluation-results-f2-label-comp").style.color = "red"
+                $('#evaluation-results-f1-label-comp').text("(" + n3 + ")")
+                document.getElementById("evaluation-results-f1-label-comp").style.color = "red"
             }
         }
     }
