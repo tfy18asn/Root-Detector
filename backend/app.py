@@ -7,8 +7,9 @@ import backend
 import backend.training
 from . import root_detection
 from . import root_tracking
+from . import evaluation
 
-
+from flask import session
 
 class App(BaseApp):
     def __init__(self, *args, **kw):
@@ -18,7 +19,9 @@ class App(BaseApp):
 
         self.route('/process_root_tracking', methods=['GET', 'POST'])(self.process_root_tracking)
         self.route('/postprocess_detection/<filename>')(self.postprocess_detection)
-
+        self.route('/evaluation', methods=['GET', 'POST'])(self.evaluation)
+        self.route('/discard_model')(self.discard_model)
+        
     def postprocess_detection(self, filename):
         #FIXME: code duplication
         full_path = os.path.join(get_cache_path(), filename)
@@ -41,7 +44,11 @@ class App(BaseApp):
             fname0 = os.path.join(get_cache_path(), data['filename0'])
             fname1 = os.path.join(get_cache_path(), data['filename1'])
             result = root_tracking.process(fname0, fname1, self.get_settings(), data)
+<<<<<<< HEAD
      
+=======
+        
+>>>>>>> origin/Malin
         return flask.jsonify({
             'points0':         result['points0'].tolist(),
             'points1':         result['points1'].tolist(),
@@ -70,5 +77,57 @@ class App(BaseApp):
             flask.abort(404)
         
         backend.training.start_training(imagefiles, targetfiles, options, self.get_settings())
+<<<<<<< HEAD
+=======
         return 'OK'
-    
+
+    def evaluation(self):
+        if flask.request.method=='GET':
+            return 'använder vi ej???'
+        elif flask.request.method=='POST':
+            requestform  = flask.request.get_json(force=True)
+            print('yayayayayayayayayayayayayaya')
+            print(requestform)
+            print('yayayayayayayayayayayayayaya')
+            # Real evaluation shiet
+            files = requestform['filenames']
+            settings_startingpoint = backend.settings.Settings()
+            modeltype = requestform['options']['training_type']
+            # Current user settings
+            s = session['settings']
+            s = s['settings']
+            # Update settings active models and load model into settings
+            s['active_models'][modeltype] = requestform['startingpoint']
+            settings_startingpoint.set_settings(s)
+            settings_current = self.get_settings()
+            for f in files:
+                os.remove(get_cache_path(f'{f}.segmentation.png'))
+                os.remove(get_cache_path(f'{f}.skeleton.png'))
+                backend.processing.process_image(get_cache_path(f), settings_startingpoint)
+            res_startingpoint = evaluation.evaluate_files([get_cache_path(f) for f in files])
+            for f in files:
+                os.remove(get_cache_path(f'{f}.segmentation.png'))
+                os.remove(get_cache_path(f'{f}.skeleton.png'))
+                backend.processing.process_image(get_cache_path(f),settings_current)
+            res_current = evaluation.evaluate_files([get_cache_path(f) for f in files])
+            print(res_startingpoint)
+            print('yayayayayayayaya')
+            print(res_current)
+            # ENDS HERE
+            return flask.jsonify({'results_startingpoint':res_startingpoint, 'results_current':res_current})
+
+    def discard_model(self):
+        # Retrieve what model type to discard
+        modeltype = flask.request.args.get('options[training_type]', 'detection')
+        # Retrieve and apply default settings for active models for this modeltype
+        defaults = backend.settings.Settings.get_defaults()
+        settings = self.get_settings()
+        # Current user settings
+        s = session['settings']
+        s = s['settings']
+        # Update settings active models and load model into settings
+        s['active_models'][modeltype] = defaults['active_models'][modeltype]
+        settings.set_settings(s)
+        update_user_settings(settings)
+>>>>>>> origin/Malin
+        return 'OK'
