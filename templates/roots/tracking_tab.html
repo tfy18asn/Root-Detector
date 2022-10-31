@@ -123,6 +123,10 @@
 {% macro tracking_tab() %}
 <!--------- MACRO tracking_tab() START---------->
 <div class="ui tab segment" data-tab="tracking"  style="padding:0">
+  <div class="ui message">
+    <p>Information about tracking page!</p>
+  </div>
+
   {{ filetable_menu(
     callback_on_process_all     = "RootTracking.on_process_all",
     callback_on_download_all    = "RootTrackingDownload.on_download_all"

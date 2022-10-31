@@ -215,7 +215,7 @@ RootsTraining = class extends BaseTraining {
             .fail( _ => $('body').toast({message:'Saving failed.', class:'error', displayTime: 0, closeIcon: true}) )
         $('#training-new-modelname')[0].value = ''
         // Refresh tab to show changes.
-        //this.refresh_tab()
+        RootsTraining.refresh_tab()
     }
 
     // Discards trained model, removes it and sets a new active model 
