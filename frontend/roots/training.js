@@ -35,7 +35,7 @@ RootsTraining = class extends BaseTraining {
             // Move this file from training to evaluation
             GLOBAL.evaluationfiles[filenames[RandNum]] = GLOBAL.trainingfiles[filenames[RandNum]];
             delete GLOBAL.trainingfiles[filenames[RandNum]];
-            delete filenames[i];
+            filenames.splice(RandNum,1);
         }   
     }
 
@@ -106,20 +106,8 @@ RootsTraining = class extends BaseTraining {
             this.fail_modal()
         } finally {
             $(GLOBAL.event_source).off('training', progress_cb)
-            // Remove evaluation files so they can be used again for training
-            this.move_evaluation_to_training_files()
             if (NrEvalFiles>0) { 
-                // Evaluate training
-                var evalfiles = this.get_selected_evaluation_files()
-                var results = await $.post('/evaluation', JSON.stringify({filenames:evalfiles, startingpoint:startingpoint}))
-                var error_map = await fetch_as_file(url_for_image(results['error_map_path']))
-                var original_img = await fetch_as_file(url_for_image(results['original_image_path']))
-                // Show evaluation box and place image 
-                var $errormap_img = $('#errormap-image')
-                GLOBAL.App.ImageLoading.set_image_src($errormap_img ,error_map)
-                var $evaluated_img = $('#evaluated-image')
-                GLOBAL.App.ImageLoading.set_image_src($evaluated_img ,original_img)
-                $('#evaluation-box').show()
+                await this.setup_evaluation(startingpoint)
             }
             //Show results modal
             this.settings_save_modal()
@@ -127,6 +115,28 @@ RootsTraining = class extends BaseTraining {
         }
     }   
 
+    static async setup_evaluation(startingpoint){
+        // Remove evaluation files so they can be used again for training
+        this.move_evaluation_to_training_files()
+        // Evaluate training
+        var evalfiles = this.get_selected_evaluation_files()
+        var results = await $.post('/evaluation', JSON.stringify({filenames:evalfiles, startingpoint:startingpoint, options:this.get_training_options()}))
+        console.log(results)
+        this.set_eval_images()
+        $('#evaluation-box').show()
+    }
+
+    static async set_eval_images(){
+        var evalfiles = RootsTraining.get_selected_evaluation_files()
+        var RandNum = Math.floor(Math.random() *evalfiles.length);
+        var error_map = await fetch_as_file(url_for_image(evalfiles[RandNum]+'.error_map.png'))
+        var original_img = await fetch_as_file(url_for_image(evalfiles[RandNum]))
+        // Show evaluation box and place image 
+        var $errormap_img = $('#errormap-image')
+        GLOBAL.App.ImageLoading.set_image_src($errormap_img ,error_map)
+        var $evaluated_img = $('#evaluated-image')
+        GLOBAL.App.ImageLoading.set_image_src($evaluated_img ,original_img)
+    }
     // Set actions for discard and save model buttons and show save model modal
     static settings_save_modal(){
         // Set action for save and discard button and show modal
@@ -135,10 +145,10 @@ RootsTraining = class extends BaseTraining {
         $save_button.click(this.on_save_model) //this.on_save_model
         console.log("After onclick is set")
         var $discard_button = $('#discard-model-button')
-        // Add here the delete function for the newly trained model
-        // !!!!!!!!!!!!
-        var $save_modal = $('#save-modal').modal({closable: false, inverted:true, duration : 0,})
         $discard_button.click(this.on_discard_model)
+        var $eval_img_button = $('#eval_img_button')
+        $eval_img_button.click(this.set_eval_images)   
+        var $save_modal = $('#save-modal').modal({closable: false, inverted:true, duration : 0,})
         $save_modal.modal('show')            
     }
 
@@ -178,27 +188,15 @@ RootsTraining = class extends BaseTraining {
     
     // Set annotated files as result for an original file
     static async set_results(filename, results){
-        var clear = (results == undefined)
-    
-        if(results && is_string(results.segmentation))
-            results.segmentation = await fetch_as_file(url_for_image(results.segmentation))
-        var segmentation = clear? undefined : results.segmentation;
-    
+//        var clear = (results == undefined)   
+//        if(results && is_string(results.segmentation))
+//            results.segmentation = await fetch_as_file(url_for_image(results.segmentation))
+//        var segmentation = clear? undefined : results.segmentation;
         GLOBAL.trainingfiles[filename].set_results(results)       
     }
     static get_selected_evaluation_files(){
-        const files_with_results = Object.values(GLOBAL.evaluationfiles) //.filter( x => !!x.results )
-        return files_with_results.map( x => x.name)
-    }
-    static upload_evaluation_data(filenames){
-        //TODO: show progress
-        var promises      = filenames.map( f => upload_file_to_flask(GLOBAL.trainingfiles[f]) )
-        //TODO: refactor
-        //TODO: standardize file name
-        var segmentations = filenames.map(    f => GLOBAL.evaluationfiles[f].results.segmentation )
-                                     .filter( s => s instanceof Blob )
-        promises          = promises.concat( segmentations.map( f => upload_file_to_flask(f) ) )
-        return Promise.all(promises).catch( this.fail_modal )  //FIXME: dont catch, handle in calling function
+        const eval_files = Object.values(GLOBAL.evaluationfiles) //.filter( x => !!x.results )
+        return eval_files.map( x => x.name)
     }
 
     // override
@@ -214,24 +212,20 @@ RootsTraining = class extends BaseTraining {
             .done( _ => $('#save-modal').modal('hide'))
             .fail( _ => $('body').toast({message:'Saving failed.', class:'error', displayTime: 0, closeIcon: true}) )
         $('#training-new-modelname')[0].value = ''
-        // Refresh tab to show changes.
-        RootsTraining.refresh_tab()
     }
 
     // Discards trained model, removes it and sets a new active model 
-    static async on_discard_model(){
+    static on_discard_model(){
         console.log('Discarding model')
         $.get('/discard_model',{options:RootsTraining.get_training_options()})
             .done( _ => $('#training-new-modelname-field').hide() )
             .done( _ => $('#errormap-image').id = "" ) // remove error map image 
             .done( _ => $('#evaluation-image').id = "" ) // remove error map image 
             .done( _ => $('#evaluation-box').hide() ) // hide evaluation box
-            .done( _ =>  GLOBAL.App.Settings.load_settings())
+            .done( _ => GLOBAL.App.Settings.load_settings())
             .done (_ => $('#save-modal').modal('hide'))
             .fail( _ => $('body').toast({message:'Discarding model failed.', class:'error', displayTime: 0, closeIcon: true}) )
         $('#training-new-modelname')[0].value = ''
-        // Refresh tab to show changes.
-        RootsTraining.refresh_tab()
     }    
 }
 

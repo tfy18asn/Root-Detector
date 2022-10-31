@@ -17,6 +17,37 @@ def evaluate_single_file(predictionfile:str, annotationfile:str) -> dict:
     result.update(precision_recall(ytrue, ypred))
     return result
 
+def evaluate_files(basenamepath:list) -> dict:
+    IoUavg = 0
+    precisionavg = 0
+    recallavg = 0
+    f1avg = 0
+    for f in basenamepath:
+        ypred = load_segmentationfile(f'{f}.segmentation.png')
+        ytrue = load_segmentationfile(f'{f}.annotation.png')
+        IoUavg += IoU(ytrue, ypred)
+        em = create_error_map(ytrue, ypred)
+        save_error_map_as_png(em,f'{f}.error_map.png' )
+        data = precision_recall(ytrue, ypred)
+        precisionavg += data['precision']
+        recallavg += data['recall']
+        f1avg += data['F1']
+    N = len(basenamepath)
+    print(N)
+    IoUavg = IoUavg/N
+    precisionavg = precisionavg/N
+    recallavg = recallavg/N
+    f1avg = f1avg/N
+
+    result = {
+        'IoU'                : IoUavg,
+        'Precision'          : precisionavg,
+        'recall'             : recallavg,
+        'F1'                 : f1avg,
+
+    }
+    return result
+    
 def load_segmentationfile(filename:str) -> np.array:
     image = PIL.Image.open(filename).convert('RGB') * np.uint8(1)
     return np.all(image == (255, 255, 255), axis=-1)
@@ -100,9 +131,18 @@ def results_to_csv(results:list) -> str:
         assert len(csv_data[-1]) == len(csv_header)
     return '\n'.join([', '.join(linedata) for linedata in ([csv_header] + csv_data)])
     
-def error_map_to_png(error_map:np.array) -> bytes:
+def error_map_to_png(error_map:np.array,path) -> bytes:
     error_map = PIL.Image.fromarray( (error_map*255).astype('uint8') )
     buffer    = io.BytesIO()
     error_map.save(buffer, format='png')
-    buffer.seek(0);
+    error_map.save(path)
+    buffer.seek(0)
     return buffer.read()
+    
+def save_error_map_as_png(error_map:np.array,path:str) -> bytes:
+    error_map = PIL.Image.fromarray( (error_map*255).astype('uint8') )
+    buffer    = io.BytesIO()
+    error_map.save(buffer, format='png')
+    error_map.save(path)
+    return 'yay'
+
