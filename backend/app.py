@@ -8,6 +8,7 @@ import backend
 import backend.training
 from . import root_detection
 from . import root_tracking
+from . import evaluation
 
 from flask import session
 
@@ -83,20 +84,32 @@ class App(BaseApp):
             print('yayayayayayayayayayayayayaya')
             print(requestform)
             print('yayayayayayayayayayayayayaya')
-            
-            ## Temporary code below just for test of evaluation ##
-            ## Save one random file that represents error_map.png
-
-            import PIL.Image
+            # Real evaluation shiet
             files = requestform['filenames']
-            file = files[0]
-            basename           = file
-            segmentation_fname = f'{basename}.segmentation.png'
-            error_map_basename = f'{basename}.error_map.png'
-            image = PIL.Image.open(get_cache_path(segmentation_fname))
-            image.save(get_cache_path(error_map_basename))
-
-            return flask.jsonify({'results':'ok', 'error_map_path':error_map_basename,'original_image_path': basename })
+            settings_startingpoint = backend.settings.Settings()
+            modeltype = requestform['options']['training_type']
+            # Current user settings
+            s = session['settings']
+            s = s['settings']
+            # Update settings active models and load model into settings
+            s['active_models'][modeltype] = requestform['startingpoint']
+            settings_startingpoint.set_settings(s)
+            settings_current = self.get_settings()
+            for f in files:
+                os.remove(get_cache_path(f'{f}.segmentation.png'))
+                os.remove(get_cache_path(f'{f}.skeleton.png'))
+                backend.processing.process_image(get_cache_path(f), settings_startingpoint)
+            res_startingpoint = evaluation.evaluate_files([get_cache_path(f) for f in files])
+            for f in files:
+                os.remove(get_cache_path(f'{f}.segmentation.png'))
+                os.remove(get_cache_path(f'{f}.skeleton.png'))
+                backend.processing.process_image(get_cache_path(f),settings_current)
+            res_current = evaluation.evaluate_files([get_cache_path(f) for f in files])
+            print(res_startingpoint)
+            print('yayayayayayayaya')
+            print(res_current)
+            # ENDS HERE
+            return flask.jsonify({'results_startingpoint':res_startingpoint, 'results_current':res_current})
 
     def discard_model(self):
         # Retrieve what model type to discard

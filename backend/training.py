@@ -41,8 +41,8 @@ def find_targetfiles(inputfiles):
     def find_targetfile(imgf):
         no_ext_imgf = os.path.splitext(imgf)[0]
         for f in [
-            f'{imgf}.segmentation.png', 
-            f'{no_ext_imgf}.segmentation.png', 
+            f'{imgf}.annotation.png', 
+            f'{no_ext_imgf}.annotation.png', 
             f'{no_ext_imgf}.png'
         ]:
             if os.path.exists(f):
