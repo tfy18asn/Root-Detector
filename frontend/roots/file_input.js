@@ -15,6 +15,8 @@ RootsFileInput = class extends BaseFileInput{
         const candidate_names = [
             inputfilename  +'.segmentation.png',
             no_ext_filename+'.segmentation.png',
+            inputfilename  +'.annotation.png',
+            no_ext_filename+'.annotation.png',
             no_ext_filename+'.png',
         ]
         return (candidate_names.indexOf(basename) != -1)
@@ -24,14 +26,16 @@ RootsFileInput = class extends BaseFileInput{
     static async load_result(filename, resultfiles,id){
         if ((id !="training_image_annotation")&& (id != "training_images")){
             var inputfile = GLOBAL.files[filename]
+            var aftertext = `.segmentation.png`
         }
         else{
             var inputfile = GLOBAL.trainingfiles[filename] 
+            aftertext = `.annotation.png`
         }
         if(inputfile != undefined){
             const resultfile = new File(
                 //consistent file name
-                [resultfiles[0]], `${filename}.segmentation.png`, {type:'image/png'}
+                [resultfiles[0]], `${filename}${aftertext}`, {type:'image/png'}
             )
 
             //upload to flask & postprocess
