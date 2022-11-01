@@ -1,6 +1,7 @@
 import numpy as np
 import PIL.Image
 import zipfile, os, io
+import math
 
 
 
@@ -25,13 +26,22 @@ def evaluate_files(basenamepath:list) -> dict:
     for f in basenamepath:
         ypred = load_segmentationfile(f'{f}.segmentation.png')
         ytrue = load_segmentationfile(f'{f}.annotation.png')
-        IoUavg += IoU(ytrue, ypred)
+
+        IoU_temp = IoU(ytrue, ypred)
+        if not math.isnan(IoUavg):
+            IoUavg += IoU_temp
+
         em = create_error_map(ytrue, ypred)
         save_error_map_as_png(em,f'{f}.error_map.png' )
         data = precision_recall(ytrue, ypred)
-        precisionavg += data['precision']
-        recallavg += data['recall']
-        f1avg += data['F1']
+
+        if not math.isnan(data['precision']):
+            precisionavg += data['precision']
+        if not math.isnan(data['recall']):
+            recallavg += data['recall']
+        if not math.isnan(data['F1']):
+            f1avg += data['F1']
+
     N = len(basenamepath)
     print(N)
     IoUavg = IoUavg/N

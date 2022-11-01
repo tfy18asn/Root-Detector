@@ -54,9 +54,6 @@ var RootsEvaluation = new function () {
             var file0 = await fetch_as_file(url_for_image(filename0))
             var file1 = await fetch_as_file(url_for_image(filename1 + '.error_map.png'))
 
-            //var file0 = GLOBAL.evaluationfiles[filename0];
-            //var file1 = GLOBAL.evaluationfiles[filename1].results.segmentation;
-
             var promise = $img0.one('load', function () {
                 $img0.siblings('svg').attr('viewBox', `0 0 ${$img0[0].naturalWidth} ${$img0[0].naturalHeight / 2}`);
 
@@ -76,7 +73,7 @@ var RootsEvaluation = new function () {
 
 
     // Displays and updates evaluation results.
-    this.update_evaluation_results_info = async function(startingpoint) {
+    this.update_evaluation_results_info = async function(results) {
         $('#evaluation-results-message').removeClass('hidden')
 
         var NrEvalFiles = RootsTraining.get_nr_images()
@@ -90,8 +87,6 @@ var RootsEvaluation = new function () {
             $('.tabs .item[data-tab="training"]').click()
             RootsEvaluation.refresh_errormap_filetable(Object.values(GLOBAL.evaluationfiles))
 
-            console.log(startingpoint)
-
             // Fetch evaluation result data.
             /*
             var evalfiles = RootsTraining.get_selected_evaluation_files()
@@ -101,7 +96,6 @@ var RootsEvaluation = new function () {
                     startingpoint: startingpoint, options: RootsTraining.get_training_options()
                 }))
             */
-            var results = 3
             console.log(results)
 
             /*

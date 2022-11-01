@@ -130,7 +130,7 @@ RootsTraining = class extends BaseTraining {
         $('#evaluation-box').show()
 
         // Update evaluation.
-        RootsEvaluation.update_evaluation_results_info(startingpoint)
+        RootsEvaluation.update_evaluation_results_info(results)
     }
 
     static async set_eval_images(results){
@@ -138,6 +138,8 @@ RootsTraining = class extends BaseTraining {
         var RandNum = Math.floor(Math.random() *evalfiles.length);
         var error_map = await fetch_as_file(url_for_image(evalfiles[RandNum]+'.error_map.png'))
         var original_img = await fetch_as_file(url_for_image(evalfiles[RandNum]))
+
+        console.log(results)
 
         // Show evaluation box and place image 
         var $errormap_img = $('#errormap-image')

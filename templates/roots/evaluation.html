@@ -3,6 +3,20 @@
 {% import   'base/content_menu.html'    as base_content_menu %}
 {% import   'base/boxes.html'           as base_boxes   %}
 
+
+{% macro errormap_view_menu() %}
+<div class="menu view-menu">
+    <ul class="ui list", style="padding:0px">
+        <li><b>SHIFT + Drag</b> to move the image</li>
+        <li><b>SHIFT + Mouse wheel</b> to zoom</li>
+        <li><b>SHIFT + Double-click</b> to reset</li>
+        <li><b><span class="ui green text">GREEN</span></b> denotes true positives</li>
+        <li><b><span class="ui blue text">BLUE</span></b> denotes false negatives</li>
+        <li><b><span class="ui red text">RED</span></b> denotes false positives</li>
+    </ul>
+</div>
+{% endmacro %}
+
 <!-- Errormap help popup -->
 {% macro errormap_help() %}
 <div class="ui segment flowing popup">
@@ -15,7 +29,7 @@
         <li><b><span class="ui red text">RED</span></b> denotes false positives</li>
     </ul>
 </div>
-<script>$('.help-menu-button').last().popup({ hoverable: false });</script>
+<script>$('.errormap-help-menu-button').first().popup({ hoverable: false });</script>
 {% endmacro %}
 
 <!-- Errormap content menu -->
@@ -27,12 +41,14 @@
         {{ base_content_menu.view_menu() | indent(8)}}
     </div>
 
-    <a class="item help-menu-button"><i class="help icon"></i></a>
+    <a class="item errormap-help-menu-button"><i class="help icon"></i></a>
     {{ errormap_help() }}
+
+
+
 
 </div>
 {% endmacro %}
-
 
 <!-- Errormap filetable content -->
 {% macro errormap_filetable_content(app) %}
@@ -40,7 +56,7 @@
 
     {{ errormap_content_menu() }}
 
-    <div class="image-container">
+    <div class="image-container" style="height:calc(50vh - 120px)">
         {{ base_js_templates.content_image( name="left input", overlay=base_js_templates.image_and_boxes_overlay("left"), viewcontrols=app+".ViewControls" ) | indent(8) }}
         {{ base_js_templates.content_image( name="right input", overlay=base_js_templates.image_and_boxes_overlay("right"), viewcontrols=app+".ViewControls" ) | indent(8) }}
         {{ base_js_templates.progress_dimmer() }}
