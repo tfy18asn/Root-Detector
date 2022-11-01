@@ -160,7 +160,11 @@ RootsTraining = class extends BaseTraining {
         var $eval_img_button = $('#eval_img_button')
         $eval_img_button.click(this.set_eval_images)   
         var $save_modal = $('#save-modal').modal({closable: false, inverted:true, duration : 0,})
-        $save_modal.modal('show')            
+        $save_modal.modal('show')
+
+        // Refresh errormap filetable
+        $('.tabs .item[data-tab="training"]').click()
+        RootsEvaluation.refresh_errormap_filetable(Object.values(GLOBAL.evaluationfiles))
     }
 
     //override

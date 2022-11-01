@@ -83,9 +83,7 @@ var RootsEvaluation = new function () {
             $('#evaluation-results-box').removeClass('hidden')
             $('thead th#evaluation_errormap_files').text(`${NrEvalFiles} Evaluation Image${(NrEvalFiles == 1) ? '' : 's'} Used`)
 
-            // Refresh errormap filetable
-            $('.tabs .item[data-tab="training"]').click()
-            RootsEvaluation.refresh_errormap_filetable(Object.values(GLOBAL.evaluationfiles))
+            
 
             // Fetch evaluation result data.
             /*
