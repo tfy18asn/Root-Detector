@@ -98,10 +98,12 @@ var RootsEvaluation = new function () {
             $('#evaluation-results-accuracy-label-comp').text("(+" + n3 + ")")
             document.getElementById("evaluation-results-accuracy-label-comp").style.color = "green"
         }
-
         else if (n3 < 0.0) {
             $('#evaluation-results-accuracy-label-comp').text("(" + n3 + ")")
             document.getElementById("evaluation-results-accuracy-label-comp").style.color = "red"
+        }
+        else {
+            $('#evaluation-results-accuracy-label-comp').text("")
         }
 
         // F1
@@ -121,6 +123,9 @@ var RootsEvaluation = new function () {
             $('#evaluation-results-f1-label-comp').text("(" + n3 + ")")
             document.getElementById("evaluation-results-f1-label-comp").style.color = "red"
         }
+        else {
+            $('#evaluation-results-f1-label-comp').text("")
+        }
 
         // IoU
         n1 = Math.round(old_model['IoU'] * 10000) / 10000
@@ -138,6 +143,8 @@ var RootsEvaluation = new function () {
         else if (n3 < 0.0) {
             $('#evaluation-results-iou-label-comp').text("(" + n3 + ")")
             document.getElementById("evaluation-results-iou-label-comp").style.color = "red"
+        } else {
+            $('#evaluation-results-iou-label-comp').text("")
         }
 
         // RECALL
@@ -156,6 +163,9 @@ var RootsEvaluation = new function () {
         else if (n3 < 0.0) {
             $('#evaluation-results-recall-label-comp').text("(" + n3 + ")")
             document.getElementById("evaluation-results-recall-label-comp").style.color = "red"
+        }
+        else {
+            $('#evaluation-results-recall-label-comp').text("")
         }
     }
 };
