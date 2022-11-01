@@ -73,71 +73,89 @@ var RootsEvaluation = new function () {
 
 
     // Displays and updates evaluation results.
-    this.update_evaluation_results_info = async function(results) {
+    this.update_evaluation_results_info = function (NrEvalFiles, evaluationdata) {
+
         $('#evaluation-results-message').removeClass('hidden')
+        $('#evaluation-results-box').removeClass('hidden')
+        $('thead th#evaluation_errormap_files').text(`${NrEvalFiles} Evaluation Image${(NrEvalFiles == 1) ? '' : 's'} Used`)
 
-        var NrEvalFiles = RootsTraining.get_nr_images()
+        console.log(evaluationdata)
 
-        // Update evaluation data only if there are any evaluation files.
-        if (NrEvalFiles > 0) {
-            $('#evaluation-results-box').removeClass('hidden')
-            $('thead th#evaluation_errormap_files').text(`${NrEvalFiles} Evaluation Image${(NrEvalFiles == 1) ? '' : 's'} Used`)
+        var old_model = evaluationdata['results_startingpoint']
+        var new_model = evaluationdata['results_current']
+        console.log(old_model)
 
-            
+        // PRECISION
+        var n1 = Math.round(old_model['Precision'] * 10000) / 10000
+        var n2 = Math.round(new_model['Precision'] * 10000) / 10000
+        var n3 = Math.round((n2 - n1) * 10000) / 10000
 
-            // Fetch evaluation result data.
-            /*
-            var evalfiles = RootsTraining.get_selected_evaluation_files()
-            var results = await $.post('/evaluation',
-                JSON.stringify({
-                    filenames: evalfiles,
-                    startingpoint: startingpoint, options: RootsTraining.get_training_options()
-                }))
-            */
-            console.log(results)
+        // Update the html labels.
+        $('#evaluation-results-accuracy-label-old').text(n1)
+        $('#evaluation-results-accuracy-label-new').text(n2)
 
-            /*
-            var old_model = results['results_startingpoint']
-            var new_model = results['results_current']
-            console.log(old_model)
-            */
+        if (n3 > 0.0) {
+            $('#evaluation-results-accuracy-label-comp').text("(+" + n3 + ")")
+            document.getElementById("evaluation-results-accuracy-label-comp").style.color = "green"
+        }
 
-            // Values
-            var n1 = 1.0 //old_model['Precision']
-            var n2 = 0.5 //new_model['Precision']
-            var n3 = Math.floor((n2 - n1) * 100) / 100
+        else if (n3 < 0.0) {
+            $('#evaluation-results-accuracy-label-comp').text("(" + n3 + ")")
+            document.getElementById("evaluation-results-accuracy-label-comp").style.color = "red"
+        }
 
-            // Update the html labels.
-            $('#evaluation-results-accuracy-label-old').text(n1)
-            $('#evaluation-results-accuracy-label-new').text(n2)
+        // F1
+        n1 = Math.round(old_model['F1'] * 10000) / 10000
+        n2 = Math.round(new_model['F1'] * 10000) / 10000
+        n3 = Math.round((n2 - n1) * 10000) / 10000
 
-            if (n3 >= 0.0) {
-                $('#evaluation-results-accuracy-label-comp').text("(+" + n3 + ")")
-                document.getElementById("evaluation-results-accuracy-label-comp").style.color = "green"
-            }
+        // Update the html labels.
+        $('#evaluation-results-f1-label-old').text(n1)
+        $('#evaluation-results-f1-label-new').text(n2)
 
-            else {
-                $('#evaluation-results-accuracy-label-comp').text("(" + n3 + ")")
-                document.getElementById("evaluation-results-accuracy-label-comp").style.color = "red"
-            }
+        if (n3 > 0.0) {
+            $('#evaluation-results-f1-label-comp').text("(+" + n3 + ")")
+            document.getElementById("evaluation-results-f1-label-comp").style.color = "green"
+        }
+        else if (n3 < 0.0) {
+            $('#evaluation-results-f1-label-comp').text("(" + n3 + ")")
+            document.getElementById("evaluation-results-f1-label-comp").style.color = "red"
+        }
 
-            // Values
-            n1 = 1.0 //old_model['F1']
-            n2 = 0.5 //new_model['F1']
-            n3 = Math.floor((n2 - n1) * 100) / 100
+        // IoU
+        n1 = Math.round(old_model['IoU'] * 10000) / 10000
+        n2 = Math.round(new_model['IoU'] * 10000) / 10000
+        n3 = Math.round((n2 - n1) * 10000) / 10000
 
-            // Update the html labels.
-            $('#evaluation-results-f1-label-old').text(n1)
-            $('#evaluation-results-f1-label-new').text(n2)
+        // Update the html labels.
+        $('#evaluation-results-iou-label-old').text(n1)
+        $('#evaluation-results-iou-label-new').text(n2)
 
-            if (n3 >= 0.0) {
-                $('#evaluation-results-f1-label-comp').text("(+" + n3 + ")")
-                document.getElementById("evaluation-results-f1-label-comp").style.color = "green"
-            }
-            else {
-                $('#evaluation-results-f1-label-comp').text("(" + n3 + ")")
-                document.getElementById("evaluation-results-f1-label-comp").style.color = "red"
-            }
+        if (n3 > 0.0) {
+            $('#evaluation-results-iou-label-comp').text("(+" + n3 + ")")
+            document.getElementById("evaluation-results-iou-label-comp").style.color = "green"
+        }
+        else if (n3 < 0.0) {
+            $('#evaluation-results-iou-label-comp').text("(" + n3 + ")")
+            document.getElementById("evaluation-results-iou-label-comp").style.color = "red"
+        }
+
+        // RECALL
+        n1 = Math.round(old_model['recall'] * 10000) / 10000
+        n2 = Math.round(new_model['recall'] * 10000) / 10000
+        n3 = Math.round((n2 - n1) * 10000) / 10000
+
+        // Update the html labels.
+        $('#evaluation-results-recall-label-old').text(n1)
+        $('#evaluation-results-recall-label-new').text(n2)
+
+        if (n3 > 0.0) {
+            $('#evaluation-results-recall-label-comp').text("(+" + n3 + ")")
+            document.getElementById("evaluation-results-recall-label-comp").style.color = "green"
+        }
+        else if (n3 < 0.0) {
+            $('#evaluation-results-recall-label-comp').text("(" + n3 + ")")
+            document.getElementById("evaluation-results-recall-label-comp").style.color = "red"
         }
     }
 };

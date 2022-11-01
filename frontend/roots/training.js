@@ -75,10 +75,6 @@ RootsTraining = class extends BaseTraining {
         $('#nr_ev_image_box').toggle(true)
     }
 
-
-
-
-
     // override
     static async on_start_training(){
         //Move evaluation images from trainingfiles
@@ -105,41 +101,39 @@ RootsTraining = class extends BaseTraining {
             console.error(e)
             this.fail_modal()
         } finally {
-            $(GLOBAL.event_source).off('training', progress_cb)
-            if (NrEvalFiles>0) { 
-                await this.setup_evaluation(startingpoint)
 
-                
+            $(GLOBAL.event_source).off('training', progress_cb)
+            if (NrEvalFiles > 0) {
+                await this.setup_evaluation(startingpoint, NrEvalFiles)
             }
             //Show results modal
-            this.settings_save_modal()
-
+            this.settings_save_modal(NrEvalFiles)
         }
     }   
 
-    static async setup_evaluation(startingpoint) {
+    static async setup_evaluation(startingpoint, NrEvalFiles) {
 
         console.log(startingpoint)
         // Remove evaluation files so they can be used again for training
         this.move_evaluation_to_training_files()
         // Evaluate training
         var evalfiles = this.get_selected_evaluation_files()
-        var results = await $.post('/evaluation', JSON.stringify({filenames:evalfiles, startingpoint:startingpoint, options:this.get_training_options()}))
-        console.log(results)
-        this.set_eval_images(results)
+        var results = await $.post('/evaluation', JSON.stringify({ filenames: evalfiles, startingpoint: startingpoint, options: this.get_training_options() }))
+
+        // Update evaluation data table.
+        RootsEvaluation.update_evaluation_results_info(NrEvalFiles, results)
+
+        this.set_eval_images()
         $('#evaluation-box').show()
 
-        // Update evaluation.
-        RootsEvaluation.update_evaluation_results_info(results)
+        
     }
 
-    static async set_eval_images(results){
+    static async set_eval_images(){
         var evalfiles = RootsTraining.get_selected_evaluation_files()
         var RandNum = Math.floor(Math.random() *evalfiles.length);
         var error_map = await fetch_as_file(url_for_image(evalfiles[RandNum]+'.error_map.png'))
         var original_img = await fetch_as_file(url_for_image(evalfiles[RandNum]))
-
-        console.log(results)
 
         // Show evaluation box and place image 
         var $errormap_img = $('#errormap-image')
@@ -148,7 +142,7 @@ RootsTraining = class extends BaseTraining {
         GLOBAL.App.ImageLoading.set_image_src($evaluated_img, original_img)
     }
     // Set actions for discard and save model buttons and show save model modal
-    static settings_save_modal() {
+    static settings_save_modal(NrEvalFiles) {
 
         // Set action for save and discard button and show modal
         var $save_button = $('#onclick-save-model')
@@ -162,7 +156,13 @@ RootsTraining = class extends BaseTraining {
         var $save_modal = $('#save-modal').modal({closable: false, inverted:true, duration : 0,})
         $save_modal.modal('show')
 
-        // Refresh errormap filetable
+        // Refresh errormap filetable and reset text and boxes if empty.
+        if (NrEvalFiles == 0) {
+            GLOBAL.evaluationfiles = []
+            $('thead th#evaluation_errormap_files').text(`No Evaluation Images Used`)
+            $('#evaluation-results-box').addClass('hidden')
+            $('#evaluation-results-message').addClass('hidden')
+        }
         $('.tabs .item[data-tab="training"]').click()
         RootsEvaluation.refresh_errormap_filetable(Object.values(GLOBAL.evaluationfiles))
     }
@@ -212,17 +212,6 @@ RootsTraining = class extends BaseTraining {
     static get_selected_evaluation_files(){
         const eval_files = Object.values(GLOBAL.evaluationfiles) //.filter( x => !!x.results )
         return eval_files.map( x => x.name)
-    }
-
-    //override
-    static success_modal() {
-        $('#training-modal .progress').progress('set success', 'Training finished');
-        $('#training-modal #ok-training-button').show()
-        $('#training-modal #cancel-training-button').hide()
-
-        // Update evaluation.
-        var NrEvalFiles = this.get_nr_images();
-        RootsEvaluation.update_evaluation_results_info(NrEvalFiles)
     }
 
     // override
