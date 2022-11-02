@@ -15,7 +15,7 @@
 </label>
 <!-- padding-top:0; padding-bottom:0-->
 <input type="file" id="training_images" style="display:none"
-onchange="{{ app }}.FileInput.on_inputfiles_select(event)" accept="image/*" multiple>
+onchange="{{app}}.FileInput.on_inputfiles_select(event)" accept="image/*" multiple>
 {% endmacro %}
 
 {# Upload button which uploads annotation as before, (or exclusion masks if that is chosen) #}
