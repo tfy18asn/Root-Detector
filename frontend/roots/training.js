@@ -76,7 +76,9 @@ RootsTraining = class extends BaseTraining {
     }
 
     // override
-    static async on_start_training(){
+    static async on_start_training() {
+        GLOBAL.showmodal = 0
+
         //Move evaluation images from trainingfiles
         var NrEvalFiles = this.get_nr_images();
         this.add_evaluation_files(NrEvalFiles);
@@ -102,12 +104,17 @@ RootsTraining = class extends BaseTraining {
             this.fail_modal()
         } finally {
 
-            $(GLOBAL.event_source).off('training', progress_cb)
-            if (NrEvalFiles > 0) {
-                await this.setup_evaluation(startingpoint, NrEvalFiles)
+            // Only update and display the modal if training was successful
+            if (GLOBAL.showmodal) {
+                $(GLOBAL.event_source).off('training', progress_cb)
+                if (NrEvalFiles > 0) {
+                    await this.setup_evaluation(startingpoint, NrEvalFiles)
+                }
+                //Show results modal
+                this.settings_save_modal(NrEvalFiles)
+            } else {
+                this.on_discard_model()
             }
-            //Show results modal
-            this.settings_save_modal(NrEvalFiles)
         }
     }   
 
@@ -184,6 +191,16 @@ RootsTraining = class extends BaseTraining {
             return;
         
         super.update_model_info(model_type)
+    }
+
+    //override
+    static success_modal() {
+        $('#training-modal .progress').progress('set success', 'Training finished');
+        $('#training-modal #ok-training-button').show()
+        $('#training-modal #cancel-training-button').hide()
+
+        // If training is successful, show the modal.
+        GLOBAL.showmodal = 1
     }
 
     static update_number_of_training_files_info(){
