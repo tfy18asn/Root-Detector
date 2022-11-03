@@ -56,7 +56,7 @@
 
     {{ errormap_content_menu() }}
 
-    <div class="image-container" style="height:calc(50vh - 120px)">
+    <div class="image-container" style="height:calc(50vh)">
         {{ base_js_templates.content_image( name="left input", overlay=base_js_templates.image_and_boxes_overlay("left"), viewcontrols=app+".ViewControls" ) | indent(8) }}
         {{ base_js_templates.content_image( name="right input", overlay=base_js_templates.image_and_boxes_overlay("right"), viewcontrols=app+".ViewControls" ) | indent(8) }}
         {{ base_js_templates.progress_dimmer() }}
