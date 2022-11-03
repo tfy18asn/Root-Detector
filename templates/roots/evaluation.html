@@ -187,7 +187,11 @@
 
             <!-- F1 score -->
             <div class="ui input" id="evaluation-results-f1">
-                <label style="padding:10px; width:40%;">F1 score:</label>
+                <label style="padding:10px; width:10%;">F1 score:</label>
+                <div data-tooltip="The harmonic mean of precision and recall" data-position="top left">
+                    <i class="question circle outline icon" style="visibility: visible;"></i>
+                </div>
+                <label style="padding:10px; width:28%;"></label>
                 <label style="padding:10px; width:30%;"><b id="evaluation-results-f1-label-old">xxx</b></label>
                 <label style="padding:10px; width:10%;"><b id="evaluation-results-f1-label-new">xxx</b></label>
                 <label style="padding:10px; width:20%;"><p id="evaluation-results-f1-label-comp"></p></label>
@@ -195,7 +199,11 @@
 
             <!-- Accuracy (or precision) -->
             <div class="ui input" id="evaluation-results-accuracy">
-                <label style="padding:10px; width:40%;">Precision:</label>
+                <label style="padding:10px; width:10%;">Precision:</label>
+                <div data-tooltip="Ratio between the correctly predicted root pixels and the total number of root pixel predictions" data-position="top left">
+                    <i class="question circle outline icon" style="visibility: visible;"></i>
+                </div>
+                <label style="padding:10px; width:28%;"></label>
                 <label style="padding:10px; width:30%;"><b id="evaluation-results-accuracy-label-old">xxx</b></label>
                 <label style="padding:10px; width:10%;"><b id="evaluation-results-accuracy-label-new">xxx</b></label>
                 <label style="padding:10px; width:20%;"><p id="evaluation-results-accuracy-label-comp"></p></label>
@@ -203,7 +211,11 @@
 
             <!-- Recall score -->
             <div class="ui input" id="evaluation-results-recall">
-                <label style="padding:10px; width:40%;">Recall:</label>
+                <label style="padding:10px; width:10%;">Recall:</label>
+                <div data-tooltip="The ratio between correctly predicted root pixels and the total number of root pixels from annotation" data-position="top left">
+                    <i class="question circle outline icon" style="visibility: visible;"></i>
+                </div>
+                <label style="padding:10px; width:28%;"></label>
                 <label style="padding:10px; width:30%;"><b id="evaluation-results-recall-label-old">xxx</b></label>
                 <label style="padding:10px; width:10%;"><b id="evaluation-results-recall-label-new">xxx</b></label>
                 <label style="padding:10px; width:20%;"><p id="evaluation-results-recall-label-comp"></p></label>
@@ -211,7 +223,11 @@
 
             <!-- IoU score -->
             <div class="ui input" id="evaluation-results-iou">
-                <label style="padding:10px; width:40%;">IoU:</label>
+                <label style="padding:10px; width:10%;">IoU:</label>
+                <div data-tooltip="The extent of overlap between the predictions and the annotations" data-position="top left">
+                    <i class="question circle outline icon" style="visibility: visible;"></i>
+                </div>
+                <label style="padding:10px; width:28%;"></label>
                 <label style="padding:10px; width:30%;"><b id="evaluation-results-iou-label-old">xxx</b></label>
                 <label style="padding:10px; width:10%;"><b id="evaluation-results-iou-label-new">xxx</b></label>
                 <label style="padding:10px; width:20%;"><p id="evaluation-results-iou-label-comp"></p></label>
