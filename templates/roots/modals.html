@@ -97,7 +97,7 @@
 <div class="ui modal" id="save-modal">
 
     <!-- Oskars box -->
-    {# {{ evaluation.evaluation_box() }} #}
+    {# {{ evaluation.evaluation_box(app) }} #}
 
     <!-- Popup title -->
     <div class="header">Model Results</div>
@@ -108,7 +108,7 @@
     </div>
 
     <!-- Save or discard field -->
-    {{ evaluation.evaluation_save_field() }}
+    {{ evaluation.evaluation_save_field(app) }}
 </div>
 
 {% endmacro %}

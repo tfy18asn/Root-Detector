@@ -79,11 +79,8 @@ var RootsEvaluation = new function () {
         $('#evaluation-results-box').removeClass('hidden')
         $('thead th#evaluation_errormap_files').text(`${NrEvalFiles} Evaluation Image${(NrEvalFiles == 1) ? '' : 's'} Used`)
 
-        console.log(evaluationdata)
-
         var old_model = evaluationdata['results_startingpoint']
         var new_model = evaluationdata['results_current']
-        console.log(old_model)
 
         // PRECISION
         var n1 = Math.round(old_model['Precision'] * 10000) / 10000

@@ -75,6 +75,9 @@ RootsTraining = class extends BaseTraining {
         $('#nr_ev_image_box').toggle(true)
     }
 
+
+
+
     // override
     static async on_start_training() {
         GLOBAL.showmodal = 0
@@ -120,46 +123,22 @@ RootsTraining = class extends BaseTraining {
 
     static async setup_evaluation(startingpoint, NrEvalFiles) {
 
-        console.log(startingpoint)
         // Remove evaluation files so they can be used again for training
         this.move_evaluation_to_training_files()
+
         // Evaluate training
         var evalfiles = this.get_selected_evaluation_files()
         var results = await $.post('/evaluation', JSON.stringify({ filenames: evalfiles, startingpoint: startingpoint, options: this.get_training_options() }))
 
         // Update evaluation data table.
         RootsEvaluation.update_evaluation_results_info(NrEvalFiles, results)
-
-        this.set_eval_images()
-        $('#evaluation-box').show()
-
-        
     }
 
-    static async set_eval_images(){
-        var evalfiles = RootsTraining.get_selected_evaluation_files()
-        var RandNum = Math.floor(Math.random() *evalfiles.length);
-        var error_map = await fetch_as_file(url_for_image(evalfiles[RandNum]+'.error_map.png'))
-        var original_img = await fetch_as_file(url_for_image(evalfiles[RandNum]))
-
-        // Show evaluation box and place image 
-        var $errormap_img = $('#errormap-image')
-        GLOBAL.App.ImageLoading.set_image_src($errormap_img ,error_map)
-        var $evaluated_img = $('#evaluated-image')
-        GLOBAL.App.ImageLoading.set_image_src($evaluated_img, original_img)
-    }
     // Set actions for discard and save model buttons and show save model modal
     static settings_save_modal(NrEvalFiles) {
 
-        // Set action for save and discard button and show modal
-        var $save_button = $('#onclick-save-model')
-        console.log("Before onclick is set")
-        $save_button.click(this.on_save_model) //this.on_save_model
-        console.log("After onclick is set")
-        var $discard_button = $('#discard-model-button')
-        $discard_button.click(this.on_discard_model)
-        var $eval_img_button = $('#eval_img_button')
-        $eval_img_button.click(this.set_eval_images)   
+
+
         var $save_modal = $('#save-modal').modal({closable: false, inverted:true, duration : 0,})
         $save_modal.modal('show')
 
@@ -236,12 +215,11 @@ RootsTraining = class extends BaseTraining {
         const new_modelname = $('#training-new-modelname')[0].value
         console.log('Saving new model as:', new_modelname)
         $.get('/save_model', {newname: new_modelname, options:RootsTraining.get_training_options()})    // this.get_training_options
-            .done( _ => $('#training-new-modelname-field').hide() )
-            .done( _ => $('#errormap-image').id = "" ) // remove error map image 
-            .done( _ => $('#evaluation-image').id = "" ) // remove error map image 
-            .done( _ => $('#evaluation-box').hide() ) // hide evaluation box
-            .done( _ =>  GLOBAL.App.Settings.load_settings()) // Reload settings
-            .done( _ => $('#save-modal').modal('hide'))
+            .done( _ => {
+                $('#training-new-modelname-field').hide() 
+                GLOBAL.App.Settings.load_settings() // Reload settings
+                $('#save-modal').modal('hide')
+            })
             .fail( _ => $('body').toast({message:'Saving failed.', class:'error', displayTime: 0, closeIcon: true}) )
         $('#training-new-modelname')[0].value = ''
     }
@@ -250,14 +228,13 @@ RootsTraining = class extends BaseTraining {
     static on_discard_model(){
         console.log('Discarding model')
         $.get('/discard_model',{options:RootsTraining.get_training_options()})
-            .done( _ => $('#training-new-modelname-field').hide() )
-            .done( _ => $('#errormap-image').id = "" ) // remove error map image 
-            .done( _ => $('#evaluation-image').id = "" ) // remove error map image 
-            .done( _ => $('#evaluation-box').hide() ) // hide evaluation box
-            .done( _ => GLOBAL.App.Settings.load_settings())
-            .done (_ => $('#save-modal').modal('hide'))
-            .fail( _ => $('body').toast({message:'Discarding model failed.', class:'error', displayTime: 0, closeIcon: true}) )
-        $('#training-new-modelname')[0].value = ''
+            .done( _ => {
+                $('#training-new-modelname-field').hide();
+                GLOBAL.App.Settings.load_settings();
+                $('#save-modal').modal('hide');
+            })
+            .fail( _ => $('body').toast({message:'Discarding model failed.', class:'error', displayTime: 0, closeIcon: true}) );
+        $('#training-new-modelname')[0].value = '';
     }    
 }
 
