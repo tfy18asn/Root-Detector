@@ -1,10 +1,10 @@
 <!--{{warning}}-->
-
 {% from   'roots/top_menu.html'       import top_menu %}
 {% import 'base/modals.html'          as     base_modals %}
 {% from   'roots/main_container.html' import main_container %}
 {% from   'roots/detection_tab.html'  import filetable_row_template %}
 {% from   'roots/modals.html'         import modal_settings %}
+{% from   'roots/modals.html'         import save_modal %}
 
 {% set app = "RootDetectorApp" %}
 
@@ -28,6 +28,8 @@
     {{ modal_settings()          | indent }}
     {{ base_modals.modal_training_progress()      | indent }}
     {{ base_modals.modal_loading_files_progress() | indent }}
+    {# TEST  #}
+    {{ save_modal(app)                   | indent}}
 
 </body>
 </html>
