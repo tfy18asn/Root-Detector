@@ -167,8 +167,8 @@ var RootTracking = new function() {
             $dimmer.dimmer({closable:true});
         } ).always( () => {
             $root.find('polyline.correction-line').remove()
-            delete_image(filename0);
-            delete_image(filename1);
+            //delete_image(filename0);
+            //delete_image(filename1);
         });
     }
 

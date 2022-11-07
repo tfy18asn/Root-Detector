@@ -95,18 +95,30 @@ class App(BaseApp):
             s['active_models'][modeltype] = requestform['startingpoint']
             settings_startingpoint.set_settings(s)
             settings_current = self.get_settings()
+            if (modeltype == 'detection'):
+                aftertxt = ''
+            else:
+                aftertxt = '1'
+                for f in files:
+                    mask = evaluation.load_annotated_mask(get_cache_path(f+'.annotation.png'))
+                    backend.write_as_png(get_cache_path(aftertxt+f+'.annotation.png') ,mask) 
             for f in files:
-                os.remove(get_cache_path(f'{f}.segmentation.png'))
-                os.remove(get_cache_path(f'{f}.skeleton.png'))
-                backend.processing.process_image(get_cache_path(f), settings_startingpoint)
-            res_startingpoint = evaluation.evaluate_files([get_cache_path(f) for f in files])
+                result = root_detection.run_model(get_cache_path(f), settings_startingpoint,modeltype)
+                result = root_detection.postprocess(result)
+                segmentation_path  = get_cache_path(aftertxt+f+'.segmentation.png')    
+                backend.write_as_png(segmentation_path, result['segmentation'])
+            res_startingpoint = evaluation.evaluate_files(files,aftertxt)  
             for f in files:
-                os.remove(get_cache_path(f'{f}.segmentation.png'))
-                os.remove(get_cache_path(f'{f}.skeleton.png'))
-                backend.processing.process_image(get_cache_path(f),settings_current)
-            res_current = evaluation.evaluate_files([get_cache_path(f) for f in files])
+                os.remove(get_cache_path(aftertxt+f+'.segmentation.png'))
+                result = root_detection.run_model(get_cache_path(f), settings_current,modeltype)
+                result = root_detection.postprocess(result)
+                segmentation_path  = get_cache_path(aftertxt+f+'.segmentation.png' )   
+                backend.write_as_png(segmentation_path, result['segmentation'])
+            res_current = evaluation.evaluate_files(files,aftertxt)
+
             print(res_startingpoint)
             print('yayayayayayayaya')
+            print(modeltype)
             print(res_current)
             # ENDS HERE
             return flask.jsonify({'results_startingpoint':res_startingpoint, 'results_current':res_current})
