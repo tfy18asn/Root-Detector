@@ -115,13 +115,25 @@ var RootsEvaluation = new function () {
         if (n3 > 0.0) {
             $('#evaluation-results-f1-label-comp').text("(+" + n3 + ")")
             document.getElementById("evaluation-results-f1-label-comp").style.color = "green"
+
+            // Verdict text update
+            $('#evaluation-results-verdict-text').text("New model is better")
+            document.getElementById("evaluation-results-verdict-text").style.color = "green"
         }
         else if (n3 < 0.0) {
             $('#evaluation-results-f1-label-comp').text("(" + n3 + ")")
             document.getElementById("evaluation-results-f1-label-comp").style.color = "red"
+
+            // Verdict text update
+            $('#evaluation-results-verdict-text').text("New model is worse")
+            document.getElementById("evaluation-results-verdict-text").style.color = "red"
         }
         else {
             $('#evaluation-results-f1-label-comp').text("")
+
+            // Verdict text update
+            $('#evaluation-results-verdict-text').text("New model is neither better or worse")
+            document.getElementById("evaluation-results-verdict-text").style.color = "black"
         }
 
         // IoU
