@@ -1,10 +1,12 @@
 {% import 'base/main_container.html' as base_main_container %}
 {% from   'roots/tracking_tab.html'  import tracking_tab %}
 {% from   'roots/training_tab.html'  import training_tab as roots_training_tab %}
+{% from   'roots/get_started_tab.html' import get_started_body %}
 
 {% macro tabs() %}
-<div class="ui pointing secondary tabs menu">
-    <a class="active item" data-tab="detection"> Detection</a>
+<div class="ui pointing secondary tabs menu">    
+    <a class="active item" data-tab="get_started"> Get Started </a>
+    <a class="item" data-tab="detection"> Detection </a>
     <a class="item"        data-tab="tracking">  Tracking </a>
     <a class="item"        data-tab="training">  Training </a>
 </div>
@@ -18,6 +20,7 @@
         app, 
         tabs          = tabs(), 
         training_tab  = roots_training_tab(app),
-        extra         = tracking_tab() 
+        extra         = tracking_tab(),
+        extra2        = get_started_body()
     ) }}
 {% endmacro %}

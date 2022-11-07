@@ -44,11 +44,8 @@ class App(BaseApp):
             fname0 = os.path.join(get_cache_path(), data['filename0'])
             fname1 = os.path.join(get_cache_path(), data['filename1'])
             result = root_tracking.process(fname0, fname1, self.get_settings(), data)
-<<<<<<< HEAD
      
-=======
         
->>>>>>> origin/Malin
         return flask.jsonify({
             'points0':         result['points0'].tolist(),
             'points1':         result['points1'].tolist(),
@@ -77,8 +74,6 @@ class App(BaseApp):
             flask.abort(404)
         
         backend.training.start_training(imagefiles, targetfiles, options, self.get_settings())
-<<<<<<< HEAD
-=======
         return 'OK'
 
     def evaluation(self):
@@ -129,5 +124,4 @@ class App(BaseApp):
         s['active_models'][modeltype] = defaults['active_models'][modeltype]
         settings.set_settings(s)
         update_user_settings(settings)
->>>>>>> origin/Malin
         return 'OK'

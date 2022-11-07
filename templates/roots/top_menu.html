@@ -11,10 +11,16 @@
          onchange="{{ app }}.FileInput.on_exclusionmasks_select(event)" accept="image/*" multiple>
 {% endmacro %}
 
-
+{% macro choose_model() %}
+<a for="ui simple item" id="settings-button" onclick="{{ app }}.Settings.on_settings()">
+  <i class="wrench icon"></i>
+  <span class="text">Settings</span>
+</a>  
+{% endmacro %}
 
 {% macro top_menu(app) %}
 {{ base_top_menu.top_menu(app, filemenu_extras=load_exclude_masks_item(app)) }}
+{{ choose_model() }}
 {% endmacro %}
 
 
