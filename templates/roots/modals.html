@@ -132,7 +132,7 @@
           </button>
           <div class="or"></div>
           <!--<button class="ui violet right labeled icon button" id="onclick-save-model" onclick="">-->
-            <button class="ui positive button" id="onclick-save-model" onclick="{{app}}.Training.on_save_model()">
+            <button class="ui positive button" id="onclick-save-model" onclick="{{app}}.Training.on_save_settings()">
             <i class="save icon"></i>
             Save Model
           </button>
@@ -142,7 +142,92 @@
   </div>
 
 </div>
+{% endmacro %}
 
+<!--varför kör denna två gånger när man submit??-->
+{% macro on_save_model_modal(app) %}
+<div class="ui modal" id="save-settings-modal">
+<div class="header">Information about the model</div>
+<div class="content">
+  <form class="ui form" action='#' id="save-settings-form" onsubmit="return false"> <!---->
+      
+      <div class="field">
+          <label>Name of the author:</label>
+          <input type="text" name="training-author" placeholder="Name" id="training-author">
+      </div>
+      <div class="ui divider"></div>
+      <div class="field">
+        <label>Choose which terrestrial ecosystem the images are from:</label>
+        <select class="ui search dropdown" id="ecosystem" name="ecosystem">
+          <option value="">Type of terrestrial ecosystem</option>
+          <option value="GE">Grassland Ecosystem</option>
+          <option value="FE">Forest Ecosystem</option>
+          <option value="DE">Desert Ecosystem</option>
+          <option value="CE">Cropland Ecosystem</option>
+          <option value="Ot">Other</option>
+        </select>
+      </div>
+
+      <!--<div class="ui segment form">--> <!--style="display:none"--> 
+      <div class="ui field">
+        <!--<div class="ui divider"></div>-->
+        <label>Save trained model</label>
+        <div class="ui action input">
+          <!--<input type="text" placeholder="New model name" id="training-new-modelname">-->
+          <!--<div class="ui buttons">-->
+            <button class="ui button" id="discard-model-button-settings" onclick="{{app}}.Training.on_discard_model()">
+              Discard Model
+            </button>
+            <div class="or"></div>
+            <!--<button class="ui violet right labeled icon button" id="onclick-save-model" onclick="">-->
+              <button class="ui green submit button" id="onclick-save-model-settings" onclick="{{app}}.Training.on_save_model()"> <!--onclick="{{app}}.Training.on_save_model()-->
+              <i class="save icon"></i>
+              Save Model
+            </button>
+          <!--</div>-->
+        </div>
+      </div>
+      <div class="ui error message" id="error-message-save-model"></div>
+  </form>
+</div>
+</div>
+
+<script>
+$('#save-settings-form')
+  .form({
+    on: 'submit',
+    fields: {
+      author: {
+        identifier  : 'training-author',
+        rules: [
+          {
+            type   : 'empty',
+            prompt : 'Please enter the name of the author'
+          }
+        ]
+      },
+      dropdown: {
+        identifier  : 'ecosystem',
+        rules: [
+          {
+            type   : 'empty',
+            prompt : 'Please select a dropdown value'
+          }
+        ]
+      },
+    }
+  })
+;
+
+
+//$(document).ready(function() {
+ // $(document).on('submit', '#save-settings-form', function(event) {
+    // do your things
+    //event.preventDefault()
+    //return false;
+   //});
+//});
+</script>
 {% endmacro %}
 
 
