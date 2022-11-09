@@ -232,9 +232,6 @@ RootsTraining = class extends BaseTraining {
         if (info_dict != null ){
             const new_modelname = $('#training-new-modelname')[0].value
             console.log('Saving new model as:', new_modelname)
-            console.log("efter saving new model")
-            //var test = {newname: new_modelname, options:RootsTraining.get_training_options(), info:info_dict}
-            //console.log(test)
             await $.get('/save_model', {newname: new_modelname, options:RootsTraining.get_training_options(), info:info_dict})    // this.get_training_options
                 .done( _ => {
                     $('#training-new-modelname-field').hide() 
@@ -249,8 +246,6 @@ RootsTraining = class extends BaseTraining {
             $('#training-new-modelname')[0].value = ''
             $('#save-settings-form').form('clear')
         }
-
-        console.log("igenom on_save_model")
     }
 
     // Discards trained model, removes it and sets a new active model 
