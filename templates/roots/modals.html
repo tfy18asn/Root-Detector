@@ -200,14 +200,14 @@ $('#save-settings-form')
 {% macro modal_evaluation_loading(app) %}
 <div class="ui tiny modal" id = "evaluation-modal">
     <div class="ui segment">
-        <div class="ui active massive slow text elastic loader blue inline centered">Evaluating models</div>
+        <div class="ui active massive slow text elastic loader black inline centered">Evaluating models</div>
         <p></p>
         <p></p>
         <p></p>
         <p></p>
         <div class="actions">
-            <div class="ui negative button" onclick = "{{app}}.Training.stop_evaluation()" >
-            Cancel evaluation
+            <div class="ui centered negative button" onclick = "{{app}}.Training.stop_evaluation()" >
+            Cancel evaluation 
             </div>
         </div>
     </div>

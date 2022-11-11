@@ -115,8 +115,7 @@ RootsTraining = class extends BaseTraining {
                         await this.setup_evaluation(startingpoint)
                         }
                         catch (e) {
-                            console.error(e)
-                            
+                            console.error(e)   
                         }
                 }
                 //Show results modal
@@ -274,6 +273,10 @@ RootsTraining = class extends BaseTraining {
         $('#save-settings-form').form('clear')
         $('#training-new-modelname')[0].value = '';
     }    
+    static stop_evaluation(){
+        GLOBAL.StopEval = 1;
+
+    }
 }
 
 
