@@ -7,3 +7,5 @@ models
 tests/logs
 sync_models.py
 venv*
+.vs
+Beechforests
