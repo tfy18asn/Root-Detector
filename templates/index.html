@@ -4,8 +4,7 @@
 {% from   'roots/main_container.html' import main_container %}
 {% from   'roots/detection_tab.html'  import filetable_row_template %}
 {% from   'roots/modals.html'         import modal_settings %}
-{% from   'roots/modals.html'         import save_modal %}
-{% from   'roots/modals.html'         import modal_evaluation_loading %}
+{% from   'roots/modals.html'         import save_modal, on_save_model_modal, modal_evaluation_loading  %}
 
 {% set app = "RootDetectorApp" %}
 
@@ -19,7 +18,6 @@
     {{ filetable_row_template(app)  | indent }}
 </head>
 
-
 <body onload="{{app}}.init()">
 
     {{ top_menu(app)             | indent }}
@@ -31,6 +29,7 @@
     {{ base_modals.modal_loading_files_progress() | indent }}
     {{ modal_evaluation_loading(app)| indent }}    
     {# TEST  #}
-    {{ save_modal(app)                   | indent}}
+    {{ save_modal(app)              | indent}}
+    {{ on_save_model_modal(app)     | indent }}
 </body>
 </html>
