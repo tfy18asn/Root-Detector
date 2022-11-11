@@ -110,8 +110,14 @@ RootsTraining = class extends BaseTraining {
             // Only update and display the modal if training was successful
             if (GLOBAL.showmodal) {
                 $(GLOBAL.event_source).off('training', progress_cb)
-                if (NrEvalFiles > 0) {
-                    await this.setup_evaluation(startingpoint, NrEvalFiles)
+                if (NrEvalFiles > 0) {      
+                    try {
+                        await this.setup_evaluation(startingpoint)
+                        }
+                        catch (e) {
+                            console.error(e)
+                            
+                        }
                 }
                 //Show results modal
                 this.settings_save_modal(NrEvalFiles)
@@ -177,7 +183,10 @@ RootsTraining = class extends BaseTraining {
         $('#training-modal .progress').progress('set success', 'Training finished');
         $('#training-modal #ok-training-button').show()
         $('#training-modal #cancel-training-button').hide()
-
+        this.hide_modal()
+        $('#evaluation-modal').modal({
+            closable: false, inverted:true,
+        }).modal('show');
         // If training is successful, show the modal.
         GLOBAL.showmodal = 1
     }
