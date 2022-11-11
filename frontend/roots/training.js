@@ -210,18 +210,46 @@ RootsTraining = class extends BaseTraining {
         return eval_files.map( x => x.name)
     }
 
+    // Get information about model that user want to save
+    static on_save_settings(){
+        // Close evaluation modal and open settings for the saved model 
+        $('#save-modal').modal('hide')
+        var $save_settings_modal = $('#save-settings-modal').modal({closable: false, inverted:true, duration : 0,})
+        $save_settings_modal.modal('show')
+    }
+
+
+    static get_model_information(){
+        // Save information about new model in dictionary
+        var info_dict = {}
+        info_dict['author'] = $('#training-author').get(0).value
+        info_dict['ecosystem'] = $('#ecosystem').get(0).value
+        console.log(info_dict)
+        if (info_dict['author'] == "" || info_dict['ecosystem'] == ""){
+            return null
+        }
+        return info_dict
+
+    }
+
     // override
-    static on_save_model(){
-        const new_modelname = $('#training-new-modelname')[0].value
-        console.log('Saving new model as:', new_modelname)
-        $.get('/save_model', {newname: new_modelname, options:RootsTraining.get_training_options()})    // this.get_training_options
-            .done( _ => {
-                $('#training-new-modelname-field').hide() 
-                GLOBAL.App.Settings.load_settings() // Reload settings
-                $('#save-modal').modal('hide')
-            })
-            .fail( _ => $('body').toast({message:'Saving failed.', class:'error', displayTime: 0, closeIcon: true}) )
-        $('#training-new-modelname')[0].value = ''
+    static async on_save_model(){
+        // Save information about new model in dictionary
+        var info_dict = RootsTraining.get_model_information()
+        console.log(info_dict)
+        if (info_dict != null ){
+            const new_modelname = $('#training-new-modelname')[0].value
+            console.log('Saving new model as:', new_modelname)
+            await $.get('/save_model', {newname: new_modelname, options:RootsTraining.get_training_options(), info:info_dict})    // this.get_training_options
+                .done( _ => {
+                    $('#training-new-modelname-field').hide() 
+                    GLOBAL.App.Settings.load_settings() // Reload settings
+                    $('#save-settings-modal').modal('hide')
+                })
+                .fail( _ => $('body').toast({message:'Saving failed.', class:'error', displayTime: 0, closeIcon: true}) )
+            $('#training-new-modelname')[0].value = ''
+            $('#save-settings-form').form('clear')
+        }
     }
 
     // Discards trained model, removes it and sets a new active model 
@@ -231,9 +259,10 @@ RootsTraining = class extends BaseTraining {
             .done( _ => {
                 $('#training-new-modelname-field').hide();
                 GLOBAL.App.Settings.load_settings();
-                $('#save-modal').modal('hide');
+                $('#save-settings-modal').modal('hide');
             })
             .fail( _ => $('body').toast({message:'Discarding model failed.', class:'error', displayTime: 0, closeIcon: true}) );
+        $('#save-settings-form').form('clear')
         $('#training-new-modelname')[0].value = '';
     }    
 }
