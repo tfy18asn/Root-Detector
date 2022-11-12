@@ -20,7 +20,7 @@ class App(BaseApp):
 
         self.route('/process_root_tracking', methods=['GET', 'POST'])(self.process_root_tracking)
         self.route('/postprocess_detection/<filename>')(self.postprocess_detection)
-        self.route('/evaluation', methods=['GET', 'POST'])(self.evaluation)
+        self.route('/evaluation', methods=['POST'])(self.evaluation)
         self.route('/discard_model')(self.discard_model)
         
     def postprocess_detection(self, filename):
@@ -77,14 +77,7 @@ class App(BaseApp):
         return 'OK'
 
     def evaluation(self):
-        if flask.request.method=='GET':
-            return 'använder vi ej???'
-        elif flask.request.method=='POST':
             requestform  = flask.request.get_json(force=True)
-            print('yayayayayayayayayayayayayaya')
-            print(requestform)
-            print('yayayayayayayayayayayayayaya')
-            # Real evaluation shiet
             files = requestform['filenames']
             settings_startingpoint = backend.settings.Settings()
             modeltype = requestform['options']['training_type']
