@@ -1,0 +1,91 @@
+// OBS! All images used are not owned by us, replace with noncopyrighted material before live
+
+{% macro gallery_tab() %}
+<style>
+
+.image1{
+  display: block;
+}
+
+.image1.image2{
+  border: 3px solid #73AD21;
+}
+
+.gall-text{
+  display: flex;
+  align-items: flex-start;
+  margin-right: 20px;
+  margin-bottom: 10px;
+}
+
+.info-text{
+  float:left;
+  margin-left: 10px;
+}
+
+.intro-text{
+  margin-bottom: 40px;
+  height: 200px;
+  width: 500px;
+}
+
+</style>
+
+<div class="ui tab segment" data-tab="gallery" style="background-color: #f8f8f9
+;">
+    <div class="intro-text">
+      <h1>Soil Types, Differences and Root Detector</h1>
+      <h4>
+        The Root Detector program is able to identify root structures in a variety of soil types,
+        this gallery is to aid you in choosing the correct model for the images you submit, following
+        are some examples and recommendations you ought to follow when using Root-Detector.
+      </h4>
+    </div>
+    <div class="gall-text">
+    <img src="Sandy-Soil-1.jpg" alt="Dirt" height="150px" width="250px" class="image1">
+      <div class="info-text">
+        <h3>Sandy Soil</h3>
+        <h5>Sandy Soil is light, warm, dry and tends to be acidic and low in nutrients.</h5>
+      </div>
+    </div>
+    <div class="gall-text">
+    <img src="Clay-Soil-1.jpg" alt="Dirt" height="150px" width="250px" class="image1">
+      <div class="info-text">
+        <h3>Clay Soil</h3>
+        <h5>Clay Soil is a heavy soil type that benefits from high nutrients.</h5>
+      </div>
+    </div>
+    <div class="gall-text">
+    <img src="Silt-Soil.jpg" alt="Dirt" height="150px" width="250px" class="image1">
+      <div class="info-text">
+        <h3>Silt Soil</h3>
+        <h5>Silt Soil is a light and moisture retentive soil type with a high fertility rating.</h5>
+      </div>
+    </div>
+    <div class="gall-text">
+    <img src="Peat-Soil.jpg" alt="Dirt" height="150px" width="250px" class="image1">
+      <div class="info-text">
+        <h3>Peat Soil</h3>
+        <h5>Peat soil is high in organic matter and retains a large amount of moisture.</h5>
+      </div>
+    </div>
+    <div class="gall-text">
+    <img src="Chalk-Soil.jpg" alt="Dirt" height="150px" width="250px" class="image1">
+      <div class="info-text">
+        <h3>Chalk Soil</h3>
+        <h5>Chalk soil can be either light or heavy but always highly alkaline
+          due to the calcium carbonate (lime) within its structure.</h5>
+      </div>
+    </div>
+    <div class="gall-text">
+    <img src="Loam-Soil.jpg" alt="Dirt" height="150px" width="250px" class="image1">
+      <div class="info-text">
+        <h3>Loam Soil</h3>
+        <h5>Loam soil is a mixture of sand, silt and clay that are combined to
+          avoid the negative effects of each type.</h5>
+      </div>
+    </div>
+
+</div>
+
+{% endmacro %}
