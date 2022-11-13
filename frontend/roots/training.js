@@ -81,7 +81,6 @@ RootsTraining = class extends BaseTraining {
     // override
     static async on_start_training() {
         GLOBAL.showmodal = 0
-
         //Move evaluation images from trainingfiles
         var NrEvalFiles = this.get_nr_images();
         this.add_evaluation_files(NrEvalFiles);
@@ -106,7 +105,8 @@ RootsTraining = class extends BaseTraining {
             console.error(e)
             this.fail_modal()
         } finally {
-
+            // Remove evaluation files so they can be used again for training
+            this.move_evaluation_to_training_files()    
             // Only update and display the modal if training was successful
             if (GLOBAL.showmodal) {
                 $(GLOBAL.event_source).off('training', progress_cb)
@@ -128,9 +128,6 @@ RootsTraining = class extends BaseTraining {
 
     static async setup_evaluation(startingpoint, NrEvalFiles) {
 
-        // Remove evaluation files so they can be used again for training
-        this.move_evaluation_to_training_files()
-
         // Evaluate training
         var evalfiles = this.get_selected_evaluation_files()
         var results = await $.post('/evaluation', JSON.stringify({ filenames: evalfiles, startingpoint: startingpoint, options: this.get_training_options() }))
@@ -141,8 +138,6 @@ RootsTraining = class extends BaseTraining {
 
     // Set actions for discard and save model buttons and show save model modal
     static settings_save_modal(NrEvalFiles) {
-
-
 
         var $save_modal = $('#save-modal').modal({closable: false, inverted:true, duration : 0,})
         $save_modal.modal('show')
@@ -213,6 +208,7 @@ RootsTraining = class extends BaseTraining {
 //        var segmentation = clear? undefined : results.segmentation;
         GLOBAL.trainingfiles[filename].set_results(results)       
     }
+
     static get_selected_evaluation_files(){
         const eval_files = Object.values(GLOBAL.evaluationfiles) //.filter( x => !!x.results )
         return eval_files.map( x => x.name)
@@ -252,11 +248,15 @@ RootsTraining = class extends BaseTraining {
                 .done( _ => {
                     $('#training-new-modelname-field').hide() 
                     GLOBAL.App.Settings.load_settings() // Reload settings
-                    $('#save-settings-modal').modal('hide')
+                    $('#save-settings-modal').modal('hide')                    
                 })
                 .fail( _ => $('body').toast({message:'Saving failed.', class:'error', displayTime: 0, closeIcon: true}) )
+            // Post what images to save for soiltypes on server
+            var storefiles = this.get_selected_files()
+            await $.post('/save_soil_image', JSON.stringify({filenames:storefiles, info:info_dict, options:RootsTraining.get_training_options()}))    
+                .fail( _ => $('body').toast({message:'Saving of soil images failed.', class:'error', displayTime: 0, closeIcon: true}) )
             $('#training-new-modelname')[0].value = ''
-            $('#save-settings-form').form('clear')
+            $('#save-settings-form').form('clear')   
         }
     }
 
@@ -273,10 +273,6 @@ RootsTraining = class extends BaseTraining {
         $('#save-settings-form').form('clear')
         $('#training-new-modelname')[0].value = '';
     }    
-    static stop_evaluation(){
-        GLOBAL.StopEval = 1;
-
-    }
 }
 
 
