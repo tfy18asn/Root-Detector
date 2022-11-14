@@ -2,7 +2,7 @@
 
 RootDetectionDownload = class extends BaseDownload{
     //override
-    static zipdata_for_file(filename){
+    static async zipdata_for_file(filename){
         var f                           = GLOBAL.files[filename];
         if(!f.results)
             return undefined;
@@ -12,16 +12,16 @@ RootDetectionDownload = class extends BaseDownload{
         var skeleton                    = f.results.skeleton
         zipdata[`${segmentation.name}`] = segmentation
         zipdata[`${skeleton.name}`]     = skeleton
-        zipdata[`statistics.csv`]       = this.csv_data_for_file(filename)
+        zipdata[`statistics.csv`]       = await this.csv_data_for_file(filename)
         return zipdata;
     }
 
     //override
-    static zipdata_for_files(filenames){
-        var zipdata      = super.zipdata_for_files(filenames)
+    static async zipdata_for_files(filenames){
+        var zipdata      = await super.zipdata_for_files(filenames)
         var combined_csv = ''
         for(var i in filenames){
-            var single_csv = this.csv_data_for_file(filenames[i], i==0)
+            var single_csv = await this.csv_data_for_file(filenames[i], i==0)
             if(single_csv!=undefined)
                 combined_csv += single_csv;
         }
@@ -30,14 +30,26 @@ RootDetectionDownload = class extends BaseDownload{
         return zipdata;
     }
 
-    static csv_data_for_file(filename, header=true){
+    static async csv_data_for_file(filename, header=true){
         var csvtxt = '';
+
+        // Get the detection model name that was used to process the images
+        var modname = GLOBAL.files[filename].results.statistics.detection_model
+        // Get metadata about the model to add in the csv-file
+        var model_info = await $.get('/modelinformation_download', {training_type: 'detection', modelname: modname})
+        var author = model_info['author']
+        var ecosystem = model_info['ecosystem']
+
         if(header){
             csvtxt += 'Filename, '
                 + '# root pixels, # background pixels, '
                 + '# mask pixels, # skeleton pixels, '
                 + '# skeleton pixels (<3px width), # skeleton pixels (3-7px width), # skeleton pixels (>7px width),'
-                + 'Kimura length'
+                + 'Kimura length,'
+                + 'Detection model used,'
+                + 'Author of model,'
+                + 'Ecosystem,'
+                + 'Date'
                 + ';\n';
         }
         
@@ -52,6 +64,10 @@ RootDetectionDownload = class extends BaseDownload{
             stats.sum_mask,  stats.sum_skeleton, 
             stats.widths[0], stats.widths[1], stats.widths[2],
             stats.kimura_length,
+            stats.detection_model,//GLOBAL.settings.active_models.detection
+            author,
+            ecosystem,
+            stats.date
         ].join(', ')+';\n'
 
         return csvtxt;
@@ -126,12 +142,22 @@ RootTrackingDownload = class extends BaseDownload {
     static csv_data_statistics(filename0, filename1, include_header=true){
         var stats = GLOBAL.files[filename0].tracking_results[filename1].statistics;
 
+        var track_modname = stats.tracking_model
+        // Do we need/want author/ecosystem for tracking. Can not change it, it will only be detection/exclusion mask
+        //var det_modname = stats.detection_model
+        // Get metadata about the model to add in the csv-file
+        // This is now showing the metadata for the detection 
+        //var model_info = await $.get('/modelinformation_download', {training_type: 'detection', modelname: det_modname})
+        //var author = model_info['author']
+        //var ecosystem = model_info['ecosystem']
+
         var header = [
             'Filename 1',           'Filename 2', 
             'same pixels',          'decay pixels',          'growth pixels',
             'background pixels',    'mask pixels',
             'same skeleton pixels', 'decay skeleton pixels', 'growth skeleton pixels',
             'same kimura length',   'decay kimura length',   'growth kimura length',
+            'Tracking model',       'Date'
         ]
         var data   = [
             filename0,         filename1,    
@@ -139,6 +165,7 @@ RootTrackingDownload = class extends BaseDownload {
             stats.sum_negative,stats.sum_exmask,
             stats.sum_same_sk, stats.sum_decay_sk, stats.sum_growth_sk,
             stats.kimura_same, stats.kimura_decay, stats.kimura_growth,
+            track_modname,           stats.date
         ]
 
         //sanity check

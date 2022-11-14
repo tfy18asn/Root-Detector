@@ -181,6 +181,19 @@ var RootTracking = new function() {
     var set_tracking_data = function(filename0, filename1, data){
         console.log('Tracking results: ', data)
         GLOBAL.files[filename0].tracking_results[filename1] = data;
+
+        // Save tracking and detection model and date in statistics
+        GLOBAL.files[filename0].tracking_results[filename1].statistics['tracking_model'] = GLOBAL.settings.active_models.tracking
+        GLOBAL.files[filename0].tracking_results[filename1].statistics['detection_model'] = GLOBAL.settings.active_models.detection
+        console.log(GLOBAL.files[filename0].tracking_results[filename1].tracking_model)
+        var date = new Date();
+        date = [
+            date.getDate().toString().padStart(2,'0'),
+            (date.getMonth()+1).toString().padStart(2,'0'),
+            date.getFullYear()
+        ].join('/');
+        GLOBAL.files[filename0].tracking_results[filename1].statistics['date'] = date
+
         paint_matched_points(filename0, filename1, data.points0, data.points1);
 
         var $root    = $(`[filename0="${filename0}"][filename1="${filename1}"]`);
