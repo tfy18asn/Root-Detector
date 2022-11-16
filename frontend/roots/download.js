@@ -33,13 +33,25 @@ RootDetectionDownload = class extends BaseDownload{
     static async csv_data_for_file(filename, header=true){
         var csvtxt = '';
 
+        var ex_mask = false
         // Get the detection model name that was used to process the images
-        var modname = GLOBAL.files[filename].results.statistics.detection_model
+        var det_modname = GLOBAL.files[filename].results.statistics.detection_model
         // Get metadata about the model to add in the csv-file
-        var model_info = await $.get('/modelinformation_download', {training_type: 'detection', modelname: modname})
-        var author = model_info['author']
-        var ecosystem = model_info['ecosystem']
+        var det_model_info = await $.get('/modelinformation_download', {training_type: 'detection', modelname: det_modname})
+        var det_author = det_model_info['author']
+        var det_ecosystem = det_model_info['ecosystem']
 
+        if (GLOBAL.files[filename].results.statistics['exclusion_mask'] != undefined){
+            var ex_modname = GLOBAL.files[filename].results.statistics['exclusion_mask']
+            // Get metadata about the model to add in the csv-file
+            var ex_model_info = await $.get('/modelinformation_download', {training_type: 'exclusion_mask', modelname: ex_modname})
+            var ex_author = ex_model_info['author']
+            var ex_ecosystem = ex_model_info['ecosystem']
+            var add_data = [
+                ex_modname, ex_author, ex_ecosystem,
+            ].join(',')
+            ex_mask = true
+        }
         if(header){
             csvtxt += 'Filename, '
                 + '# root pixels, # background pixels, '
@@ -47,10 +59,12 @@ RootDetectionDownload = class extends BaseDownload{
                 + '# skeleton pixels (<3px width), # skeleton pixels (3-7px width), # skeleton pixels (>7px width),'
                 + 'Kimura length,'
                 + 'Detection model used,'
-                + 'Author of model,'
-                + 'Ecosystem,'
-                + 'Date'
-                + ';\n';
+                + 'Author of detection model,'
+                + 'Ecosystem for detection model,'
+                + 'Date,'
+                + 'Exclusion mask model name,'
+                + 'Author exclusion mask,'
+                + 'Ecosystem exclusion mask;\n';
         }
         
         var f = GLOBAL.files[filename]
@@ -65,10 +79,17 @@ RootDetectionDownload = class extends BaseDownload{
             stats.widths[0], stats.widths[1], stats.widths[2],
             stats.kimura_length,
             stats.detection_model,//GLOBAL.settings.active_models.detection
-            author,
-            ecosystem,
-            stats.date
-        ].join(', ')+';\n'
+            det_author,
+            det_ecosystem,
+            stats.date,
+        ].join(', ')
+
+        if (ex_mask){
+            csvtxt += ', ' + add_data + ';\n'
+        }
+        else {
+            csvtxt += ',,,;\n'
+        }
 
         return csvtxt;
     }
@@ -78,7 +99,7 @@ RootDetectionDownload = class extends BaseDownload{
 
 RootTrackingDownload = class extends BaseDownload {
     //override
-    static zipdata_for_file(filename){
+    static async zipdata_for_file(filename){
         var $root     = $(`[filename0][filename1][filename="${filename}"]`)
         if($root.length==0) //should not happen
             return;
@@ -103,12 +124,12 @@ RootTrackingDownload = class extends BaseDownload {
             segmentation_model : tracking_data.segmentation_model,
         }
         zipdata[`${filename0}.${filename1}.json`] = JSON.stringify(jsondata);
-        zipdata[`${filename0}.${filename1}.csv`]  = this.csv_data_statistics(filename0, filename1)
+        zipdata[`${filename0}.${filename1}.csv`]  = await this.csv_data_statistics(filename0, filename1)
         return zipdata;
     }
 
     //override
-    static on_download_all(event){
+    static async on_download_all(event){
         var filenames          = Object.keys(GLOBAL.files)
         var filenames_combined = []
         var filenames_pairs    = []
@@ -123,10 +144,10 @@ RootTrackingDownload = class extends BaseDownload {
                 }
         }
 
-        var zipdata = this.zipdata_for_files(filenames_combined)
+        var zipdata = await this.zipdata_for_files(filenames_combined)
         var combined_csv = ''
         for(var i in filenames_combined){
-            var single_csv = this.csv_data_statistics(...filenames_pairs[i], i==0)
+            var single_csv = await this.csv_data_statistics(...filenames_pairs[i], i==0)
             if(single_csv!=undefined)
                 combined_csv += single_csv;
         }
@@ -139,7 +160,7 @@ RootTrackingDownload = class extends BaseDownload {
     }
 
 
-    static csv_data_statistics(filename0, filename1, include_header=true){
+    static async csv_data_statistics(filename0, filename1, include_header=true){
         var stats = GLOBAL.files[filename0].tracking_results[filename1].statistics;
 
         var track_modname = stats.tracking_model
@@ -165,8 +186,28 @@ RootTrackingDownload = class extends BaseDownload {
             stats.sum_negative,stats.sum_exmask,
             stats.sum_same_sk, stats.sum_decay_sk, stats.sum_growth_sk,
             stats.kimura_same, stats.kimura_decay, stats.kimura_growth,
-            track_modname,           stats.date
+            track_modname,           stats.date,
         ]
+
+        if (GLOBAL.files[filename0].tracking_results[filename1].statistics['exclusion_mask'] != undefined){
+            var ex_modname = GLOBAL.files[filename0].tracking_results[filename1].statistics['exclusion_mask']
+            // Get metadata about the model to add in the csv-file
+            var ex_model_info = await $.get('/modelinformation_download', {training_type: 'exclusion_mask', modelname: ex_modname})
+            var ex_author = ex_model_info['author']
+            var ex_ecosystem = ex_model_info['ecosystem']
+            var add_data = [
+                ex_modname, ex_author, ex_ecosystem,
+            ]
+            console.log(data)
+        } else {
+            var add_data = ["","",""]
+        }
+
+        var add_header = [
+            'Exclusion mask model name', 'Author exclusion mask', 'Ecosystem exclusion mask'
+        ]
+        header = header.concat(add_header)
+        data = data.concat(add_data)
 
         //sanity check
         if(header.length != data.length){

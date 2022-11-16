@@ -185,7 +185,12 @@ var RootTracking = new function() {
         // Save tracking and detection model and date in statistics
         GLOBAL.files[filename0].tracking_results[filename1].statistics['tracking_model'] = GLOBAL.settings.active_models.tracking
         GLOBAL.files[filename0].tracking_results[filename1].statistics['detection_model'] = GLOBAL.settings.active_models.detection
-        console.log(GLOBAL.files[filename0].tracking_results[filename1].tracking_model)
+        // Check if exclusion mask is used
+        if ($('#exclusionmask-toggle').get(0).checked){
+            GLOBAL.files[filename0].tracking_results[filename1].statistics['exclusion_mask'] = GLOBAL.settings.active_models.exclusion_mask
+        }
+
+
         var date = new Date();
         date = [
             date.getDate().toString().padStart(2,'0'),
