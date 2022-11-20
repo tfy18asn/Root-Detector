@@ -34,20 +34,20 @@
 {% endmacro %}
 
 <!-- Places extra tabs in one macro, imported from other html files in same folder-->
-{% macro all_extra_tabs() %}
+{% macro all_extra_tabs(app,Allinfo) %}
     {{ about_tab() }}
     {{ gallery_tab() }}
-    {{ help_tab() }}
+    {{ help_tab(app,Allinfo) }}
     {{ contact_tab() }}
 {% endmacro %}
 
-{% macro navigation_menu(app) %}
+{% macro navigation_menu(app,Allinfo) %}
   {{ base_main_container.main_container(
       app,
       tabs          = contained_tabs(),
       analysis_tab  = analysis_container(app),
       training_tab  = roots_training_tab(app),
-      extra         = all_extra_tabs()) }}
+      extra         = all_extra_tabs(app,Allinfo)) }}
 {% endmacro %}
 
 <!--Want to make the active tab bold so it's easier to identify which tab you're on-->
