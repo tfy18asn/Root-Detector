@@ -9,3 +9,4 @@ sync_models.py
 venv*
 .vs
 soiltypes
+frontend/TrainingImages/*
