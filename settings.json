@@ -1,9 +1,0 @@
-{
-  "active_models": {
-    "detection": "2022-04-19_028a_WM",
-    "exclusion_mask": "2022-07-14_028c_WM_exmask",
-    "tracking": "2022-01-10_022_roottracking.stage2"
-  },
-  "exmask_enabled": false,
-  "use_gpu": false
-}
