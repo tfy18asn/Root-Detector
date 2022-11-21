@@ -8,55 +8,5 @@
     <p></p>
     <h3></h3>
     <p></p>
-    {{ choose_model_template() }}
-
 </div>
 {% endmacro%}
-
-
-{# Macro for displaying model information about available models #}
-{% macro choose_model_template() %}
-<div class="ui segment form" margin="">
-    <!--Insert Model Name HERE-->
-    <h3 id="choose-modelname"><p id="model-name">Insert Model name</p></h3>
-
-    <div class="grid-container" style="display:grid;grid-template-columns: 2fr 1fr;">
-
-        <div class="grid-item">
-            <div>
-                <h4>A selection of pictures model was trained on:</h4>
-            </div>
-            <!--Insert example images HERE-->
-            <img id="choose-image-one" src="Smiley.svg.png" height="200px" width="200px">
-            <img id="choose-image-two" src="Mr._Smiley_Face.svg.png" height="200px" width="200px">
-        </div>
-        <div class="grid-item">
-            <h4>Information about the model:</h4>
-            <div>
-                <!--Insert model information HERE-->
-                <p><i>Ecosystem&ensp;: </i><b id="choose-ecosystem">hejhejhjehej</b></p>
-                <p><i>Author&emsp;&ensp;&emsp;: </i><b id="choose-author">hejhejhjehej</b></p>
-            </div>
-            <div style="position:absolute;bottom:20px;right:20px">
-                <button class="ui toggle button" id="apply-model-btn" onclick="toggle()" style="height:40px;width:180px;">
-                    <i class="seedling icon" style="visibility: visible;float:left"></i>
-                    <span id="apply-model-text">Apply Model</span>
-                </button>
-            </div>
-        </div>
-    </div>
-
-
-</div>
-
-<script>
-    function toggle(){
-        var element = document.getElementById("apply-model-btn");
-        element.style.backgroundColor = element.style.backgroundColor === 'green' ? 'lightgray' : 'green'
-        $('#apply-model-text').text(function(i, text){
-            return text === "Apply Model" ? "Model Applied" : "Apply Model";
-        })
-    }
-</script>
-
-{% endmacro %}
