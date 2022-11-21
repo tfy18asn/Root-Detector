@@ -12,8 +12,8 @@ RootsTraining = class extends BaseTraining {
     // filtrerar bort de filer som är uppladdade men inte är processed? byt till GLOBAL.trainingfiles
     // ta bort filtreringen
     static get_selected_files(){
-        const files_with_results = Object.values(GLOBAL.trainingfiles).filter( x => !!x.results )
-        return files_with_results.map( x => x.name)
+        const files_with_results = Object.values(GLOBAL.trainingfiles).filter( x => !!x.results)
+        return files_with_results.map(x => x.name)
     }
     // testa hämta antalet evaluation bilder
     static get_nr_images(){
@@ -136,7 +136,8 @@ RootsTraining = class extends BaseTraining {
 
     // Set actions for discard and save model buttons and show save model modal
     static settings_save_modal(NrEvalFiles) {
-
+        $('#evaluation-modal').addClass('disabled').modal('hide')
+        $('#save-modal').modal({closable: false, inverted:true, duration : 0,})
         var $save_modal = $('#save-modal').modal({closable: false, inverted:true, duration : 0,})
         $save_modal.modal('show')
 
