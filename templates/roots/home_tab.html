@@ -1,0 +1,89 @@
+{% macro home_tab() %}
+<style>
+.in-text{
+  text-align:center;
+  width: 65%;
+  margin-right: 1%;
+  margin-left: 1%;
+  margin-top: 1%;
+  border: 2px solid #e6ffcc;
+  border-radius:3px;
+  background-color: #f0f5f5;
+}
+
+.home-text{
+  display: flex;
+  align-items: flex-start;
+}
+
+.info-text{
+  float:left;
+  margin-left: 10px;
+  border: 2px solid black;
+}
+
+.imageh{
+  display: block;
+  float:left;
+  margin-left: 6%;
+  padding:5px;
+}
+.imageh2{
+  display: block;
+  float:left;
+  padding:5px;
+  margin-top: 5%;
+}
+</style>
+
+<div class="ui tab segment" data-tab="home">
+  <div class="home-text">
+    <div class="in-text">
+    <img src="favicon.ico" alt="Dirt" height="150px" width="150px" class="imageh2">
+    <h1>Welcome to Root-Detector</h1>
+    <h3>Root detector is a program for detecting roots, it detects roots in submitted
+    images with models developed with machine learning. It will find roots in your images.
+    </h3>
+    <h3>
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+    ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+    laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
+    voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
+    cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    </h3>
+    </div>
+
+    <div class="in-text">
+    <h1>Our Research</h1>
+    <h3>The images we use for our research are made with rizotron cylinder images,
+    here are some examples of the images that we use.
+    </h3>
+    <img src="Sandy-Soil-1.jpg" alt="Dirt" height="150px" width="250px" class="imageh">
+    <img src="Sandy-Soil-1.jpg" alt="Dirt" height="150px" width="250px" class="imageh">
+    <img src="Sandy-Soil-1.jpg" alt="Dirt" height="150px" width="250px" class="imageh">
+    <img src="Sandy-Soil-1.jpg" alt="Dirt" height="150px" width="250px" class="imageh">
+    </div>
+  </div>
+  <div class="home-text">
+    <div class="in-text">
+      <h1>Overview</h1>
+      <h3>The Analysis tab consists of two separate sub tabs including Detection and tracking.
+      </h3>
+      <h3>The Training tab consists of the option to train a model on submitted images.
+      </h3>
+      <h3>Check the About page for additional information for how to contact us.
+      </h3>
+    </div>
+
+    <div class="in-text">
+      <h1>Overview</h1>
+      <h3>The Analysis tab consists of two separate sub tabs including Detection and tracking.
+      </h3>
+      <h3>The Training tab consists of the option to train a model on submitted images.
+      </h3>
+      <h3>Check the About page for additional information for how to contact us.
+      </h3>
+    </div>
+  </div>
+</div>
+{% endmacro%}
