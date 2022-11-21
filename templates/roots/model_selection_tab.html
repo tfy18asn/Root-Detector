@@ -13,8 +13,9 @@
             </div>
             <!--Insert example images HERE-->
             <div class="ui large images">
-            <img src = "TrainingImages/{{info['training_images'][0]}}" id="choose-image-one" loading="lazy" draggable = "false">
-            <img src = "TrainingImages/{{info['training_images'][1]}}" id="choose-image-two" loading="lazy" draggable = "false">
+                {% for i in range(0,info['training_images']| length) %}
+                <img src = "TrainingImages/{{info['training_images'][i]}}" id="choose-image-one" loading="lazy" draggable = "false">
+                {% endfor %}
             </div>
         </div>
         <div class="grid-item">
