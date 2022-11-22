@@ -110,7 +110,7 @@ RootsTraining = class extends BaseTraining {
                 $(GLOBAL.event_source).off('training', progress_cb)
                 if (NrEvalFiles > 0) {      
                     try {
-                        await this.setup_evaluation(startingpoint)
+                        await this.setup_evaluation(startingpoint, NrEvalFiles)
                         }
                         catch (e) {
                             console.error(e)   
@@ -137,9 +137,7 @@ RootsTraining = class extends BaseTraining {
     // Set actions for discard and save model buttons and show save model modal
     static settings_save_modal(NrEvalFiles) {
         $('#evaluation-modal').addClass('disabled').modal('hide')
-        $('#save-modal').modal({closable: false, inverted:true, duration : 0,})
-        var $save_modal = $('#save-modal').modal({closable: false, inverted:true, duration : 0,})
-        $save_modal.modal('show')
+        $('#save-modal').modal({closable: false, inverted:true, duration : 0,}).modal('show')
 
         // Refresh errormap filetable and reset text and boxes if empty.
         if (NrEvalFiles == 0) {
@@ -177,9 +175,12 @@ RootsTraining = class extends BaseTraining {
         $('#training-modal #ok-training-button').show()
         $('#training-modal #cancel-training-button').hide()
         this.hide_modal()
-        $('#evaluation-modal').modal({
-            closable: false, inverted:true,
-        }).modal('show');
+        var NrEvalFiles = this.get_nr_images();
+        if (NrEvalFiles > 0) {
+            $('#evaluation-modal').modal({
+                closable: false, inverted: true,
+            }).modal('show');
+        }
         // If training is successful, show the modal.
         GLOBAL.showmodal = 1
     }
