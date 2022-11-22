@@ -10,7 +10,7 @@
 :root {
     --root-color-background-green: rgba(137, 209, 80, 0.8);
     --root-color-background-light-blue: rgba(110, 144, 210, 0.3);
-    --root-color-background-dark-blue: rgba(24, 66, 79, 0.5);
+    --root-color-background-dark-blue: rgba(24, 66, 79, 0.7);
     --root-color-text-white: rgba(255, 255, 255, 1);
 }
 
@@ -43,8 +43,13 @@ body {
     padding-bottom: 50vh;
 }
 
-/* Analysis box */
+/* Analysis background box */
 .ui.active.tab.segment.unselectable {
+    background-color: var(--root-color-background-light-blue);
+}
+
+/* Tracking background box */
+.ui.tab.segment {
     background-color: var(--root-color-background-light-blue);
 }
 
@@ -73,5 +78,129 @@ body {
 
 
 /* ------------------------------------------------------------------------- */
-/* DETECTION TAB */
+/* TOP MENU */
 /* ------------------------------------------------------------------------- */
+
+/* Background container */
+.ui.container.menu.page-wide {
+    background-color: var(--root-color-background-light-blue);
+}
+
+/* Top menu logo */
+.header.item {
+    background-color: var(--root-color-background-light-blue);
+}
+
+/* Top menu settings button */
+#settings-button {
+    background-color: var(--root-color-background-light-blue);
+    color: var(--root-color-background-dark-blue);
+}
+
+/* RootDetector header text */
+.ui.header {
+    background-color: var(--root-color-background-green);
+    color: var(--root-color-background-dark-blue);
+}
+
+/* RootDetector sub header text */
+.sub.header {
+    background-color: var(--root-color-background-light-blue);
+    color: var(--root-color-text-white);
+    
+}
+
+/* ------------------------------------------------------------------------- */
+/* FILE TABLES */
+/* ------------------------------------------------------------------------- */
+
+.filetable-content {
+    background-color: var(--root-color-background-light-blue);
+}
+
+/* Dimmer overlay over filetable dropdown horizontal bar */
+.ui.dimmer {
+    background-color: var(--root-color-background-light-blue);
+}
+
+/* Image processing overlay box */
+.content.processing {
+    background-color: var(--root-color-background-light-blue);
+}
+
+/* Image processing overlay box (FAILED) */
+.content.failed {
+    background-color: var(--root-color-background-dark-blue);
+}
+
+
+/* Image processing loading icon box */
+.ui.inverted.icon.header {
+    background-color: var(--root-color-background-light-blue);
+    color: var(--root-color-background-dark-blue);
+}
+
+/* Spinner loading icon */
+.spinner.loading.icon {
+    color: var(--root-color-background-dark-blue);
+}
+
+/* Help popup */
+.ui.segment.flowing.popup {
+    background-color: var(--root-color-background-light-blue);
+    color: var(--root-color-background-dark-blue);
+    
+}
+
+/* Filetable dropdown horizontal bar */
+.ui.bottom.attached.secondary.icon.menu {
+    background-color: var(--root-color-background-green);
+}
+
+/* Play icon */
+.play.icon {
+    color: var(--root-color-background-dark-blue);
+}
+
+/* Eye icon */
+.eye.icon {
+    color: var(--root-color-background-dark-blue);
+}
+
+/* Check icon */
+.check.icon {
+    color: var(--root-color-background-dark-blue);
+}
+
+/* Square icon */
+.vector.square.icon {
+    color: var(--root-color-background-dark-blue);
+}
+
+/* Download icon */
+.download.icon {
+    color: var(--root-color-background-dark-blue);
+}
+
+/* Help icon */
+.help.icon {
+    color: var(--root-color-background-dark-blue);
+}
+
+/*  */
+.menu.view-menu {
+    background-color: var(--root-color-background-light-blue);
+    color: var(--root-color-background-dark-blue);
+}
+
+/* ------------------------------------------------------------------------- */
+/* TRAINING TAB */
+/* ------------------------------------------------------------------------- */
+/* Custom training tab that covers whole screen */
+#training-tab-wide {
+    display: grid;
+    height: 200px;
+    grid-template-columns: 100% 0%;
+    grid-column-gap: 5px;
+    align-items: start;
+} 

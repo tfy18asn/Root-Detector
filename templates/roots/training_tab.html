@@ -129,7 +129,7 @@ onchange="{{ app }}.FileInput.on_annotations_select(event); {{ app }}.Training.s
     {% endmacro %}
 
 {% macro training_tab(app) %}
-<div id="training-tab">
+<div id="training-tab-wide">
     <div>
         {# add upload button for training#}
         {{ training_controls(trainingmodule = app+".Training", upload_training=upload_button_training(app), upload_ground_truth=upload_button_annotation(app), nr_ev_images=nr_evaluation_images(app)) }}
