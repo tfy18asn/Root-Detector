@@ -26,7 +26,7 @@
         <div class="field">
             <label>Exclusion mask</label>
             <div class="ui toggle checkbox" id="settings-exclusionmask-enable">
-                <input type="checkbox">
+                <input type="checkbox" id="exclusionmask-toggle">
                 <label>Enable detection of foreign objects (e.g. tape)</label>
             </div>
         </div>
@@ -197,4 +197,10 @@ $('#save-settings-form')
 </script>
 {% endmacro %}
 
-
+{% macro modal_evaluation_loading(app) %}
+<div class="ui tiny modal" id = "evaluation-modal">
+    <div class="ui segment">
+        <div class="ui active massive slow text elastic loader black inline centered">Evaluating model</div>
+    </div>
+</div>
+{% endmacro %}
