@@ -9,7 +9,7 @@
 {# Upload button which uploads training images to the training page #}
 {% macro upload_button_training(app) %}
 <!--<h4 class="ui dividing header">Training options</h4>-->
-<label for="training_images" id="upload_training_button" class="ui teal labeled icon button">
+<label for="training_images" id="upload_training_button" class="ui blue labeled icon button">
     <i class="upload icon"></i>
     Upload Training Images
 </label>
@@ -22,7 +22,7 @@ onchange="{{app}}.FileInput.on_inputfiles_select(event)" accept="image/*" multip
 {% macro upload_button_annotation(app) %}
 <!--<h4 class="ui dividing header">Training options</h4>-->
 <p id="text_annotation_files">xxx</p>
-<label for="training_image_annotation" id="upload_anno_button" class="ui yellow labeled icon button" data-content="hej">
+<label for="training_image_annotation" id="upload_anno_button" class="ui blue labeled icon button" data-content="hej">
     <i class="upload icon"></i>
     <p id="ground_truth_button_text">xxx</p>
 </label>

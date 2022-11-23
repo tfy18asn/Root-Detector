@@ -13,14 +13,13 @@
 
 {% macro choose_model() %}
 <a for="ui simple item" id="settings-button" onclick="{{ app }}.Settings.on_settings()">
-  <i class="wrench icon"></i>
-  <span class="text">Settings</span>
+  <i class="calculator icon"></i>
+  <span class="text">Model</span>
 </a>  
 {% endmacro %}
 
 {% macro top_menu(app) %}
 {{ base_top_menu.top_menu(app, filemenu_extras=load_exclude_masks_item(app)) }}
-{{ choose_model() }}
 {% endmacro %}
 
 
