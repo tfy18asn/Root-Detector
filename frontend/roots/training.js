@@ -249,12 +249,36 @@ RootsTraining = class extends BaseTraining {
                 .done( _ => {
                     $('#training-new-modelname-field').hide() 
                     GLOBAL.App.Settings.load_settings() // Reload settings
-                    $('#save-settings-modal').modal('hide')                    
+                    $('#save-settings-modal').modal('hide')
+
+                    this.update_model_list()
                 })
                 .fail( _ => $('body').toast({message:'Saving failed.', class:'error', displayTime: 0, closeIcon: true}) )
             $('#training-new-modelname')[0].value = ''
             $('#save-settings-form').form('clear')   
         }
+    }
+
+    // Updates model list when user saves new model.
+    static async update_model_list() {
+
+        // Refresh Allinfo
+        var all_info = await $.post('/refresh_allinfo')
+            .done(_ => $('body').toast({ message: 'Model has been added successfully.', class: 'success', displayTime: 0, closeIcon: true }))
+            .fail(_ => $('body').toast({ message: 'Model was not added.', class: 'error', displayTime: 0, closeIcon: true }))
+
+        console.log(all_info['Allinfo'])
+
+        // Fetch model list html container
+        var $model_list = $('#model-selection');
+        $model_list.find('model-list').remove()
+
+        // Fetch model template and append to list.
+        const $model_element = $("template#model-selection-template").tmpl([{ Allinfo: all_info['Allinfo'] }])
+        //$model_element.appendTo($model_list)
+        $model_list.append($model_element)
+
+        console.log($model_list.attr('Allinfo'))
     }
 
     // Discards trained model, removes it and sets a new active model 

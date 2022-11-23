@@ -1,8 +1,10 @@
 from base.backend.app import App as BaseApp
 from base.backend.app import get_cache_path
+from base.backend.app import get_models_path
 from base.backend.app import update_user_settings
 import os
-import flask
+import flask, jinja2
+import json
 
 import backend
 import backend.training
@@ -22,6 +24,7 @@ class App(BaseApp):
         self.route('/postprocess_detection/<filename>')(self.postprocess_detection)
         self.route('/evaluation', methods=['POST'])(self.evaluation)
         self.route('/discard_model')(self.discard_model)
+        self.route('/refresh_allinfo', methods=['POST'])(self.refresh_allinfo)
         
     def postprocess_detection(self, filename):
         #FIXME: code duplication
@@ -115,6 +118,26 @@ class App(BaseApp):
             print(res_current)
             # ENDS HERE
             return flask.jsonify({'results_startingpoint':res_startingpoint, 'results_current':res_current})
+
+    # Refresh Allinfo to make new saved models appear in model selection tab.
+    def refresh_allinfo(self):
+
+        # Extract stored model informations in a list
+        mypath = f'{get_models_path()}/detection/information'
+        onlyfiles = [os.path.join(mypath, f) for f in os.listdir(mypath) if os.path.isfile(os.path.join(mypath, f))]
+        Allinfo = []
+        for f in onlyfiles:
+            Allinfo.append(json.load(open(f,'r')))
+        print('REFRESHING HAPPENS HERE') 
+        print(Allinfo)
+
+        #env   = jinja2.Environment(loader=jinja2.FileSystemLoader(self.template_folders))
+        #tmpl  = env.get_template('index.html')
+        #outf  = os.path.join(self.static_folder, 'index.html')
+        #os.makedirs(os.path.dirname(outf), exist_ok=True)
+        #open(outf,'w', encoding="utf-8").write(tmpl.render(warning='GENERATED FILE. DO NOT EDIT MANUALLY', Allinfo = Allinfo))
+
+        return flask.jsonify({'Allinfo':Allinfo})
 
     def discard_model(self):
         # Retrieve what model type to discard
