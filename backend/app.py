@@ -128,14 +128,6 @@ class App(BaseApp):
         Allinfo = []
         for f in onlyfiles:
             Allinfo.append(json.load(open(f,'r')))
-        print('REFRESHING HAPPENS HERE') 
-        print(Allinfo)
-
-        #env   = jinja2.Environment(loader=jinja2.FileSystemLoader(self.template_folders))
-        #tmpl  = env.get_template('index.html')
-        #outf  = os.path.join(self.static_folder, 'index.html')
-        #os.makedirs(os.path.dirname(outf), exist_ok=True)
-        #open(outf,'w', encoding="utf-8").write(tmpl.render(warning='GENERATED FILE. DO NOT EDIT MANUALLY', Allinfo = Allinfo))
 
         return flask.jsonify({'Allinfo':Allinfo})
 

@@ -264,21 +264,29 @@ RootsTraining = class extends BaseTraining {
 
         // Refresh Allinfo
         var all_info = await $.post('/refresh_allinfo')
-            .done(_ => $('body').toast({ message: 'Model has been added successfully.', class: 'success', displayTime: 0, closeIcon: true }))
-            .fail(_ => $('body').toast({ message: 'Model was not added.', class: 'error', displayTime: 0, closeIcon: true }))
+            .done(_ => $('body').toast({ message: 'Model has been added to the gallery.', class: 'success', displayTime: 0, closeIcon: true }))
+            .fail(_ => $('body').toast({ message: 'Model was not added to the gallery.', class: 'error', displayTime: 0, closeIcon: true }))
 
         console.log(all_info['Allinfo'])
 
-        // Fetch model list html container
+        // Fetch model list html container and clear it.
         var $model_list = $('#model-selection');
-        $model_list.find('model-list').remove()
+        $model_list.find('#model-element').remove()     
 
-        // Fetch model template and append to list.
-        const $model_element = $("template#model-selection-template").tmpl([{ Allinfo: all_info['Allinfo'] }])
-        //$model_element.appendTo($model_list)
-        $model_list.append($model_element)
+        // Loop over Allinfo, fetch model template and append to list.
+        for (let info of all_info['Allinfo']) {
 
-        console.log($model_list.attr('Allinfo'))
+            console.log(info)
+            var model_element = $("template#model-selection-template").tmpl([{ info: info }])
+
+            // Loop over model example images and append them to model_element
+            for (let i = 0; i < info["training_images"].length; i++) {
+                var model_element_image = $("template#model-selection-template-images").tmpl([{ training_image: info["training_images"][i] }])
+                $(model_element_image).appendTo($(model_element).find('model-list-image'))
+            }
+
+            $(model_element).appendTo($model_list.find('model-list'))
+        }
     }
 
     // Discards trained model, removes it and sets a new active model 
