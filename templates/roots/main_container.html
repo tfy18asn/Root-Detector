@@ -6,9 +6,10 @@
 
 {#
 {% macro tabs() %}
-<div class="ui pointing secondary tabs menu">    
-    <a class="active item" data-tab="get_started"> Get Started </a>
-    <a class="item"        data-tab="training">  Training </a>
+<div class="ui pointing secondary tabs menu">
+    <a class="active item" data-tab="detection"> Detection</a>
+    <a class="item" data-tab="tracking">  Tracking </a>
+    <a class="item" data-tab="training">  Training </a>
 </div>
 {% endmacro %}
 #}
@@ -23,9 +24,6 @@
     <a class="item"         data-tab="training">  Training </a>
 </div>
 {% endmacro %}
-
-
-
 
 {% macro main_container(app) %}
     {{ base_main_container.main_container( 

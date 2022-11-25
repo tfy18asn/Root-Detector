@@ -1,5 +1,6 @@
 from base.backend.app import App as BaseApp
 from base.backend.app import get_cache_path
+from base.backend.app import update_user_settings
 import os
 import flask
 
@@ -19,7 +20,7 @@ class App(BaseApp):
 
         self.route('/process_root_tracking', methods=['GET', 'POST'])(self.process_root_tracking)
         self.route('/postprocess_detection/<filename>')(self.postprocess_detection)
-        self.route('/evaluation', methods=['GET', 'POST'])(self.evaluation)
+        self.route('/evaluation', methods=['POST'])(self.evaluation)
         self.route('/discard_model')(self.discard_model)
         
     def postprocess_detection(self, filename):
@@ -44,7 +45,6 @@ class App(BaseApp):
             fname0 = os.path.join(get_cache_path(), data['filename0'])
             fname1 = os.path.join(get_cache_path(), data['filename1'])
             result = root_tracking.process(fname0, fname1, self.get_settings(), data)
-     
         
         return flask.jsonify({
             'points0':         result['points0'].tolist(),
@@ -77,14 +77,7 @@ class App(BaseApp):
         return 'OK'
 
     def evaluation(self):
-        if flask.request.method=='GET':
-            return 'använder vi ej???'
-        elif flask.request.method=='POST':
             requestform  = flask.request.get_json(force=True)
-            print('yayayayayayayayayayayayayaya')
-            print(requestform)
-            print('yayayayayayayayayayayayayaya')
-            # Real evaluation shiet
             files = requestform['filenames']
             settings_startingpoint = backend.settings.Settings()
             modeltype = requestform['options']['training_type']

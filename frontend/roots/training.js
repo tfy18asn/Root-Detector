@@ -12,8 +12,8 @@ RootsTraining = class extends BaseTraining {
     // filtrerar bort de filer som är uppladdade men inte är processed? byt till GLOBAL.trainingfiles
     // ta bort filtreringen
     static get_selected_files(){
-        const files_with_results = Object.values(GLOBAL.trainingfiles).filter( x => !!x.results )
-        return files_with_results.map( x => x.name)
+        const files_with_results = Object.values(GLOBAL.trainingfiles).filter( x => !!x.results)
+        return files_with_results.map(x => x.name)
     }
     // testa hämta antalet evaluation bilder
     static get_nr_images(){
@@ -76,10 +76,9 @@ RootsTraining = class extends BaseTraining {
     }
 
 
-
-
     // override
-    static async on_start_training(){
+    static async on_start_training() {
+        GLOBAL.showmodal = 0
         //Move evaluation images from trainingfiles
         var NrEvalFiles = this.get_nr_images();
         this.add_evaluation_files(NrEvalFiles);
@@ -104,55 +103,51 @@ RootsTraining = class extends BaseTraining {
             console.error(e)
             this.fail_modal()
         } finally {
-            $(GLOBAL.event_source).off('training', progress_cb)
-            if (NrEvalFiles>0) { 
-                await this.setup_evaluation(startingpoint)
+            // Remove evaluation files so they can be used again for training
+            this.move_evaluation_to_training_files()    
+            // Only update and display the modal if training was successful
+            if (GLOBAL.showmodal) {
+                $(GLOBAL.event_source).off('training', progress_cb)
+                if (NrEvalFiles > 0) {      
+                    try {
+                        await this.setup_evaluation(startingpoint, NrEvalFiles)
+                        }
+                        catch (e) {
+                            console.error(e)   
+                        }
+                }
+                //Show results modal
+                this.settings_save_modal(NrEvalFiles)
+            } else {
+                this.on_discard_model()
             }
-            //Show results modal
-            this.settings_save_modal()
-
         }
     }   
 
-    static async setup_evaluation(startingpoint){
-        // Remove evaluation files so they can be used again for training
-        this.move_evaluation_to_training_files()
+    static async setup_evaluation(startingpoint, NrEvalFiles) {
+
         // Evaluate training
         var evalfiles = this.get_selected_evaluation_files()
-        var results = await $.post('/evaluation', JSON.stringify({filenames:evalfiles, startingpoint:startingpoint, options:this.get_training_options()}))
-        console.log(results)
-        this.set_eval_images()
-        $('#evaluation-box').show()
+        var results = await $.post('/evaluation', JSON.stringify({ filenames: evalfiles, startingpoint: startingpoint, options: this.get_training_options() }))
+
+        // Update evaluation data table.
+        RootsEvaluation.update_evaluation_results_info(NrEvalFiles, results)
     }
 
-    static async set_eval_images(){
-        // Get eval files
-        var evalfiles = RootsTraining.get_selected_evaluation_files()
-        var current_name = $("#eval_img_button")[0].srcname
-        // If a file already displayed remove it so new image is shown
-        if (current_name != '' && evalfiles.length > 1){
-            console.log(current_name)
-            var index = evalfiles.indexOf(current_name);
-            if (index !== -1) {
-                evalfiles.splice(index, 1);
-            }
-        }
-        // Pick a random file 
-        var RandNum = Math.floor(Math.random() *evalfiles.length);
-        $("#eval_img_button")[0].srcname = evalfiles[RandNum];
-        var error_map = await fetch_as_file(url_for_image(evalfiles[RandNum]+'.error_map.png'))
-        var original_img = await fetch_as_file(url_for_image(evalfiles[RandNum]))
-        // Show evaluation box and place image 
-        var $errormap_img = $('#errormap-image')
-        GLOBAL.App.ImageLoading.set_image_src($errormap_img ,error_map)
-        var $evaluated_img = $('#evaluated-image')
-        GLOBAL.App.ImageLoading.set_image_src($evaluated_img ,original_img)
-    }
     // Set actions for discard and save model buttons and show save model modal
-    static settings_save_modal(){
-        // Show evaluation and save modal
-        var $save_modal = $('#save-modal').modal({closable: false, inverted:true, duration : 0,})
-        $save_modal.modal('show')            
+    static settings_save_modal(NrEvalFiles) {
+        $('#evaluation-modal').addClass('disabled').modal('hide')
+        $('#save-modal').modal({closable: false, inverted:true, duration : 0,}).modal('show')
+
+        // Refresh errormap filetable and reset text and boxes if empty.
+        if (NrEvalFiles == 0) {
+            GLOBAL.evaluationfiles = []
+            $('thead th#evaluation_errormap_files').text(`No Evaluation Images Used`)
+            $('#evaluation-results-box').addClass('hidden')
+            $('#evaluation-results-message').addClass('hidden')
+        }
+        $('.tabs .item[data-tab="training"]').click()
+        RootsEvaluation.refresh_errormap_filetable(Object.values(GLOBAL.evaluationfiles))
     }
 
     //override
@@ -174,18 +169,34 @@ RootsTraining = class extends BaseTraining {
         super.update_model_info(model_type)
     }
 
+    //override
+    static success_modal() {
+        $('#training-modal .progress').progress('set success', 'Training finished');
+        $('#training-modal #ok-training-button').show()
+        $('#training-modal #cancel-training-button').hide()
+        this.hide_modal()
+        var NrEvalFiles = this.get_nr_images();
+        if (NrEvalFiles > 0) {
+            $('#evaluation-modal').modal({
+                closable: false, inverted: true,
+            }).modal('show');
+        }
+        // If training is successful, show the modal.
+        GLOBAL.showmodal = 1
+    }
+
     static update_number_of_training_files_info(){
         const n = this.get_selected_files().length;
         $('#training-number-of-files-info-label').text(n)
         $('#training-number-of-files-info-message').removeClass('hidden')
         // Set the top limit of evaluation images that can be chosen in the text
-        $('#nr_training_images').text(Math.floor(n/2))
+        $('#nr_training_images').text(Math.floor(n - 1))
         // Pick out the object where we choose how many evaluation pictures we want
         var $nr_ev_images = $('#nr_evaluation_images').get(0)
         // Set maximum number of evaluation pictures that can be chosen
-        $nr_ev_images.max = Math.floor(n/2)
+        $nr_ev_images.max = Math.floor(n - 1)
         // 25% of training data or a bit less is the default-value for evaluation
-        $nr_ev_images.value = Math.floor(n*0.25)
+        $nr_ev_images.value = Math.floor(n * 0.25)
 
     }
     
@@ -197,27 +208,53 @@ RootsTraining = class extends BaseTraining {
 //        var segmentation = clear? undefined : results.segmentation;
         GLOBAL.trainingfiles[filename].set_results(results)       
     }
+
     static get_selected_evaluation_files(){
         const eval_files = Object.values(GLOBAL.evaluationfiles) //.filter( x => !!x.results )
         return eval_files.map( x => x.name)
     }
 
+    // Get information about model that user want to save
+    static on_save_settings(){
+        // Close evaluation modal and open settings for the saved model 
+        $('#save-modal').modal('hide')
+        var $save_settings_modal = $('#save-settings-modal').modal({closable: false, inverted:true, duration : 0,})
+        $save_settings_modal.modal('show')
+    }
+
+
+    static get_model_information(){
+        // Save information about new model in dictionary
+        var info_dict = {}
+        info_dict['author'] = $('#training-author').get(0).value
+        info_dict['ecosystem'] = $('#ecosystem').get(0).value
+        console.log(info_dict)
+        if (info_dict['author'] == "" || info_dict['ecosystem'] == ""){
+            return null
+        }
+        return info_dict
+
+    }
+
     // override
-    static on_save_model(){
-        const new_modelname = $('#training-new-modelname')[0].value
-        console.log('Saving new model as:', new_modelname)
-        $.get('/save_model', {newname: new_modelname, options:RootsTraining.get_training_options()})    // this.get_training_options
-            .done( _ => {
-                $('#training-new-modelname-field').hide() 
-                $('#errormap-image').src = ""  // remove error map image 
-                $('#evaluation-image').src = ""  // remove error map image 
-                $("#eval_img_button")[0].srcname = ""  // remove error map image 
-                $('#evaluation-box').hide()  // hide evaluation box
-                GLOBAL.App.Settings.load_settings() // Reload settings
-                $('#save-modal').modal('hide')
-            })
-            .fail( _ => $('body').toast({message:'Saving failed.', class:'error', displayTime: 0, closeIcon: true}) )
-        $('#training-new-modelname')[0].value = ''
+    static async on_save_model(){
+        // Save information about new model in dictionary
+        var info_dict = RootsTraining.get_model_information()
+        console.log(info_dict)
+        var storefiles = this.get_selected_files()
+        if (info_dict != null ){
+            const new_modelname = $('#training-new-modelname')[0].value
+            console.log('Saving new model as:', new_modelname)
+            await $.post('/save_model',  JSON.stringify({newname: new_modelname, options:RootsTraining.get_training_options(),filenames:storefiles, info:info_dict}))    // this.get_training_options
+                .done( _ => {
+                    $('#training-new-modelname-field').hide() 
+                    GLOBAL.App.Settings.load_settings() // Reload settings
+                    $('#save-settings-modal').modal('hide')                    
+                })
+                .fail( _ => $('body').toast({message:'Saving failed.', class:'error', displayTime: 0, closeIcon: true}) )
+            $('#training-new-modelname')[0].value = ''
+            $('#save-settings-form').form('clear')   
+        }
     }
 
     // Discards trained model, removes it and sets a new active model 
@@ -226,14 +263,12 @@ RootsTraining = class extends BaseTraining {
         $.get('/discard_model',{options:RootsTraining.get_training_options()})
             .done( _ => {
                 $('#training-new-modelname-field').hide();
-                $('#errormap-image').src = "";  // remove error map image 
-                $('#evaluation-image').src = "";  // remove error map image 
-                $("#eval_img_button")[0].srcname = "";  // remove error map image 
-                $('#evaluation-box').hide();  // hide evaluation box
                 GLOBAL.App.Settings.load_settings();
                 $('#save-modal').modal('hide');
+                $('#save-settings-modal').modal('hide');
             })
             .fail( _ => $('body').toast({message:'Discarding model failed.', class:'error', displayTime: 0, closeIcon: true}) );
+        $('#save-settings-form').form('clear')
         $('#training-new-modelname')[0].value = '';
     }    
 }
