@@ -1,41 +1,3 @@
-{# Macro for displaying model information about available models #}
-{% macro choose_model_template(app,info) %}
-<div class="ui segment form" margin="", id="model-element">
-    <!--Insert Model Name HERE-->
-    <h3 id="choose-modelname"><p id="model-name">{{info["modelname"]}}</p></h3>
-
-    <div class="grid-container" style="display:grid;grid-template-columns: 2fr 1fr;">
-
-        <div class="grid-item">
-            <div>
-                <h4>A selection of pictures model was trained on:</h4>
-            </div>
-            <!--Insert example images HERE-->
-            <model-list-image class="ui small images">
-                {% for i in range(0,info['training_images']| length) %}
-                <img src="TrainingImages/{{info['training_images'][i]}}" id="choose-image-one" loading="lazy" draggable="false">
-                {% endfor %}
-            </model-list-image>
-        </div>
-        <div class="grid-item">
-            <h4>Information about the model: </h4>
-            <div>
-                <!--Insert model information HERE-->
-                <p><i>Ecosystem&ensp;: </i><b id="choose-ecosystem">{{info["ecosystem"]}}</b></p>
-                <p><i>Author&emsp;&ensp;&emsp;: </i><b id="choose-author"></b>{{info["author"]}}</p>
-            </div>
-            <div style="position:absolute;bottom:20px;right:20px">
-                <button class="ui toggle button" id="{{info['modelname']}}" onclick="{{app}}.Settings.toggle(this.id)" style="height:40px;width:180px;">
-                    <i class="seedling icon" style="visibility: visible;float:left"></i>
-                    <span id="{{info['modelname']}}-appliedtext">Apply Model</span>
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-{% endmacro %}
-
-
 
 {% macro model_selection_tab(app,Allinfo) %}
 <div class="ui tab segment" data-tab="modelselection" id="model-selection" style="background-color: #f8f8f9;">
@@ -46,9 +8,7 @@
     <h3></h3>
     <p></p>
     <model-list>
-        {% for info in Allinfo %}
-        {{ choose_model_template(app,info) }}
-        {%endfor%}
+
     </model-list>
 
     <!-- Templates used to re-insert model boxes -->
@@ -84,9 +44,9 @@
                     <p><i>Author&emsp;&ensp;&emsp;: </i><b id="choose-author"></b>${info["author"]}</p>
                 </div>
                 <div style="position:absolute;bottom:20px;right:20px">
-                    <button class="ui toggle button" id="${info[" modelname"]}" onclick="{{app}}.Settings.toggle(this.id)" style="height:40px;width:180px;">
+                    <button class="ui toggle button" id="${info['modelname']}" onclick="{{app}}.Settings.toggle(this.id)" style="height:40px;width:180px;">
                         <i class="seedling icon" style="visibility: visible;float:left"></i>
-                        <span id="${info[" modelname"]}-appliedtext">Apply Model</span>
+                        <span id="${info['modelname']}-appliedtext">Apply Model</span>
                     </button>
                 </div>
             </div>
