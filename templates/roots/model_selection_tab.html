@@ -22,8 +22,13 @@
             <h4>Information about the model: </h4>
             <div>
                 <!--Insert model information HERE-->
-                <p><i>Ecosystem&ensp;: </i><b id="choose-ecosystem">{{info["ecosystem"]}}</b></p>
-                <p><i>Author&emsp;&ensp;&emsp;: </i><b id="choose-author"></b>{{info["author"]}}</p>
+                <p><i>Ecosystem&ensp;&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;</i>: <b id="choose-ecosystem">{{info["ecosystem"]}}</b></p>
+                <p><i>Sampling depth&emsp;&emsp;&emsp;&ensp;&nbsp;</i>: <b id="choose-sampling-depth">{{info["sampling-depth"]}}</b></p>
+                <p><i>Experimental treatment&ensp;</i>: <b id="choose-ex-treatment">{{info["ex-treatment"]}}</b></p>
+                <p><i>Dominant species&emsp;&emsp;&emsp;</i>: <b id="choose-dom-species">{{info["dom-species"]}}</b></p>
+                <p><i>Soiltype&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;</i>: <b id="choose-soiltype">{{info["soiltype"]}}</b></p>
+                <p><i>Notes&emsp;&ensp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&nbsp;</i>: <b id="choose-notes">{{info["notes"]}}</b></p>
+                <p><i>Author&emsp;&ensp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;</i>: <b id="choose-author">{{info["author"]}}</b></p>
             </div>
             <div style="position:absolute;bottom:20px;right:20px">
                 <button class="ui toggle button" id="{{info['modelname']}}" onclick="{{app}}.Settings.toggle(this.id)" style="height:40px;width:180px;">

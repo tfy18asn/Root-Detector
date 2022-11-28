@@ -228,8 +228,14 @@ RootsTraining = class extends BaseTraining {
         var info_dict = {}
         info_dict['author'] = $('#training-author').get(0).value
         info_dict['ecosystem'] = $('#ecosystem').get(0).value
+        info_dict['sampling-depth'] = $('#sampling-depth').get(0).value
+        info_dict['ex-treatment'] = $('#ex-treatment').get(0).value
+        info_dict['dom-species'] = $('#dom-species').get(0).value
+        info_dict['soiltype'] = $('#soiltype').get(0).value
+        info_dict['notes'] = $('#notes').get(0).value
         console.log(info_dict)
-        if (info_dict['author'] == "" || info_dict['ecosystem'] == ""){
+        if (info_dict['author'] == "" || info_dict['ecosystem'] == "" || info_dict['sampling-depth'] == ""
+            || info_dict['ex-treatment'] == "" || info_dict['dom-species'] == "" || info_dict['soiltype'] == ""){
             return null
         }
         return info_dict
@@ -266,9 +272,9 @@ RootsTraining = class extends BaseTraining {
                 GLOBAL.App.Settings.load_settings();
                 $('#save-modal').modal('hide');
                 $('#save-settings-modal').modal('hide');
+                $('#save-settings-form').form('clear');
             })
             .fail( _ => $('body').toast({message:'Discarding model failed.', class:'error', displayTime: 0, closeIcon: true}) );
-        $('#save-settings-form').form('clear')
         $('#training-new-modelname')[0].value = '';
     }    
 }
