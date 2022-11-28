@@ -11,4 +11,4 @@ RootDetectorApp = class extends BaseApp {
 
 //override
 GLOBAL.App = RootDetectorApp;
-App        = RootDetectorApp;
+App = RootDetectorApp;
