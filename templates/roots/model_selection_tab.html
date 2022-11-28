@@ -1,48 +1,4 @@
 
-{# Macro for displaying model information about available models #}
-{% macro choose_model_template(app,info) %}
-<div class="ui segment form" margin="">
-    <!--Insert Model Name HERE-->
-    <h3 id="choose-modelname"><p id="model-name">{{info["modelname"]}}</p></h3>
-
-    <div class="grid-container" style="display:grid;grid-template-columns: 2fr 1fr;">
-
-        <div class="grid-item">
-            <div>
-                <h4>A selection of pictures model was trained on:</h4>
-            </div>
-            <!--Insert example images HERE-->
-            <div class="ui large images">
-                {% for i in range(0,info['training_images']| length) %}
-                <img src = "TrainingImages/{{info['training_images'][i]}}" id="choose-image-one" loading="lazy" draggable = "false">
-                {% endfor %}
-            </div>
-        </div>
-        <div class="grid-item">
-            <h4>Information about the model: </h4>
-            <div>
-                <!--Insert model information HERE-->
-                <p><i>Ecosystem&ensp;&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;</i>: <b id="choose-ecosystem">${info["ecosystem"]}</b></p>
-                <p><i>Sampling depth&emsp;&emsp;&emsp;&ensp;&nbsp;</i>: <b id="choose-sampling-depth">${info["sampling-depth"]}</b></p>
-                <p><i>Experimental treatment&ensp;</i>: <b id="choose-ex-treatment">${info["ex-treatment"]}</b></p>
-                <p><i>Dominant species&emsp;&emsp;&emsp;</i>: <b id="choose-dom-species">${info["dom-species"]}</b></p>
-                <p><i>Soiltype&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;</i>: <b id="choose-soiltype">${info["soiltype"]}</b></p>
-                <p><i>Notes&emsp;&ensp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&nbsp;</i>: <b id="choose-notes">${info["notes"]}</b></p>
-                <p><i>Author&emsp;&ensp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;</i>: <b id="choose-author">${info["author"]}</b></p>
-            </div>
-            <div style="position:absolute;bottom:20px;right:20px">
-                <button class="ui toggle button" id="{{info['modelname']}}" onclick="{{app}}.Settings.toggle(this.id)" style="height:40px;width:180px;">
-                    <i class="seedling icon" style="visibility: visible;float:left"></i>
-                    <span id="{{info['modelname']}}-appliedtext">Apply Model</span>
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-{% endmacro %}
-
-
-
 {% macro model_selection_tab(app,Allinfo) %}
 <div class="ui tab segment" data-tab="modelselection" id="model-selection" style="background-color: #f8f8f9;">
     <h1>How do I choose the correct model?</h1>
@@ -76,7 +32,7 @@
                     <h4>A selection of pictures model was trained on:</h4>
                 </div>
                 <!--Insert example images HERE-->
-                <model-list-image class="ui small images">
+                <model-list-image class="ui medium images">
                     <!-- Append images using another template -->
                 </model-list-image>
             </div>
@@ -84,8 +40,13 @@
                 <h4>Information about the model: </h4>
                 <div>
                     <!--Insert model information HERE-->
-                    <p><i>Ecosystem&ensp;: </i><b id="choose-ecosystem">${info["ecosystem"]}</b></p>
-                    <p><i>Author&emsp;&ensp;&emsp;: </i><b id="choose-author"></b>${info["author"]}</p>
+                    <p><i>Ecosystem&ensp;&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;</i>: <b id="choose-ecosystem">${info["ecosystem"]}</b></p>
+                    <p><i>Sampling depth&emsp;&emsp;&emsp;&ensp;&nbsp;</i>: <b id="choose-sampling-depth">${info["sampling-depth"]}</b></p>
+                    <p><i>Experimental treatment&ensp;</i>: <b id="choose-ex-treatment">${info["ex-treatment"]}</b></p>
+                    <p><i>Dominant species&emsp;&emsp;&emsp;</i>: <b id="choose-dom-species">${info["dom-species"]}</b></p>
+                    <p><i>Soiltype&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;</i>: <b id="choose-soiltype">${info["soiltype"]}</b></p>
+                    <p><i>Notes&emsp;&ensp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&nbsp;</i>: <b id="choose-notes">${info["notes"]}</b></p>
+                    <p><i>Author&emsp;&ensp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;</i>: <b id="choose-author">${info["author"]}</b></p>
                 </div>
                 <div style="position:absolute;bottom:20px;right:20px">
                     <button class="ui toggle button" id="${info['modelname']}" onclick="{{app}}.Settings.toggle(this.id)" style="height:40px;width:180px;">
