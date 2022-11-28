@@ -251,7 +251,7 @@ RootsTraining = class extends BaseTraining {
                     GLOBAL.App.Settings.load_settings() // Reload settings
                     $('#save-settings-modal').modal('hide')
 
-                    this.update_model_list()
+                    this.update_model_list(true)
                 })
                 .fail( _ => $('body').toast({message:'Saving failed.', class:'error', displayTime: 0, closeIcon: true}) )
             $('#training-new-modelname')[0].value = ''
@@ -260,18 +260,24 @@ RootsTraining = class extends BaseTraining {
     }
 
     // Updates model list when user saves new model.
-    static async update_model_list() {
+    static async update_model_list(popup=false) {
 
         // Refresh Allinfo
-        var all_info = await $.post('/refresh_allinfo')
-            .done(_ => $('body').toast({ message: 'Model has been added to the gallery.', class: 'success', displayTime: 0, closeIcon: true }))
-            .fail(_ => $('body').toast({ message: 'Model was not added to the gallery.', class: 'error', displayTime: 0, closeIcon: true }))
+        if (popup) {
+            var all_info = await $.post('/refresh_allinfo')
+                .done(_ => $('body').toast({ message: 'Model has been added to the gallery.', class: 'success', displayTime: 0, closeIcon: true }))
+                .fail(_ => $('body').toast({ message: 'Model was not added to the gallery.', class: 'error', displayTime: 0, closeIcon: true }))
+        } else {
+            var all_info = await $.post('/refresh_allinfo')
+        }
+        
 
         console.log(all_info['Allinfo'])
 
         // Fetch model list html container and clear it.
         var $model_list = $('#model-selection');
-        $model_list.find('#model-element').remove()     
+        $model_list.find('model-list').remove()
+        $model_list.append("<model-list></model-list>")
 
         // Loop over Allinfo, fetch model template and append to list.
         for (let info of all_info['Allinfo']) {
