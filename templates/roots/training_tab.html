@@ -13,7 +13,7 @@
 {# Upload button which uploads training images to the training page #}
 {% macro upload_button_training(app) %}
 <!--<h4 class="ui dividing header">Training options</h4>-->
-<label for="training_images" id="upload_training_button" class="ui teal labeled icon button">
+<label for="training_images" id="upload_training_button" class="ui basic icon button training_buttons">
     <i class="upload icon"></i>
     Upload Training Images
 </label>
@@ -28,7 +28,7 @@
 {% macro upload_button_annotation(app) %}
 <!--<h4 class="ui dividing header">Training options</h4>-->
 <p id="text_annotation_files">xxx</p>
-<label for="training_image_annotation" id="upload_anno_button" class="ui yellow labeled icon button" data-content="hej">
+<label for="training_image_annotation" id="upload_anno_button" class="ui basic icon button training_buttons" data-content="hej">
     <i class="upload icon"></i>
     <p id="ground_truth_button_text">xxx</p>
 </label>
@@ -75,7 +75,8 @@ onchange="{{ app }}.FileInput.on_annotations_select(event); {{ app }}.Training.s
 
 {% macro training_controls(trainingmodule, upload_training ="", upload_ground_truth="", nr_ev_images="") %}
 <div>
-    <div class="ui segment form" style="margin-top:0px;">
+    <div class="ui segment form" style="margin-top:0px; background-color: #f8f8f9
+    ;">
         <!--<h4 class="ui dividing header">Training options</h4>-->
         <div class="field" id="training-model-type-field">
             <div class="field">

@@ -204,3 +204,25 @@ body {
     grid-column-gap: 5px;
     align-items: start;
 } 
+
+/* ------------------------------------------------------------------------- */
+/* Image uppload buttons on training page */
+/* ------------------------------------------------------------------------- */
+#upload_anno_button {
+    width: 30%;
+} 
+
+#upload_training_button {
+    width: 30%;
+} 
+
+/* ------------------------------------------------------------------------- */
+/* Image uppload buttons on analysis page */
+/* ------------------------------------------------------------------------- */
+#analysis_input_images {
+    width: 30%;
+} 
+
+#analysis_input_folder {
+    width: 30%;
+} 
