@@ -4,7 +4,7 @@
 
 
 {% macro number_of_files_infobox() %}
-<div class="ui hidden message" id="training-number-of-files-info-message">
+<div class="ui hidden message" id="training-number-of-files-info-message" style="background-color:#bfe3ca;">
     <p>Number of training files: <b id="training-number-of-files-info-label">xxx</b></p>
 </div>
 {% endmacro %}
@@ -14,7 +14,7 @@
 {% macro upload_button_training(app) %}
 <!--<h4 class="ui dividing header">Training options</h4>-->
 <label for="training_images" id="upload_training_button" class="ui basic icon button training_buttons">
-    <i class="upload icon"></i>
+    <i class="upload icon" style="float:left;"></i>
     Upload Training Images
 </label>
 <!-- padding-top:0; padding-bottom:0-->
@@ -29,7 +29,7 @@
 <!--<h4 class="ui dividing header">Training options</h4>-->
 <p id="text_annotation_files">xxx</p>
 <label for="training_image_annotation" id="upload_anno_button" class="ui basic icon button training_buttons" data-content="hej">
-    <i class="upload icon"></i>
+    <i class="upload icon" style="float:left;"></i>
     <p id="ground_truth_button_text">xxx</p>
 </label>
 <!-- padding-top:0; padding-bottom:0-->
