@@ -38,23 +38,74 @@
             </div>
             <div class="grid-item">
                 <h4>Information about the model: </h4>
-                <div>
+                <div class="grid-container" style="display:grid;grid-template-columns: 1fr 1fr;grid-row-gap:16px">
                     <!--Insert model information HERE-->
-                    <p><i>Ecosystem&ensp;&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;</i>: <b id="choose-ecosystem">${info["ecosystem"]}</b></p>
-                    <p><i>Sampling depth&emsp;&emsp;&emsp;&ensp;&nbsp;</i>: <b id="choose-sampling-depth">${info["sampling-depth"]}</b></p>
-                    <p><i>Experimental treatment&ensp;</i>: <b id="choose-ex-treatment">${info["ex-treatment"]}</b></p>
-                    <p><i>Dominant species&emsp;&emsp;&emsp;</i>: <b id="choose-dom-species">${info["dom-species"]}</b></p>
-                    <p><i>Soiltype&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;</i>: <b id="choose-soiltype">${info["soiltype"]}</b></p>
-                    <p><i>Notes&emsp;&ensp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&nbsp;</i>: <b id="choose-notes">${info["notes"]}</b></p>
-                    <p><i>Author&emsp;&ensp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;</i>: <b id="choose-author">${info["author"]}</b></p>
-                </div>
-                <div style="position:absolute;bottom:20px;right:20px">
-                    <button class="ui toggle button" id="${info['modelname']}" onclick="{{app}}.Settings.toggle(this.id)" style="height:40px;width:180px;">
-                        <i class="seedling icon" style="visibility: visible;float:left"></i>
-                        <span id="${info['modelname']}-appliedtext">Apply Model</span>
-                    </button>
+
+                    <!--Author-->
+                    <div class="grid-item">
+                        <p><i><b>Author</b>:</i></p>
+                    </div>
+                    <div class="grid-item">
+                        <p id="choose-author">${info["author"]}</p>
+                    </div>
+                    
+                    <!--Ecosystem-->
+                    <div class="grid-item">
+                        <p><i><b>Ecosystem:</b></i></p>
+                    </div>
+                    <div class="grid-item">
+                        <p id="choose-ecosystem">${info["ecosystem"]}</p>
+                    </div>
+
+                    <!--Sampling depth-->
+                    <div class="grid-item">
+                        <p><i><b>Sampling depth:</b></i></p>
+                    </div>
+                    <div class="grid-item">
+                        <p id="choose-sampling-depth">${info["sampling-depth"]}</p>
+                    </div>
+
+                    <!--Experimental treatment-->
+                    <div class="grid-item">
+                        <p><i><b>Experimental treatment:</b></i></p>
+                    </div>
+                    <div class="grid-item">
+                        <p id="choose-ex-treatment">${info["ex-treatment"]}</p>
+                    </div>
+
+                    <!--Dominant species-->
+                    <div class="grid-item">
+                        <p><i><b>Dominant species:</b></i></p>
+                    </div>
+                    <div class="grid-item">
+                        <p id="choose-dom-species">${info["dom-species"]}</p>
+                    </div>
+
+                    <!--Soiltype-->
+                    <div class="grid-item">
+                        <p><i><b>Soiltype:</b></i></p>
+                    </div>
+                    <div class="grid-item">
+                        <p id="choose-soiltype">${info["soiltype"]}</p>
+                    </div>
+
+                    <!--Notes-->
+                    <div class="grid-item">
+                        <p><i><b>Notes:</b></i></p>
+                    </div>
+                    <div class="grid-item">
+                        <p id="choose-notes">${info["notes"]}</p>
+                    </div>
                 </div>
             </div>
+        </div>
+        <!--Apply Model - button-->
+        <div class="ui hidden section divider"></div>
+        <div style="position:absolute;bottom:20px;right:20px;">
+            <button class="ui toggle button" id="${info['modelname']}" onclick="{{app}}.Settings.toggle(this.id)" style="height:40px;width:180px;"> 
+                <i class="seedling icon" style="visibility: visible;float:left"></i>
+                <span id="${info['modelname']}-appliedtext">Apply Model</span>
+            </button>
         </div>
     </div>
 
@@ -67,3 +118,4 @@
     <img src="TrainingImages/${training_image}" id="choose-image-one" loading="lazy" draggable="false">
 </template>
 {% endmacro %}
+
