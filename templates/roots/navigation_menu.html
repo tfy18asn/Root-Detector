@@ -1,29 +1,31 @@
 {% import 'base/main_container.html' as base_main_container %}
-{% from   'roots/tracking_tab.html'  import tracking_tab %}
-{% from   'roots/training_tab.html'  import training_tab as roots_training_tab %}
-{% from   'roots/analysis_tab.html'  import analysis_container as analysis_container %}
-{% from   'roots/about_tab.html'     import about_tab %}
-{% from   'roots/model_selection_tab.html'   import model_selection_tab %}
-{% from   'roots/help_tab.html'      import help_tab %}
-{% from 'roots/contact_tab.html'     import contact_tab %}
+{% from   'roots/tracking_tab.html'         import tracking_tab %}
+{% from   'roots/training_tab.html'         import training_tab as roots_training_tab %}
+{% from   'roots/analysis_tab.html'         import analysis_container as analysis_container %}
+{% from   'roots/about_tab.html'            import about_tab %}
+{% from   'roots/model_selection_tab.html'  import model_selection_tab %}
+{% from   'roots/help_tab.html'             import help_tab %}
+{% from   'roots/contact_tab.html'          import contact_tab %}
+{% from   'roots/home_tab.html'             import home_tab as roots_home_tab %}
 
 
 {% macro tabs() %}
 <div class="ui pointing tabs menu">
     <a class="active item"        data-tab="detection"><strong>Detection</strong> </a>
-    <a class="item"               data-tab="tracking"><strong>Tracking</strong>  </a>
-    <a class="item"               data-tab="training"> <strong>Training</strong>  </a>
-    <a class="item"               data-tab="modelselection"> <strong>Model Selection</strong> </a>
-    <a class="item"               data-tab="help">    <strong> Help</strong></a>
-    <a class="item"               data-tab="about">  <strong>About </strong> </a>
-    <a class="item"               data-tab="contact"> <strong>Contact us </strong> </a>
+    <a class="item"               data-tab="tracking"><strong>Tracking</strong> </a>
+    <a class="item"               data-tab="training"><strong>Training</strong> </a>
+    <a class="item"               data-tab="modelselection"><strong>Model Selection</strong> </a>
+    <a class="item"               data-tab="help"><strong>Help</strong> </a>
+    <a class="item"               data-tab="about"><strong>About</strong> </a>
+    <a class="item"               data-tab="contact"><strong>Contact us</strong> </a>
 
 </div>
 {% endmacro %}
 
 {% macro contained_tabs() %}
 <div class="ui pointing tabs menu">
-    <a class="active item"        data-tab="analysis"> <strong>Analysis</strong>  </a>
+    <a class="active item"        data-tab="home"><strong> <i class="home icon"></i> Home </strong></a>
+    <a class="item"               data-tab="analysis"> <strong>Analysis</strong>  </a>
     <a class="item"               data-tab="training"> <strong>Training</strong>  </a>
     <a class="item"               data-tab="modelselection"> <strong>Model Selection</strong>  </a>
     <a class="item"               data-tab="help">    <strong> Help</strong> </a>
@@ -47,6 +49,7 @@
       tabs          = contained_tabs(),
       analysis_tab  = analysis_container(app),
       training_tab  = roots_training_tab(app),
+      home_tab      = roots_home_tab(),
       extra         = all_extra_tabs(app,Allinfo)) }}
 {% endmacro %}
 
