@@ -23,9 +23,9 @@
 {% endmacro %}
 
 {% macro main_container(app) %}
-    {{ base_main_container.main_container( 
-        app, 
-        tabs          = contained_tabs(), 
+    {{ base_main_container.main_container(
+        app,
+        tabs          = contained_tabs(),
         analysis_tab  = analysis_container(app),
         training_tab  = roots_training_tab(app),
         home_tab      = roots_home_tab(),

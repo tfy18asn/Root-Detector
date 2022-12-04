@@ -112,6 +112,7 @@
 </div>
 {% endmacro %}
 
+
 {% macro on_save_model_modal(app) %}
 <div class="ui modal" id="save-settings-modal">
   <div class="header">Information about the model</div>
@@ -122,17 +123,29 @@
             <label>Name of the author:</label>
             <input type="text" name="training-author" placeholder="Name" id="training-author">
         </div>
-        <div class="ui divider"></div>
         <div class="field">
-          <label>Choose which terrestrial ecosystem the images are from:</label>
-          <select class="ui search dropdown" id="ecosystem" name="ecosystem">
-            <option value="">Type of terrestrial ecosystem</option>
-            <option value="GE">Grassland Ecosystem</option>
-            <option value="FE">Forest Ecosystem</option>
-            <option value="DE">Desert Ecosystem</option>
-            <option value="CE">Cropland Ecosystem</option>
-            <option value="Ot">Other</option>
-          </select>
+          <label>Ecosystem:</label>
+          <input type="text" name="ecosystem" placeholder="Ecosystem" id="ecosystem">
+        </div>
+        <div class="field">
+          <label>Sampling depth:</label>
+          <input type="text" name="sampling-depth" placeholder="Sampling depth" id="sampling-depth">
+        </div>
+        <div class="field">
+          <label>Experimental treatment:</label>
+          <input type="text" name="ex-treatment" placeholder="Experimental treatment" id="ex-treatment">
+        </div>
+        <div class="field">
+          <label>Dominant species:</label>
+          <input type="text" name="dom-species" placeholder="Dominant species" id="dom-species">
+        </div>
+        <div class="field">
+          <label>Soiltype:</label>
+          <input type="text" name="soiltype" placeholder="Soiltype" id="soiltype">
+        </div>
+        <div class="field">
+          <label>Notes:</label>
+          <input type="text" name="notes" placeholder="" id="notes">
         </div>
 
         <!--<div class="ui segment form">--> <!--style="display:none"--> 
@@ -173,27 +186,54 @@ $('#save-settings-form')
           }
         ]
       },
-      dropdown: {
+      ecosystem: {
         identifier  : 'ecosystem',
         rules: [
           {
             type   : 'empty',
-            prompt : 'Please select a dropdown value'
+            prompt : 'Please enter the ecosystem'
+          }
+        ]
+      },
+      samp_depth: {
+        identifier  : 'sampling-depth',
+        rules: [
+          {
+            type   : 'empty',
+            prompt : 'Please enter the sampling depth'
+          }
+        ]
+      },
+      ex_treatment: {
+        identifier  : 'ex-treatment',
+        rules: [
+          {
+            type   : 'empty',
+            prompt : 'Please enter experimental treatment'
+          }
+        ]
+      },
+      dom_species : {
+        identifier  : 'dom-species',
+        rules: [
+          {
+            type   : 'empty',
+            prompt : 'Please enter dominant species'
+          }
+        ]
+      },
+      soiltype: {
+        identifier  : 'soiltype',
+        rules: [
+          {
+            type   : 'empty',
+            prompt : 'Please enter soiltype'
           }
         ]
       },
     }
   })
 ;
-
-
-//$(document).ready(function() {
- // $(document).on('submit', '#save-settings-form', function(event) {
-    // do your things
-    //event.preventDefault()
-    //return false;
-   //});
-//});
 </script>
 {% endmacro %}
 

@@ -228,8 +228,14 @@ RootsTraining = class extends BaseTraining {
         var info_dict = {}
         info_dict['author'] = $('#training-author').get(0).value
         info_dict['ecosystem'] = $('#ecosystem').get(0).value
+        info_dict['sampling-depth'] = $('#sampling-depth').get(0).value
+        info_dict['ex-treatment'] = $('#ex-treatment').get(0).value
+        info_dict['dom-species'] = $('#dom-species').get(0).value
+        info_dict['soiltype'] = $('#soiltype').get(0).value
+        info_dict['notes'] = $('#notes').get(0).value
         console.log(info_dict)
-        if (info_dict['author'] == "" || info_dict['ecosystem'] == ""){
+        if (info_dict['author'] == "" || info_dict['ecosystem'] == "" || info_dict['sampling-depth'] == ""
+            || info_dict['ex-treatment'] == "" || info_dict['dom-species'] == "" || info_dict['soiltype'] == ""){
             return null
         }
         return info_dict
@@ -249,11 +255,49 @@ RootsTraining = class extends BaseTraining {
                 .done( _ => {
                     $('#training-new-modelname-field').hide() 
                     GLOBAL.App.Settings.load_settings() // Reload settings
-                    $('#save-settings-modal').modal('hide')                    
+                    $('#save-settings-modal').modal('hide')
+
+                    this.update_model_list(true)
                 })
                 .fail( _ => $('body').toast({message:'Saving failed.', class:'error', displayTime: 0, closeIcon: true}) )
             $('#training-new-modelname')[0].value = ''
             $('#save-settings-form').form('clear')   
+        }
+    }
+
+    // Updates model list when user saves new model.
+    static async update_model_list(popup=false) {
+
+        // Refresh Allinfo
+        if (popup) {
+            var all_info = await $.post('/refresh_allinfo')
+                .done(_ => $('body').toast({ message: 'Model has been added to the gallery.', class: 'success', displayTime: 0, closeIcon: true }))
+                .fail(_ => $('body').toast({ message: 'Model was not added to the gallery.', class: 'error', displayTime: 0, closeIcon: true }))
+        } else {
+            var all_info = await $.post('/refresh_allinfo')
+        }
+        
+
+        console.log(all_info['Allinfo'])
+
+        // Fetch model list html container and clear it.
+        var $model_list = $('#model-selection');
+        $model_list.find('model-list').remove()
+        $model_list.append("<model-list></model-list>")
+
+        // Loop over Allinfo, fetch model template and append to list.
+        for (let info of all_info['Allinfo']) {
+
+            console.log(info)
+            var model_element = $("template#model-selection-template").tmpl([{ info: info }])
+
+            // Loop over model example images and append them to model_element
+            for (let i = 0; i < info["training_images"].length; i++) {
+                var model_element_image = $("template#model-selection-template-images").tmpl([{ training_image: info["training_images"][i] }])
+                $(model_element_image).appendTo($(model_element).find('model-list-image'))
+            }
+
+            $(model_element).appendTo($model_list.find('model-list'))
         }
     }
 
@@ -266,9 +310,9 @@ RootsTraining = class extends BaseTraining {
                 GLOBAL.App.Settings.load_settings();
                 $('#save-modal').modal('hide');
                 $('#save-settings-modal').modal('hide');
+                $('#save-settings-form').form('clear');
             })
             .fail( _ => $('body').toast({message:'Discarding model failed.', class:'error', displayTime: 0, closeIcon: true}) );
-        $('#save-settings-form').form('clear')
         $('#training-new-modelname')[0].value = '';
     }    
 }

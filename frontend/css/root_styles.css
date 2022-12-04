@@ -204,3 +204,45 @@ body {
     grid-column-gap: 5px;
     align-items: start;
 } 
+
+/* ------------------------------------------------------------------------- */
+/* Image uppload buttons on training page */
+/* ------------------------------------------------------------------------- */
+#upload_anno_button {
+    width: 30%;
+    background-color: #bfe3ca;
+} 
+
+#upload_training_button {
+    width: 30%;
+    background-color: #bfe3ca;
+} 
+
+/* ------------------------------------------------------------------------- */
+/* Image uppload buttons on analysis page */
+/* ------------------------------------------------------------------------- */
+#analysis_input_images {
+    width: 30%;
+    background-color: #bfe3ca;
+} 
+
+#analysis_input_folder {
+    width: 30%;
+    background-color: #bfe3ca;
+} 
+
+/* --------------------------------------------------------------------------*/
+/* ------------------- START TRAINING BUTTON --------------------------------*/
+/* --------------------------------------------------------------------------*/
+#start-training-button {
+    color: rgb(45, 45, 45);
+    border: 2px solid #7ea78a;
+    background-color: #bfe3ca;
+}
+
+/* --------------------------------------------------------------------------*/
+/* ------------------- PROCESS ALL BUTTON -----------------------------------*/
+/* --------------------------------------------------------------------------*/
+#process-all-button {
+    color: #7ea78a;
+}

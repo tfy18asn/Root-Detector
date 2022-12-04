@@ -40,6 +40,10 @@ RootDetectionDownload = class extends BaseDownload{
         var det_model_info = await $.get('/modelinformation_download', {training_type: 'detection', modelname: det_modname})
         var det_author = det_model_info['author']
         var det_ecosystem = det_model_info['ecosystem']
+        var det_samp_dep = det_model_info['sampling-depth']
+        var det_ex_treat = det_model_info['ex-treatment']
+        var det_dom_species = det_model_info['dom-species']
+        var det_soiltype = det_model_info['soiltype']
 
         if (GLOBAL.files[filename].results.statistics['exclusion_mask'] != undefined){
             var ex_modname = GLOBAL.files[filename].results.statistics['exclusion_mask']
@@ -47,8 +51,12 @@ RootDetectionDownload = class extends BaseDownload{
             var ex_model_info = await $.get('/modelinformation_download', {training_type: 'exclusion_mask', modelname: ex_modname})
             var ex_author = ex_model_info['author']
             var ex_ecosystem = ex_model_info['ecosystem']
+            var ex_samp_dep = ex_model_info['sampling-depth']
+            var ex_ex_treat = ex_model_info['ex-treatment']
+            var ex_dom_species = ex_model_info['dom-species']
+            var ex_soiltype = ex_model_info['soiltype']
             var add_data = [
-                ex_modname, ex_author, ex_ecosystem,
+                ex_modname, ex_author, ex_ecosystem, ex_samp_dep, ex_ex_treat, ex_dom_species, ex_soiltype
             ].join(',')
             ex_mask = true
         }
@@ -59,12 +67,21 @@ RootDetectionDownload = class extends BaseDownload{
                 + '# skeleton pixels (<3px width), # skeleton pixels (3-7px width), # skeleton pixels (>7px width),'
                 + 'Kimura length,'
                 + 'Detection model used,'
-                + 'Author of detection model,'
-                + 'Ecosystem for detection model,'
+                + 'Det. model-Author,'
+                + 'Det. model-Ecosystem,'
+                + 'Det. model-Sampling depth,'
+                + 'Det. model-Experimental treatment,'
+                + 'Det. model-Dominant species,'
+                + 'Det. model-Soiltype,'
                 + 'Date,'
                 + 'Exclusion mask model name,'
-                + 'Author exclusion mask,'
-                + 'Ecosystem exclusion mask;\n';
+                + 'Ex. mask-Author,'
+                + 'Ex. mask-Ecosystem,'
+                + 'Ex. mask-Sampling depth,'
+                + 'Ex. mask-Experimental treatment,'
+                + 'Ex. mask-Dominant species,'
+                + 'Ex. mask-Soiltype;\n';
+
         }
         
         var f = GLOBAL.files[filename]
@@ -81,6 +98,10 @@ RootDetectionDownload = class extends BaseDownload{
             stats.detection_model,//GLOBAL.settings.active_models.detection
             det_author,
             det_ecosystem,
+            det_samp_dep,
+            det_ex_treat,
+            det_dom_species,
+            det_soiltype,
             stats.date,
         ].join(', ')
 
@@ -88,7 +109,7 @@ RootDetectionDownload = class extends BaseDownload{
             csvtxt += ', ' + add_data + ';\n'
         }
         else {
-            csvtxt += ',,,;\n'
+            csvtxt += ',,,,,,,;\n'
         }
 
         return csvtxt;
@@ -164,13 +185,6 @@ RootTrackingDownload = class extends BaseDownload {
         var stats = GLOBAL.files[filename0].tracking_results[filename1].statistics;
 
         var track_modname = stats.tracking_model
-        // Do we need/want author/ecosystem for tracking. Can not change it, it will only be detection/exclusion mask
-        //var det_modname = stats.detection_model
-        // Get metadata about the model to add in the csv-file
-        // This is now showing the metadata for the detection 
-        //var model_info = await $.get('/modelinformation_download', {training_type: 'detection', modelname: det_modname})
-        //var author = model_info['author']
-        //var ecosystem = model_info['ecosystem']
 
         var header = [
             'Filename 1',           'Filename 2', 
@@ -195,16 +209,22 @@ RootTrackingDownload = class extends BaseDownload {
             var ex_model_info = await $.get('/modelinformation_download', {training_type: 'exclusion_mask', modelname: ex_modname})
             var ex_author = ex_model_info['author']
             var ex_ecosystem = ex_model_info['ecosystem']
+            var ex_samp_dep = ex_model_info['sampling-depth']
+            var ex_ex_treat = ex_model_info['ex-treatment']
+            var ex_dom_species = ex_model_info['dom-species']
+            var ex_soiltype = ex_model_info['soiltype']
+
             var add_data = [
-                ex_modname, ex_author, ex_ecosystem,
+                ex_modname, ex_author, ex_ecosystem, ex_samp_dep, ex_ex_treat, ex_dom_species, ex_soiltype,
             ]
             console.log(data)
         } else {
-            var add_data = ["","",""]
+            var add_data = ["","","","","","",""]
         }
 
         var add_header = [
-            'Exclusion mask model name', 'Author exclusion mask', 'Ecosystem exclusion mask'
+            'Exclusion mask model name', 'Ex. mask-Author', 'Ex. mask-Ecosystem', 'Ex. mask-Sampling depth',
+            'Ex. mask-Experimental treatment', 'Ex. mask-Dominant species', 'Ex. mask-Soiltype'
         ]
         header = header.concat(add_header)
         data = data.concat(add_data)
