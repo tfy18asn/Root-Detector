@@ -8,18 +8,6 @@
 {% from   'roots/contact_tab.html'     import contact_tab %}
 {% from   'roots/home_tab.html'      import home_tab as roots_home_tab %}
 
-{% macro tabs() %}
-<div class="ui pointing tabs menu">
-    <a class="active item"        data-tab="detection"><strong>Detection</strong> </a>
-    <a class="item"               data-tab="tracking"><strong>Tracking</strong>  </a>
-    <a class="item"               data-tab="training"> <strong>Training</strong>  </a>
-    <a class="item"               data-tab="modelselection"> <strong>Model Selection</strong> </a>
-    <a class="item"               data-tab="help">    <strong> Help</strong></a>
-    <a class="item"               data-tab="about">  <strong>About </strong> </a>
-    <a class="item"               data-tab="contact"> <strong>Contact us </strong> </a>
-
-</div>
-{% endmacro %}
 
 {% macro contained_tabs() %}
 <div class="ui pointing tabs menu">
@@ -30,7 +18,6 @@
     <a class="item"               data-tab="help">    <strong> Help</strong> </a>
     <a class="item"               data-tab="about"> <strong>About </strong> </a>
     <a class="item"               data-tab="contact"> <strong> Contact us</strong> </a>
-
 </div>
 {% endmacro %}
 
