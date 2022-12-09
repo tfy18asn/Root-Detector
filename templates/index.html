@@ -20,7 +20,7 @@
     {{ filetable_row_template(app)  | indent }}
 </head>
 
-<body onload="{{app}}.init()">
+<body onload="{{app}}.init(), GLOBAL.App.Training.update_model_list(false)">
 
     {{ top_menu(app)             | indent }}
     {{ navigation_menu(app, Allinfo)      | indent }}

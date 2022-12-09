@@ -61,12 +61,14 @@ RootsTraining = class extends BaseTraining {
            // $upload_anno_button.toggle(true)
             $text_ground_truth.text('Upload Annotated Training Images')
             $infotext_anno.text('Upload corresponding annotated images to the training images')
+            GLOBAL.model_type = 'detection';
         }
         // If exclusion mask model is chosen
         else if (model_type == 'exclusion_mask'){
            // $upload_anno_button.toggle(true)
             $text_ground_truth.text('Upload Exclusion Mask Images')
             $infotext_anno.text('Upload corresponding exclusion mask images to the training images')
+            GLOBAL.model_type = 'exclusion_mask';
         }
     }
 
@@ -257,7 +259,10 @@ RootsTraining = class extends BaseTraining {
                     GLOBAL.App.Settings.load_settings() // Reload settings
                     $('#save-settings-modal').modal('hide')
 
-                    this.update_model_list(true)
+                    console.log(GLOBAL.model_type)
+                    if (GLOBAL.model_type == 'detection') {
+                        this.update_model_list(true)
+                    }
                 })
                 .fail( _ => $('body').toast({message:'Saving failed.', class:'error', displayTime: 0, closeIcon: true}) )
             $('#training-new-modelname')[0].value = ''
@@ -276,9 +281,6 @@ RootsTraining = class extends BaseTraining {
         } else {
             var all_info = await $.post('/refresh_allinfo')
         }
-        
-
-        console.log(all_info['Allinfo'])
 
         // Fetch model list html container and clear it.
         var $model_list = $('#model-selection');
@@ -287,8 +289,6 @@ RootsTraining = class extends BaseTraining {
 
         // Loop over Allinfo, fetch model template and append to list.
         for (let info of all_info['Allinfo']) {
-
-            console.log(info)
             var model_element = $("template#model-selection-template").tmpl([{ info: info }])
 
             // Loop over model example images and append them to model_element
