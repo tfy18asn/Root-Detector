@@ -60,14 +60,14 @@ RootsTraining = class extends BaseTraining {
         if (model_type == 'detection'){
            // $upload_anno_button.toggle(true)
             $text_ground_truth.text('Upload Annotated Training Images')
-            $infotext_anno.text('Upload corresponding annotated images to the training images')
+            $infotext_anno.text('Upload corresponding annotated images to the training images. Remember that the file names of the corresponding training image (format: ".tiff") and annotated training image (format: ".png") have to be the same.')
             GLOBAL.model_type = 'detection';
         }
         // If exclusion mask model is chosen
         else if (model_type == 'exclusion_mask'){
            // $upload_anno_button.toggle(true)
             $text_ground_truth.text('Upload Exclusion Mask Images')
-            $infotext_anno.text('Upload corresponding exclusion mask images to the training images')
+            $infotext_anno.text('Upload corresponding exclusion mask images to the training images. Remember that the file names of the corresponding training image (format: ".tiff") and exclusion mask image (format: ".png") have to be the same.')
             GLOBAL.model_type = 'exclusion_mask';
         }
     }

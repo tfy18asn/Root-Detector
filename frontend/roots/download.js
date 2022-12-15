@@ -72,7 +72,7 @@ RootDetectionDownload = class extends BaseDownload{
                 + 'Det. model-Sampling depth,'
                 + 'Det. model-Experimental treatment,'
                 + 'Det. model-Dominant species,'
-                + 'Det. model-Soiltype,'
+                + 'Det. model-Soil type,'
                 + 'Date,'
                 + 'Exclusion mask model name,'
                 + 'Ex. mask-Author,'
@@ -80,7 +80,7 @@ RootDetectionDownload = class extends BaseDownload{
                 + 'Ex. mask-Sampling depth,'
                 + 'Ex. mask-Experimental treatment,'
                 + 'Ex. mask-Dominant species,'
-                + 'Ex. mask-Soiltype;\n';
+                + 'Ex. mask-Soil type;\n';
 
         }
         
@@ -224,7 +224,7 @@ RootTrackingDownload = class extends BaseDownload {
 
         var add_header = [
             'Exclusion mask model name', 'Ex. mask-Author', 'Ex. mask-Ecosystem', 'Ex. mask-Sampling depth',
-            'Ex. mask-Experimental treatment', 'Ex. mask-Dominant species', 'Ex. mask-Soiltype'
+            'Ex. mask-Experimental treatment', 'Ex. mask-Dominant species', 'Ex. mask-Soil type'
         ]
         header = header.concat(add_header)
         data = data.concat(add_data)
